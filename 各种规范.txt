@@ -1,0 +1,22 @@
+命名风格：
+参数、方法、成员变量、局部变量命名：lowerCamelCase风格,遵从驼峰形式
+	正例：loacalValue;inputUserId()
+常量命名：全部大写，单词间用下划线分开
+	正例：MAX_COUNT
+类命名:UpperCamelCase
+	正例：XmlService
+抽象类命名：以Base或Abstract开头
+异常类命名：以Exception结尾
+
+注释：
+每个类都要注释其内容
+每个方法都要注释
+每个变量都要注释其含义
+
+commit message：
+名字（或代号，如大写首字母）+代码版本号（如：v1.01.01）+简要说明修改内容
+
+前端共用一个txt文档：进行前端说明（包括接口说明，更新说明）
+后端共用一个txt文档：进行后端说明（包括接口说明，更新说明）
+
+文档一律不使用word等
