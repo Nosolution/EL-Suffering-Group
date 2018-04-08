@@ -1,0 +1,4 @@
+#Mon Apr 09 00:36:04 CST 2018
+base.0=F\:\\Softwares\\GitHub\\Repository\\EL-Suffering-Group\\EL_project\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\1
+path.0=classes.dex
+renamed.0=classes.dex
