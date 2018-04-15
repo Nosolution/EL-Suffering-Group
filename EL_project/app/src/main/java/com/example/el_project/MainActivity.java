@@ -1,9 +1,13 @@
 package com.example.el_project;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.support.v7.widget.Toolbar;
 
@@ -16,6 +20,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private List<com.example.el_project.Task> taskList=new ArrayList<>();
     private RecyclerView recyclerView;
+    private MyDatabaseHelper dbHelper;
+    private FloatingActionButton button1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +40,15 @@ public class MainActivity extends AppCompatActivity {
         //设置Adapter
         RecyclerViewAdapter adapter=new RecyclerViewAdapter(taskList);
         recyclerView.setAdapter(adapter);
+
+        button1 =(FloatingActionButton)findViewById(R.id.fab_add);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,AddTaskActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initTasks(){

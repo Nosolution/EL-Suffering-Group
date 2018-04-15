@@ -1,0 +1,32 @@
+——————Commit version 1.01——————
+
+修改MainActivity.java的代码，点击悬浮按钮后可打开添加任务界面
+修改AndroidManifest.xml中的代码，注册AddTaskActivity
+修改string.xml中的代码，让添加页面的Edittext与Button显示一些字
+
+(为了能打开主活动我把对ic_forelauncher.xml的引用替换成了一张黑色png图片，名称为test_image.png，并将图片加入了drwable文件夹中)
+
+添加AddTaskActivity.java与activity_add_task。xml文件，为添加任务页面的主要功能实现文件
+添加ItemDialopFragment.java、MydatabaseHelper.java,具体功能注释里会讲
+
+实现了添加任务功能，任务名使用键盘输入，预计时间、最后期限、优先级可通过对话框进行选择
+前两项未输入则不能点击完成按钮
+已经连上数据库，点击完成按钮后数据将会被存入SQLite数据库
+查看方法：
+在虚拟机打开的情况下，打开命令控制台
+按顺序输入：（以下步骤参考了《第一行代码》第二版6.4节 215页）
+adb shell
+cd data/data/com.example.el_project/databases
+(之后输入ls应该可看见TaskStore.db)
+sqlite3 TaskStore.db
+(之后输入.table可应该可看见Tasklist)
+select * from Tasklist
+便可看见用|分隔开的数据，其中优先级的字符由于是中文，编码方式不同，会变成乱码
+
+待实现功能：
+查询数据库使所有代办任务显示在主页面上（没接上界面组的借口）、
+优化添加任务页面的布局
+滚动式选择最后期限
+预计时间与优先级的对话框添加取消按钮
+增加预计时间自定义编辑功能
+    					——Edited by NS
