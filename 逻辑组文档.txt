@@ -1,3 +1,6 @@
+新增MusicController类，将通过这个类的简单调用控制音乐播放暂停停止重置。音乐的选择将直接让这个类操作。
+
+
 ——————Commit version 1.01——————
 
 修改MainActivity.java的代码，点击悬浮按钮后可打开添加任务界面
