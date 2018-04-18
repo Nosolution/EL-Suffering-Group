@@ -7,12 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.support.v7.widget.Toolbar;
-
-import com.example.el_project.R;
-import com.example.el_project.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,AddTaskActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
                 startActivity(intent);
             }
         });

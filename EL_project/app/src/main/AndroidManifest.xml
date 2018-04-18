@@ -23,6 +23,9 @@
             android:label="@string/addtaskactivitytitle">
 
         </activity>
+        <activity android:name=".TaskOngoingActivity">
+
+        </activity>
     </application>
 
 </manifest>
