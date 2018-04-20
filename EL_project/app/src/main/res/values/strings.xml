@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">EL_project</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="cancle">取消</string>
+    <string name="title">请选择时间</string>
+    <string name="commit">确定</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="hour">时</string>
+    <string name="minute">分</string>
+
+    <string name="select_date">选择日期</string>
+    <string name="current_date">当前日期</string>
+    <string name="select_time">选择时间</string>
+    <string name="current_time">当前时间</string>
+    <!--activity_main4-->
+    <string name="back4">返回主界面</string>
+    <string name="next4">下一项任务</string>
+    <string name="left4">返回</string>
+
+    <!--activity_main2-->
+    <string name="task2">任务：</string>
+    <string name="time2">预计时间：</string>
+    <string name="ddl2">DDL</string>
+    <string name="importance2">紧急程度</string>
+    <string name="everyday2">是否设为每日工作</string>
+    <string name="begin2">立即开始</string>
+    <string name="add2">加入待办</string>
+    <string name="edit2">备注</string>
 </resources>
