@@ -38,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void initTasks(){
         for(int i=0;i<2;i++){
-            Task apple=new Task("Apple",R.drawable.ic_launcher_foreground,R.drawable.pink);
+            Task apple=new Task("Apple",R.drawable.pink);
             taskList.add(apple);
-            Task banana=new Task("Banana",R.drawable.ic_launcher_foreground,R.drawable.red);
+            Task banana=new Task("Banana",R.drawable.red);
             taskList.add(banana);
-            Task orange=new Task("Orange",R.drawable.ic_launcher_foreground,R.drawable.purple);
+            Task orange=new Task("Orange",R.drawable.purple);
             taskList.add(orange);
-            Task watermelon=new Task("Watermelon",R.drawable.ic_launcher_foreground,R.drawable.gray);
+            Task watermelon=new Task("Watermelon",R.drawable.gray);
             taskList.add(watermelon);
-            Task grape=new Task("Grape",R.drawable.ic_launcher_foreground,R.drawable.green);
+            Task grape=new Task("Grape",R.drawable.green);
             taskList.add(grape);
 
         }

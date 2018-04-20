@@ -19,14 +19,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	//自定义的ViewHolder，持有每个Item的的所有界面元素
 	public static class ViewHolder extends RecyclerView.ViewHolder{
 		TextView taskName;
-		ImageView taskImage;
+//		ImageView taskImage;
 		LinearLayout layoutBackground;
 
 		//构造函数
 		public ViewHolder(View view){
 			super(view);
 			taskName=view.findViewById(R.id.task_name);
-			taskImage=view.findViewById(R.id.task_image);
+//			taskImage=view.findViewById(R.id.task_image);
 			layoutBackground=view.findViewById(R.id.layout_item);
 		}
 	}
@@ -50,7 +50,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 		Task task=mTaskList.get(position);  //得到当前项的实例
-		holder.taskImage.setImageResource(task.getImageId());
+//		holder.taskImage.setImageResource(task.getImageId());
 		holder.taskName.setText(task.getName());
 		holder.layoutBackground.setBackgroundResource(task.getBackgroundId());
 	}
