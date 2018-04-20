@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EL_project</string>
+	<string name="app_name">EL_project</string>
     <string name="addtaskactivitytitle">添加任务</string>
     <string name="inputtask">任务名：</string>
     <string name="inputassumedtime">预计时间：</string>
