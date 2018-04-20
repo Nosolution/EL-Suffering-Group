@@ -1,14 +1,13 @@
 package com.example.el_project;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout;
+import android.view.View;
 import android.support.v7.widget.Toolbar;
-
-import com.example.el_project.R;
-import com.example.el_project.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private List<com.example.el_project.Task> taskList=new ArrayList<>();
     private RecyclerView recyclerView;
+    private MyDatabaseHelper dbHelper;
+    private FloatingActionButton button1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +35,20 @@ public class MainActivity extends AppCompatActivity {
         //设置Adapter
         RecyclerViewAdapter adapter=new RecyclerViewAdapter(taskList);
         recyclerView.setAdapter(adapter);
+
+        button1 =(FloatingActionButton)findViewById(R.id.fab_add);
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initTasks(){
         for(int i=0;i<2;i++){
+<<<<<<< HEAD
             Task apple=new Task("Apple",R.drawable.pink);
             taskList.add(apple);
             Task banana=new Task("Banana",R.drawable.red);
@@ -47,6 +58,17 @@ public class MainActivity extends AppCompatActivity {
             Task watermelon=new Task("Watermelon",R.drawable.gray);
             taskList.add(watermelon);
             Task grape=new Task("Grape",R.drawable.green);
+=======
+            Task apple=new Task("Apple",R.drawable.test_image,R.drawable.pink);
+            taskList.add(apple);
+            Task banana=new Task("Banana",R.drawable.test_image,R.drawable.red);
+            taskList.add(banana);
+            Task orange=new Task("Orange",R.drawable.test_image,R.drawable.purple);
+            taskList.add(orange);
+            Task watermelon=new Task("Watermelon",R.drawable.test_image,R.drawable.gray);
+            taskList.add(watermelon);
+            Task grape=new Task("Grape",R.drawable.test_image,R.drawable.green);
+>>>>>>> e36548081ed07b7afc40efe6a4bd9c1fe818f29f
             taskList.add(grape);
 
         }

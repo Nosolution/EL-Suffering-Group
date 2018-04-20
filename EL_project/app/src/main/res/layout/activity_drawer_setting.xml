@@ -6,7 +6,7 @@
 	android:id="@+id/drawer_layout"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".DrawerSetting">
+	tools:context=".DrawerSettingActivity">
 
 	<FrameLayout
 		android:layout_width="match_parent"
@@ -22,12 +22,12 @@
 
 	</FrameLayout>
 
-	<!--左侧布局-->
+	<!--右侧布局-->
 	<RelativeLayout
 		android:id="@+id/left_drawer"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_gravity="start"
+		android:layout_gravity="end"
 		android:background="#FFF">
 
 		<LinearLayout

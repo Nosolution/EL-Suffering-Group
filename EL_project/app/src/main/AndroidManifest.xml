@@ -11,23 +11,34 @@
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
 
-		<!-- <activity -->
-		<!-- android:name=".MainActivity" -->
-		<!-- android:label="赶快来创建你的任务表吧"> -->
-		<!-- &lt;!&ndash;<intent-filter>&ndash;&gt; -->
-		<!-- &lt;!&ndash;<action android:name="android.intent.action.MAIN" />&ndash;&gt; -->
+		 <activity
+		 android:name=".MainActivity"
+		 android:label="赶快来创建你的任务表吧">
+		 <!--<intent-filter>-->
+		 <!--<action android:name="android.intent.action.MAIN" />-->
 
 
-		<!-- &lt;!&ndash;<category android:name="android.intent.category.LAUNCHER" />&ndash;&gt; -->
-		<!-- &lt;!&ndash;</intent-filter>&ndash;&gt; -->
-		<!-- </activity> -->
-		<activity android:name=".DrawerSetting">
+		 <!--<category android:name="android.intent.category.LAUNCHER" />-->
+		 <!--</intent-filter>-->
+		 </activity>
+
+		<activity android:name=".DrawerSettingActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-	</application>
+
+        <activity
+            android:name=".AddTaskActivity"
+            android:label="@string/addtaskactivitytitle">
+
+        </activity>
+		
+        <activity android:name=".TaskOngoingActivity">
+
+        </activity>
+    </application>
 
 </manifest>
