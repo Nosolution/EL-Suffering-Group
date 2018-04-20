@@ -34,7 +34,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     private CustomDatePicker cdp;
     private ImageView iv1,iv2,iv3,iv4,iv5;
     private Switch swc;
-
+//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
