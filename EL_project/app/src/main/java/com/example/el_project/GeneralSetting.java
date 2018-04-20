@@ -5,6 +5,7 @@ package com.example.el_project;
 * 这是控制设置的静态类，较为复杂的采用了各种get和set来控制元素。
 * 当为某次打开应用程序第一次获取设置内容时，自动为这次打开应用程序初始化设置。
 * 每次调用方法修改设置，自动同步设置内容到SharePreferences。
+* 做点修改然后push上去
 *
 * */
 
