@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AddTaskActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -34,12 +37,40 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     private CustomDatePicker cdp;
     private ImageView iv1,iv2,iv3,iv4,iv5;
     private Switch swc;
+    private MyDatabaseHelper dbHelper;
+    private EditText taskNameEditText;
+    private EditText assumedTimeEditText1;
+    private EditText assumedTimeEditText2;
+    private EditText commentEditText;
+    private Button addTaskList;//加入待办按钮
+    private Button startNow;//立即开始按钮
+
+    private SparseBooleanArray emergencyDegree;
+    private boolean updateFlag;
 //
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
+
+
+        addTaskList = (Button)findViewById(R.id.add_to_tasklist);
+        startNow = (Button)findViewById(R.id.start_now);
+        addTaskList.setOnClickListener(this);
+        textChange tc = new textChange();//文本改变监视器
+        emergencyDegree = new SparseBooleanArray(5);
+
+        taskNameEditText = (EditText)findViewById(R.id.task_name_et);
+        taskNameEditText.addTextChangedListener(tc);
+        assumedTimeEditText1 = (EditText)findViewById(R.id.assumed_time_et1);
+        assumedTimeEditText1.addTextChangedListener(tc);
+        assumedTimeEditText2 = (EditText)findViewById(R.id.assumed_time_et2);
+        assumedTimeEditText1.addTextChangedListener(tc);
+        commentEditText = (EditText)findViewById(R.id.comment_et);
+        //打开数据库
+        dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
+        updateFlag=false;
 
         //DDL选择
         selectTime=(RelativeLayout)findViewById(R.id.selectTime);
@@ -62,69 +93,19 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         //紧急程度设置
         iv1=(ImageView)findViewById(R.id.circle_one);
-        iv1.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                ImageView iv=(ImageView)v;
-                AnimationDrawable ad=(AnimationDrawable)iv.getDrawable();
-                ad.stop();
-                ad.start();
-                return true;
-            }
-        });
+        iv1.setOnClickListener(this);
 
         iv2=(ImageView)findViewById(R.id.circle_two);
-        iv2.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                ImageView iv=(ImageView)v;
-                AnimationDrawable ad=(AnimationDrawable)iv.getDrawable();
-                ad.stop();
-                ad.start();
-                return true;
-            }
-        });
+        iv2.setOnClickListener(this);
 
         iv3=(ImageView)findViewById(R.id.circle_three);
-        iv3.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                ImageView iv=(ImageView)v;
-                AnimationDrawable ad=(AnimationDrawable)iv.getDrawable();
-                ad.stop();
-                ad.start();
-                return true;
-            }
-        });
+        iv3.setOnClickListener(this);
 
         iv4=(ImageView)findViewById(R.id.circle_four);
-        iv4.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                ImageView iv=(ImageView)v;
-                AnimationDrawable ad=(AnimationDrawable)iv.getDrawable();
-                ad.stop();
-                ad.start();
-                return true;
-            }
-        });
+        iv4.setOnClickListener(this);
 
         iv5=(ImageView)findViewById(R.id.circle_five);
-        iv5.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                ImageView iv=(ImageView)v;
-                AnimationDrawable ad=(AnimationDrawable)iv.getDrawable();
-                ad.stop();
-                ad.start();
-                return true;
-            }
-        });
+        iv5.setOnClickListener(this);
     }
 
     private void initTimePicker() {
@@ -148,190 +129,142 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()){
             case R.id.selectTime:
                 cdp.show(ddlTime.getText().toString());
+                break;
+            case R.id.add_to_tasklist:
+                addTask();
+                updateFlag=true;
+                break;
+            case R.id.circle_five :
+            case R.id.circle_four :
+            case R.id.circle_three :
+            case R.id.circle_two :
+            case R.id.circle_one :
+                if(!getSelected(v.getId())) {
+                    ImageView iv = (ImageView) v;
+                    AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
+                    ad.stop();
+                    ad.start();
+                    setSelected(v.getId(),true);
+                }
+                else{
+                    ImageView iv = (ImageView) v;
+                    AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
+                    ad.stop();
+                }
+                break;
+        }
+    };
+
+
+    //完成添加任务
+    private void addTask(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();//真正打开数据库
+        ContentValues values = new ContentValues();//传值工具
+        values.put("deadline",ddlTime.getText().toString());//对应每一列传值
+        values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
+        values.put("priority",getSelectedPosition()>=0? String.valueOf(getSelectedPosition()+1) :"1");
+        values.put("task",taskNameEditText.getText().toString() );
+        db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
+        Toast toast = Toast.makeText(AddTaskActivity.this,"成功添加任务",Toast.LENGTH_SHORT);
+        showMyToast(toast,1000);//提示成功添加任务
+        taskNameEditText.setText("");assumedTimeEditText1.setText("");
+        assumedTimeEditText2.setText("");commentEditText.setText("");//清空所有Edittext中的内容
+    }
+
+    //自定义Toast显示时间，cnt为所需显示时间
+    public void showMyToast(final Toast toast, final int cnt){
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.show();
+            }
+        },0,3000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.cancel();
+                timer.cancel();
+            }
+        },cnt);
+    }
+
+    //查询对应位置是否已经被选择
+    private boolean getSelected(int id){
+        switch (id){
+            case R.id.circle_one:
+                return emergencyDegree.valueAt(0);
+            case R.id.circle_two:
+                return emergencyDegree.valueAt(1);
+            case R.id.circle_three:
+                return emergencyDegree.valueAt(2);
+            case R.id.circle_four:
+                return emergencyDegree.valueAt(3);
+            case R.id.circle_five:
+                return emergencyDegree.valueAt(4);
+            default:
+                return false;
+        }
+    }
+
+    //设置对应的布尔数组
+    private void setSelected(int id,boolean flag){
+        switch (id){
+            case R.id.circle_one:
+                emergencyDegree.clear();
+                emergencyDegree.put(0,flag);
+                break;
+            case R.id.circle_two:
+                emergencyDegree.clear();
+                emergencyDegree.put(1,flag);
+                break;
+            case R.id.circle_three:
+                emergencyDegree.clear();
+                emergencyDegree.put(2,flag);
+                break;
+            case R.id.circle_four:
+                emergencyDegree.clear();
+                emergencyDegree.put(3,flag);
+                break;
+            case R.id.circle_five:
+                emergencyDegree.clear();
+                emergencyDegree.put(4,flag);
+                break;
+        }
+    }
+
+    private int getSelectedPosition(){
+        for(int i=0;i<5;i++){
+            if(emergencyDegree.valueAt(i))
+                return i;
+        }
+        return -1;
+    }
+
+    //内部类，监控Edittext文本变化，实现必填与选填功能
+    class textChange implements TextWatcher{
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
 
+        @Override
+        public void afterTextChanged(Editable editable) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            boolean flag1=taskNameEditText.getText().toString().length()>0;
+            boolean flag2=assumedTimeEditText1.getText().toString().length()>0;
+            boolean flag3=assumedTimeEditText2.getText().toString().length()>0;
+            if(flag1&&flag2&&flag3){
+                addTaskList.setEnabled(true);
+                startNow.setEnabled(true);
+            }
+            else{
+                addTaskList.setEnabled(false);
+                startNow.setEnabled(false);
+            }
+        }
     }
-//
-    //HGZ
-//    private MyDatabaseHelper dbHelper;
-//    private  Button addTask;//完成添加任务
-//    private EditText et1;//任务名
-//    private EditText et2;//预计时间
-//    private EditText et3;//最后日期
-//    private EditText et4;//优先级
-//    private ItemsDialogFragment itemsDialogFragment = new ItemsDialogFragment();//选项对话框
-//    private Calendar calendar;
-//    private int mYear;
-//    private int mMonth;
-//    private int mDay;
-//
-//
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_add_task);
-//
-//        addTask = (Button)findViewById(R.id.add_task);
-//        textChange tc = new textChange();//文本改变监视器
-//        et1 = (EditText) findViewById(R.id.input_taskname);
-//        et1.addTextChangedListener(tc);//监控et1与et2是否不为空
-//        et2 = (EditText) findViewById(R.id.input_assumed_time);
-//        et2.addTextChangedListener(tc);
-//        et2.setInputType(InputType.TYPE_NULL);//设置et2至et4不可编辑
-//        et3 = (EditText) findViewById(R.id.input_deadline);
-//        et3.setInputType(InputType.TYPE_NULL);
-//        et4 = (EditText) findViewById(R.id.input_priority);
-//        et4.setInputType(InputType.TYPE_NULL);
-//
-//        calendar = Calendar.getInstance();//获取当前时间
-//
-//        //点击et2跳出对话框
-//        et2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean b) {
-//                if(b){
-//                    showTimeDialogFragment();
-//                    et2.requestFocus();
-//                    et2.setSelection(et2.getText().toString().length());
-//                }
-//            }
-//        });
-//        et2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showTimeDialogFragment();
-//                et2.requestFocus();
-//                et2.setSelection(et2.getText().toString().length());
-//            }
-//        });
-//
-//        //点击et3跳出日历
-//        et3.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean b) {
-//                if(b){
-//                    showDatePickerDialog();
-//                    et3.requestFocus();
-//                    et3.setSelection(et3.getText().toString().length());
-//                }
-//            }
-//        });
-//        et3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showDatePickerDialog();
-//                et3.requestFocus();
-//                et3.setSelection(et3.getText().toString().length());
-//            }
-//        });
-//
-//        //点击et4跳出对话框
-//        et4.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean b) {
-//                if(b){
-//                    showPriorityDialog();
-//                }
-//            }
-//        });
-//        et4.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showPriorityDialog();
-//            }
-//        });
-//
-//        //打开数据库
-//        dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
-//
-//        //完成添加按钮的点击事件
-//        addTask.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//               addTask();
-//            }
-//        });
-//    }
-//
-//    //完成添加任务
-//    private void addTask(){
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();//真正打开数据库
-//        ContentValues values = new ContentValues();//传值工具
-//        values.put("deadline",et3.getText().toString());//对应每一列传值
-//        values.put("assumedtime",et2.getText().toString());
-//        values.put("priority",et4.getText().toString());
-//        values.put("task",et1.getText().toString() );
-//        db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
-//        Toast.makeText(AddTaskActivity.this,"成功添加任务",Toast.LENGTH_SHORT).show();//提示成功添加任务
-//        et1.setText("");et2.setText("");et3.setText("");et4.setText("");//清空所有Edittext中的内容
-//    }
-//
-//    //初始化并显示"预计时间"对话框
-//    public void showTimeDialogFragment() {
-//        final String[] items={"45mins", "1h", "1h30mins"};
-//        itemsDialogFragment.show("预计时间", items, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-////                Toast.makeText(AddTaskActivity.this, "点击了第 " + (which + 1) + " 个选项", Toast.LENGTH_SHORT).show();
-//              et2.setText(items[which]);
-//            }
-//        }, getFragmentManager());
-//    }
-//
-//    //初始化并显示日历
-//    public void showDatePickerDialog() {
-//        new DatePickerDialog(AddTaskActivity.this, new DatePickerDialog.OnDateSetListener() {
-//            @Override
-//            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-//                mYear = i;
-//                mMonth = i1;
-//                mDay = i2;
-//                et3.setText(new StringBuffer()
-//                        .append(mYear)
-//                        .append("-")
-//                        .append((mMonth + 1) < 10 ? "0" + (mMonth + 1) : (mMonth + 1))
-//                        .append("-")
-//                        .append((mDay + 1) < 10 ? "0" + mDay : mDay));
-//            }
-//        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-//
-//    }
-//    //初始化并显示"优先级"对话框
-//    public void showPriorityDialog(){
-//        final String[] items={"最高", "次级", "三级","平常"};
-//        itemsDialogFragment.show("优先级", items, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-////                Toast.makeText(AddTaskActivity.this, "点击了第 " + (which + 1) + " 个选项", Toast.LENGTH_SHORT).show();
-//                et4.setText(items[which]);
-//            }
-//        }, getFragmentManager());
-//
-//    }
-//
-//    //内部类，监控Edittext文本变化，实现必填与选填功能
-//    class textChange implements TextWatcher{
-//        @Override
-//        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//        }
-//
-//        @Override
-//        public void afterTextChanged(Editable editable) {
-//        }
-//
-//        @Override
-//        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//            boolean flag1=et1.getText().toString().length()>0;
-//            boolean flag2=et2.getText().toString().length()>0;
-//            if(flag1&&flag2){
-//                addTask.setEnabled(true);
-//            }
-//            else{
-//                addTask.setEnabled(false);
-//            }
-//        }
-//    }
-//
 
 }
