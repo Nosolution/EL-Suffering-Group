@@ -3,6 +3,7 @@ package com.example.el_project;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.AppCompatActivity;
@@ -66,7 +67,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         assumedTimeEditText1 = (EditText)findViewById(R.id.assumed_time_et1);
         assumedTimeEditText1.addTextChangedListener(tc);
         assumedTimeEditText2 = (EditText)findViewById(R.id.assumed_time_et2);
-        assumedTimeEditText1.addTextChangedListener(tc);
+        assumedTimeEditText2.addTextChangedListener(tc);
         commentEditText = (EditText)findViewById(R.id.comment_et);
         //打开数据库
         dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
@@ -106,6 +107,11 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
 
         iv5=(ImageView)findViewById(R.id.circle_five);
         iv5.setOnClickListener(this);
+
+        addTaskList = (Button)findViewById(R.id.add_to_tasklist);
+        addTaskList.setOnClickListener(this);
+        startNow = (Button)findViewById(R.id.start_now);
+        startNow.setOnClickListener(this);
     }
 
     private void initTimePicker() {
@@ -130,10 +136,6 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.selectTime:
                 cdp.show(ddlTime.getText().toString());
                 break;
-            case R.id.add_to_tasklist:
-                addTask();
-                updateFlag=true;
-                break;
             case R.id.circle_five :
             case R.id.circle_four :
             case R.id.circle_three :
@@ -152,6 +154,12 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
                     ad.stop();
                 }
                 break;
+            case R.id.add_to_tasklist:
+                addTask();
+                updateFlag=true;
+                break;
+            case R.id.start_now:
+                //待完成
         }
     };
 
@@ -160,15 +168,18 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     private void addTask(){
         SQLiteDatabase db = dbHelper.getWritableDatabase();//真正打开数据库
         ContentValues values = new ContentValues();//传值工具
-        values.put("deadline",ddlTime.getText().toString());//对应每一列传值
-        values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
-        values.put("priority",getSelectedPosition()>=0? String.valueOf(getSelectedPosition()+1) :"1");
         values.put("task",taskNameEditText.getText().toString() );
+        values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
+        values.put("deadline",ddlTime.getText().toString());//对应每一列传值
+        values.put("emergencydegree",emergencyDegree.indexOfValue(true)>=0? emergencyDegree.indexOfValue(true)+1 : 1);//默认值为1
+        values.put("isdailytask",isDailyTask());
+        values.put("comments",commentEditText.getText().toString());
         db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
         Toast toast = Toast.makeText(AddTaskActivity.this,"成功添加任务",Toast.LENGTH_SHORT);
         showMyToast(toast,1000);//提示成功添加任务
         taskNameEditText.setText("");assumedTimeEditText1.setText("");
         assumedTimeEditText2.setText("");commentEditText.setText("");//清空所有Edittext中的内容
+        swc.setChecked(false);
     }
 
     //自定义Toast显示时间，cnt为所需显示时间
@@ -233,12 +244,24 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private int getSelectedPosition(){
-        for(int i=0;i<5;i++){
-            if(emergencyDegree.valueAt(i))
-                return i;
+    private int isDailyTask(){
+        if(swc.isChecked())
+            return 1;
+        else
+            return 0;
+    }
+
+    //若已添加任务，返回时更新主界面
+    @Override
+    public void onBackPressed() {
+        if (updateFlag) {
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            finish();
         }
-        return -1;
+        else{
+            super.onBackPressed();
+        }
     }
 
     //内部类，监控Edittext文本变化，实现必填与选填功能

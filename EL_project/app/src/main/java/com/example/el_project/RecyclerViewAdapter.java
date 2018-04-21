@@ -62,21 +62,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		holder.taskName.setText(task.getName());
 		holder.layoutBackground.setBackgroundResource(task.getBackgroundId());
 
-//		if (onItemClickListener != null) {
-//			holder.itemView.setOnClickListener(new View.OnClickListener() {
-//				@Override
-//				public void onClick(View v) {
-//					onItemClickListener.onItemClick(v, position);
-//				}
-//			});
-//			holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//				@Override
-//				public boolean onLongClick(View v) {
-//					onItemClickListener.onItemLongClick(v, position);
-//					return true;
-//				}
-//			});
-//		}
+		if (onItemClickListener != null) {
+			holder.itemView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onItemClickListener.onItemClick(v, position);
+				}
+			});
+			holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					onItemClickListener.onItemLongClick(v, position);
+					return true;
+				}
+			});
+		}
 	}
 
 	@Override
@@ -84,66 +84,66 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		return mTaskList.size();
 	}
 
-//	//动态添加Item
-//	public void addItem(Task task){
-//		mTaskList.add(mTaskList.size(),task);
-//		notifyItemInserted(mTaskList.size()-1);
-//	}
-//
-//	//更新adpter的数据和选择状态
-//	public void updateDataSet(ArrayList<Task> list) {
-//		this.mTaskList = list;
-//		mSelectedPositions = new SparseBooleanArray();
-//	}
-//
-//
-//	//获得选中条目的结果
-//	public ArrayList<Task> getSelectedItem() {
-//		ArrayList<Task> selectedList = new ArrayList<>();
-//		for (int i = 0; i < mTaskList.size(); i++) {
-//			if (isItemChecked(i)) {
-//				selectedList.add(mTaskList.get(i));
-//			}
-//		}
-//		return selectedList;
-//	}
-//
-//	public void initSelectPositions(){
-//
-//	}
-//
-//	//设置给定位置条目的选择状态
-//	public void setItemChecked(int position,boolean ischecked){
-//		mSelectedPositions.put(position,ischecked);
-//	}
-//
-//	//根据位置判断条目是否选中
-//	public boolean isItemChecked(int position){
-//		return mSelectedPositions.get(position);
-//	}
-//
-//	//根据位置判断条目是否可选
-//	public boolean isSelectable() {
-//		return mIsSelectable;
-//	}
-//
-//	//设置给定位置条目的可选与否的状态
-//	public void setSelectable(boolean selectable) {
-//		mIsSelectable = selectable;
-//	}
-//
-//
-//	//自定义Item点击接口
-//	public interface OnItemClickListener {
-//		void onItemClick(View view, int position);
-//
-//		void onItemLongClick(View view, int position);
-//	}
-//
-//	private OnItemClickListener onItemClickListener;
-//
-//	public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-//		this.onItemClickListener = onItemClickListener;
-//	}
+	//动态添加Item
+	public void addItem(Task task){
+		mTaskList.add(mTaskList.size(),task);
+		notifyItemInserted(mTaskList.size()-1);
+	}
+
+	//更新adpter的数据和选择状态
+	public void updateDataSet(ArrayList<Task> list) {
+		this.mTaskList = list;
+		mSelectedPositions = new SparseBooleanArray();
+	}
+
+
+	//获得选中条目的结果
+	public ArrayList<Task> getSelectedItem() {
+		ArrayList<Task> selectedList = new ArrayList<>();
+		for (int i = 0; i < mTaskList.size(); i++) {
+			if (isItemChecked(i)) {
+				selectedList.add(mTaskList.get(i));
+			}
+		}
+		return selectedList;
+	}
+
+	public void initSelectPositions(){
+
+	}
+
+	//设置给定位置条目的选择状态
+	public void setItemChecked(int position,boolean ischecked){
+		mSelectedPositions.put(position,ischecked);
+	}
+
+	//根据位置判断条目是否选中
+	public boolean isItemChecked(int position){
+		return mSelectedPositions.get(position);
+	}
+
+	//根据位置判断条目是否可选
+	public boolean isSelectable() {
+		return mIsSelectable;
+	}
+
+	//设置给定位置条目的可选与否的状态
+	public void setSelectable(boolean selectable) {
+		mIsSelectable = selectable;
+	}
+
+
+	//自定义Item点击接口
+	public interface OnItemClickListener {
+		void onItemClick(View view, int position);
+
+		void onItemLongClick(View view, int position);
+	}
+
+	private OnItemClickListener onItemClickListener;
+
+	public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+		this.onItemClickListener = onItemClickListener;
+	}
 }
 
