@@ -29,4 +29,6 @@
     <string name="begin2">立即开始</string>
     <string name="add2">加入待办</string>
     <string name="edit2">备注</string>
+    <string name="string_if_music_on">音乐</string>
+    <string name="string_if_tomato_clock_on">番茄钟</string>
 </resources>

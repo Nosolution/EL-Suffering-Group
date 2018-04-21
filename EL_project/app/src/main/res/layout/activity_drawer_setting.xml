@@ -60,7 +60,7 @@
 					android:layout_height="wrap_content">
 
 					<ImageView
-						android:id="@+id/img_music"
+						android:id="@+id/img_if_music_on"
 						android:layout_width="18dp"
 						android:layout_height="18dp"
 						android:layout_margin="4dp"
@@ -68,16 +68,16 @@
 						android:background="@drawable/music_slight_big" />
 
 					<TextView
-						android:id="@+id/text_music"
+						android:id="@+id/text_if_music_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginLeft="30dp"
 						android:scaleType="center"
-						android:text="音乐"
+						android:text="@string/string_if_music_on"
 						android:textSize="18sp"/>
 
 					<Switch
-						android:id="@+id/switch_music"
+						android:id="@+id/switch_if_music_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
@@ -96,7 +96,7 @@
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content">
 					<ImageView
-						android:id="@+id/img_clock"
+						android:id="@+id/img_if_tomato_clock_on"
 						android:layout_width="18dp"
 						android:layout_height="18dp"
 						android:layout_margin="4dp"
@@ -104,15 +104,15 @@
 						android:background="@drawable/clock"/>
 
 					<TextView
-						android:id="@+id/text_clock"
+						android:id="@+id/text_if_tomato_clock_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginLeft="30dp"
-						android:text="番茄钟"
+						android:text="@string/string_if_tomato_clock_on"
 						android:textSize="18sp"/>
 
 					<Switch
-						android:id="@+id/switch_clock"
+						android:id="@+id/switch_if_tomato_clock_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
