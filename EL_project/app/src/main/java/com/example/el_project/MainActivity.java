@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initTasks(){
         for(int i=0;i<2;i++){
-<<<<<<< HEAD
             Task apple=new Task("Apple",R.drawable.pink);
             taskList.add(apple);
             Task banana=new Task("Banana",R.drawable.red);
@@ -58,17 +57,6 @@ public class MainActivity extends AppCompatActivity {
             Task watermelon=new Task("Watermelon",R.drawable.gray);
             taskList.add(watermelon);
             Task grape=new Task("Grape",R.drawable.green);
-=======
-            Task apple=new Task("Apple",R.drawable.test_image,R.drawable.pink);
-            taskList.add(apple);
-            Task banana=new Task("Banana",R.drawable.test_image,R.drawable.red);
-            taskList.add(banana);
-            Task orange=new Task("Orange",R.drawable.test_image,R.drawable.purple);
-            taskList.add(orange);
-            Task watermelon=new Task("Watermelon",R.drawable.test_image,R.drawable.gray);
-            taskList.add(watermelon);
-            Task grape=new Task("Grape",R.drawable.test_image,R.drawable.green);
->>>>>>> e36548081ed07b7afc40efe6a4bd9c1fe818f29f
             taskList.add(grape);
 
         }
