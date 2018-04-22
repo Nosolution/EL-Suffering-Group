@@ -32,7 +32,6 @@
 			android:name=".AddTaskActivity"
 			android:label="@string/addtaskactivitytitle"></activity>
 		<activity android:name=".TaskOngoingActivity"></activity>
-		<activity android:name=".TimingActivity"></activity>
 	</application>
 
 </manifest>
