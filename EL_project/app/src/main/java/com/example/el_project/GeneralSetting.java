@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 
 public class GeneralSetting {
     private static boolean settingInitialized = false;    //设置是否初始化过了，即是否从SharedPreferences中取出过所有设置了
+    private static boolean musicOn = false;               //音乐是否开启
     private static boolean tomatoClockEnable = false;     //番茄钟是否开启
     private static boolean callWhenTimeUpEnable = false;  //是否倒计时到时时提醒
     private static int tomatoClockTime = 25;              //番茄钟设置时长
@@ -21,6 +22,7 @@ public class GeneralSetting {
 
     private static void initializeSetting(Context context){
         SharedPreferences pref = context.getSharedPreferences("general_setting", Context.MODE_PRIVATE);
+        musicOn = pref.getBoolean("music_on", false);
         tomatoClockEnable = pref.getBoolean("tomato_clock_enable", false);
         callWhenTimeUpEnable = pref.getBoolean("call_when_time_up_enable", false);
         tomatoClockTime = pref.getInt("tomato_clock_time", 25);
@@ -31,11 +33,24 @@ public class GeneralSetting {
 
     private static void syncSetting(Context context){
         SharedPreferences.Editor editor = context.getSharedPreferences("general_setting", Context.MODE_PRIVATE).edit();
-        editor.putBoolean("tomoto_clock_enable", tomatoClockEnable);
+        editor.putBoolean("music_on", musicOn);
+        editor.putBoolean("tomato_clock_enable", tomatoClockEnable);
         editor.putBoolean("call_when_time_up_enable", callWhenTimeUpEnable);
         editor.putInt("tomato_clock_time", tomatoClockTime);
         editor.putInt("tomato_break_time", tomatoBreakTime);
         editor.apply();
+    }
+
+    public static boolean getMusicOn(Context context){
+        if(!settingInitialized){
+            initializeSetting(context);
+        }
+        return musicOn;
+    }
+
+    public static void setMusicOn(Context context, boolean enable){
+        musicOn = enable;
+        syncSetting(context);
     }
 
     public static boolean getTomatoClockEnable(Context context){

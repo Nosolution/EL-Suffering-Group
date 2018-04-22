@@ -25,10 +25,7 @@ public class TaskOngoingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_ongoing);
 
-        //该方法下面的部分都是用于测试Timer有没有起作用，可删
-        textView = findViewById(R.id.textView_test_task_ongoing);
-        initTimer(60);
-        timer.start();
+
     }
 
     @Override

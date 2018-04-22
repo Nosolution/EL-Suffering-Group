@@ -28,10 +28,16 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity
-			android:name=".AddTaskActivity"
-			android:label="@string/addtaskactivitytitle"></activity>
-		<activity android:name=".TaskOngoingActivity"></activity>
-	</application>
+
+        <activity
+            android:name=".AddTaskActivity"
+            android:label="@string/add_task_activity_title">
+
+        </activity>
+		
+        <activity android:name=".TaskOngoingActivity">
+
+        </activity>
+    </application>
 
 </manifest>

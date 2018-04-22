@@ -1,6 +1,8 @@
 package com.example.el_project;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,57 +10,144 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private List<com.example.el_project.Task> taskList=new ArrayList<>();
+    private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
     private RecyclerView recyclerView;
+    private RecyclerViewAdapter adapter;
     private MyDatabaseHelper dbHelper;
     private FloatingActionButton button1;
+
+    private int[] colors = {R.drawable.pink, R.drawable.red, R.drawable.purple, R.drawable.gray, R.drawable.green};
+    //颜色ID数组，用于循环改变任务背景颜色
+
+    private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
+    private boolean editMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar=findViewById(R.id.title_toolbar);
-        setSupportActionBar(toolbar);
+
+        editMode = false;
+        dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 1);
         initTasks();  //初始化数据
-        recyclerView=findViewById(R.id.recycler_view);
+
+        Toolbar toolbar = findViewById(R.id.title_toolbar);
+        setSupportActionBar(toolbar);
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);  //如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
 
         //创建默认的线性LayoutManager
-        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         //设置Adapter
-        RecyclerViewAdapter adapter=new RecyclerViewAdapter(taskList);
+        adapter = new RecyclerViewAdapter(mTaskList);
         recyclerView.setAdapter(adapter);
+
+        //初始化接口实例，实现点击功能
+        adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Task task = mTaskList.get(position);
+                Toast.makeText(view.getContext(), "you clicked view " + task.getName(), Toast.LENGTH_SHORT).show();
+                if (!editMode){
+                    //单点事件
+                }
+                else{
+                    adapter.setItemChecked(position,adapter.isItemChecked(position));
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                Task task = mTaskList.get(position);
+                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
+                if(!editMode){
+                    setEditMode(true);
+                }
+            }
+        });
 
         button1 =(FloatingActionButton)findViewById(R.id.fab_add);
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddTaskActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this,AddTaskActivity.class);
+                startActivityForResult(intent,1);//对是否点击了完成按钮实现监听
             }
         });
     }
 
-    private void initTasks(){
-        for(int i=0;i<2;i++){
-            Task apple=new Task("Apple",R.drawable.pink);
-            taskList.add(apple);
-            Task banana=new Task("Banana",R.drawable.red);
-            taskList.add(banana);
-            Task orange=new Task("Orange",R.drawable.purple);
-            taskList.add(orange);
-            Task watermelon=new Task("Watermelon",R.drawable.gray);
-            taskList.add(watermelon);
-            Task grape=new Task("Grape",R.drawable.green);
-            taskList.add(grape);
-
+    //重载方法，若点击了完成按钮，返回此Acivity时更新recyclerview
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK){
+            updateTasks();
         }
     }
+
+    //初始化任务列表
+    private void initTasks() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5]);
+                mTaskList.add(task);
+                String[] tempstring = {cursor.getString(cursor.getColumnIndex("task")),
+                        cursor.getString(cursor.getColumnIndex("assumedtime")),
+                        cursor.getString(cursor.getColumnIndex("deadline")),
+                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
+                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
+                        cursor.getString(cursor.getColumnIndex("comments"))};
+                taskList.add(tempstring);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
+
+    //更新recyclerview
+    private void updateTasks() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
+        if (cursor.moveToPosition(mTaskList.size())) {
+            do {
+                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5]);
+                adapter.addItem(task);
+                Toast.makeText(this, "Succeeded to update", Toast.LENGTH_SHORT).show();
+                String[] tempstring = {cursor.getString(cursor.getColumnIndex("task")),
+                        cursor.getString(cursor.getColumnIndex("assumedtime")),
+                        cursor.getString(cursor.getColumnIndex("deadline")),
+                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
+                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
+                        cursor.getString(cursor.getColumnIndex("comments"))};
+                taskList.add(tempstring);
+            } while (cursor.moveToNext());
+        } else {
+            Toast.makeText(this, "Failed to update", Toast.LENGTH_SHORT).show();
+        }
+        cursor.close();
+    }
+
+    private void setEditMode(boolean flag) {
+        editMode=flag;
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        if(editMode){
+//            setEditMode(false);
+//        }
+//        else{
+//            super.onBackPressed();
+//        }
+//    }
 }
+
+

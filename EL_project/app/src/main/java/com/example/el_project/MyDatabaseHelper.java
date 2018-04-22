@@ -15,7 +15,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             +"task text,"
             +"assumedtime text,"
             +"deadline text,"
-            +"priority text)";
+            +"emergencydegree integer,"
+            +"isdailytask integer,"
+            +"comments text)";
 
     private Context mContext;
 
