@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -48,7 +49,10 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
 
     private SparseBooleanArray emergencyDegree;
     private boolean updateFlag;
-//
+    private int time1,time2,time3,time4,time5,sumTime=0;
+    private Drawable draw1,draw2;
+
+//TODO:定义变量
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,9 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         assumedTimeEditText2 = (EditText)findViewById(R.id.assumed_time_et2);
         assumedTimeEditText2.addTextChangedListener(tc);
         commentEditText = (EditText)findViewById(R.id.comment_et);
+        //两张动画
+        draw1=(AnimationDrawable)((ImageView)findViewById(R.id.circle_one)).getDrawable();
+        draw2=(AnimationDrawable)((ImageView)findViewById(R.id.circle_back)).getDrawable();
         //打开数据库
         dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
         updateFlag=false;
@@ -131,28 +138,95 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
+    //TODO:onclick
     public void onClick(View v) {
+
+        //全部熄灭
+        if(v.getId()==R.id.circle_five||v.getId()==R.id.circle_four||v.getId()==R.id.circle_three||v.getId()==R.id.circle_two||v.getId()==R.id.circle_one){
+            ImageView iv5 = (ImageView)findViewById(R.id.circle_five);
+            iv5.setImageDrawable(draw2);
+            AnimationDrawable ad5 = (AnimationDrawable) iv5.getDrawable();
+            ad5.stop();
+            ad5.start();
+            iv5.setSelected(false);
+
+            ImageView iv4 = (ImageView)findViewById(R.id.circle_four);
+            iv4.setImageDrawable(draw2);
+            AnimationDrawable ad4 = (AnimationDrawable) iv4.getDrawable();
+            ad4.stop();
+            ad4.start();
+            iv4.setSelected(false);
+
+            ImageView iv3 = (ImageView)findViewById(R.id.circle_three);
+            iv3.setImageDrawable(draw2);
+            AnimationDrawable ad3 = (AnimationDrawable) iv3.getDrawable();
+            ad3.stop();
+            ad3.start();
+            iv3.setSelected(false);
+
+            ImageView iv2 = (ImageView)findViewById(R.id.circle_two);
+            iv2.setImageDrawable(draw2);
+            AnimationDrawable ad2 = (AnimationDrawable) iv2.getDrawable();
+            ad2.stop();
+            ad2.start();
+            iv2.setSelected(false);
+
+            ImageView iv1 = (ImageView)findViewById(R.id.circle_five);
+            iv1.setImageDrawable(draw2);
+            AnimationDrawable ad1 = (AnimationDrawable) iv1.getDrawable();
+            ad1.stop();
+            ad1.start();
+            iv1.setSelected(false);
+        }
+
+        //开始处理点击事件
         switch (v.getId()){
             case R.id.selectTime:
                 cdp.show(ddlTime.getText().toString());
                 break;
             case R.id.circle_five :
+                iv5.setImageDrawable(draw1);
+                AnimationDrawable ad5 = (AnimationDrawable) iv5.getDrawable();
+                ad5.stop();
+                ad5.start();
+                iv5.setSelected(true);
             case R.id.circle_four :
+                iv4.setImageDrawable(draw1);
+                AnimationDrawable ad4 = (AnimationDrawable) iv4.getDrawable();
+                ad4.stop();
+                ad4.start();
+                iv4.setSelected(true);
             case R.id.circle_three :
+                iv3.setImageDrawable(draw1);
+                AnimationDrawable ad3 = (AnimationDrawable) iv3.getDrawable();
+                ad3.stop();
+                ad3.start();
+                iv3.setSelected(true);
             case R.id.circle_two :
+                iv2.setImageDrawable(draw1);
+                AnimationDrawable ad2 = (AnimationDrawable) iv2.getDrawable();
+                ad2.stop();
+                ad2.start();
+                iv2.setSelected(true);
+                //TODO:不能点亮，有待解决
             case R.id.circle_one :
-                if(!getSelected(v.getId())) {
-                    ImageView iv = (ImageView) v;
-                    AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
-                    ad.stop();
-                    ad.start();
-                    setSelected(v.getId(),true);
-                }
-                else{
-                    ImageView iv = (ImageView) v;
-                    AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
-                    ad.stop();
-                }
+                iv1.setImageDrawable(draw1);
+                AnimationDrawable ad1 = (AnimationDrawable) iv1.getDrawable();
+                ad1.stop();
+                ad1.start();
+                iv1.setSelected(true);
+//                if(!getSelected(v.getId())) {
+//                    ImageView iv = (ImageView) v;
+//                    AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
+//                    ad.stop();
+//                    ad.start();
+//                    setSelected(v.getId(),true);
+//                }
+//                else{
+//                    ImageView iv = (ImageView) v;
+//                    AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
+//                    ad.stop();
+//                }
                 break;
             case R.id.add_to_tasklist:
                 addTask();
