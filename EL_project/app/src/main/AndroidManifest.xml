@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.example.el_project">
 
+	<uses-permission android:name="android.permission.VIBRATE"/>
+
 	<application
 		android:name=".MyApplication"
 		android:allowBackup="true"
@@ -13,13 +15,14 @@
 
 		 <activity
 		 android:name=".MainActivity"
-		 android:label="赶快来创建你的任务表吧">
-		 <intent-filter>
-		 <action android:name="android.intent.action.MAIN" />
+		 android:label="赶快来创建你的任务表吧"
+         android:launchMode="singleTask">
+		    <intent-filter>
+		        <action android:name="android.intent.action.MAIN" />
 
 
-		 <category android:name="android.intent.category.LAUNCHER" />
-		 </intent-filter>
+		        <category android:name="android.intent.category.LAUNCHER" />
+		    </intent-filter>
 		 </activity>
 
 		<activity android:name=".DrawerSettingActivity">
@@ -36,7 +39,9 @@
 
         </activity>
 		
-        <activity android:name=".TaskOngoingActivity">
+        <activity
+			android:name=".TaskOngoingActivity"
+			android:launchMode="singleTop">
 
         </activity>
     </application>
