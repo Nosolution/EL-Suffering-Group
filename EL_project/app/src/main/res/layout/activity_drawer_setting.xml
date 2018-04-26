@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--抽屉布局，计时及设置界面-->
 <android.support.v4.widget.DrawerLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,9 +9,12 @@
 	android:layout_height="match_parent"
 	tools:context=".DrawerSettingActivity">
 
-	<FrameLayout
+
+<!--计时界面-->
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
 		<android.support.v7.widget.Toolbar
 			android:id="@+id/setting_toolbar"
@@ -20,7 +24,40 @@
 			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-	</FrameLayout>
+		<!--TODO:在这里写界面-->
+
+		<TextView
+			android:id="@+id/time_action"
+			android:layout_width="300dp"
+			android:layout_height="300dp"
+			android:text="00:00"
+			style="@style/doingtask"
+			android:background="@drawable/doing_task"
+			android:layout_gravity="center"
+			android:gravity="center"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="80dp"
+			android:orientation="horizontal"
+			android:layout_marginTop="30dp">
+
+			<ImageButton
+				android:id="@+id/giveup_button"
+				style="@style/imagebutton"
+				android:src="@drawable/giveup_watercolor" />
+
+			<ImageButton
+				android:id="@+id/runing_button"
+				style="@style/imagebutton"
+				android:src="@drawable/stop_watercolor" />
+
+			<ImageButton
+				android:id="@+id/end_button"
+				style="@style/imagebutton"
+				android:src="@drawable/end_watercolor" />
+		</LinearLayout>
+	</LinearLayout>
 
 	<!--右侧布局-->
 	<RelativeLayout

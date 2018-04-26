@@ -1,5 +1,6 @@
 package com.example.el_project;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.DrawableWrapper;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class DrawerSettingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
@@ -33,6 +35,10 @@ public class DrawerSettingActivity extends AppCompatActivity implements Compound
 		switch_music_status.setChecked(GeneralSetting.getMusicOn(this));
 		switch_clock_status.setOnCheckedChangeListener(this);
 		switch_music_status.setOnCheckedChangeListener(this);
+
+		TextView tv=(TextView)findViewById(R.id.time_action);
+		AnimationDrawable ad=(AnimationDrawable)tv.getBackground();
+		ad.start();
 
 
 		if(actionBar!=null){
