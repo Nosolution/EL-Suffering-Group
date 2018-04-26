@@ -24,8 +24,8 @@ public class DrawerSettingActivity extends AppCompatActivity implements Compound
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_drawer_setting);
-//		Toolbar toolbar=findViewById(R.id.setting_toolbar);
-//		setSupportActionBar(toolbar);
+		Toolbar toolbar=findViewById(R.id.setting_toolbar);
+		setSupportActionBar(toolbar);
 		mDrawerLayout=findViewById(R.id.drawer_layout);
 		ActionBar actionBar=getSupportActionBar();
 

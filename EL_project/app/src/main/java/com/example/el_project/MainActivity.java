@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private MyDatabaseHelper dbHelper;
     private FloatingActionButton button1;
 
-    private int[] colors = {R.drawable.pink, R.drawable.red, R.drawable.purple, R.drawable.gray, R.drawable.green};
+    private int[] colors = {R.drawable.task_pink, R.drawable.task_red, R.drawable.task_purple, R.drawable.task_gray, R.drawable.task_green};
     //颜色ID数组，用于循环改变任务背景颜色
 
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用

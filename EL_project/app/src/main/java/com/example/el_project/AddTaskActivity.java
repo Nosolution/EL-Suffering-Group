@@ -144,37 +144,37 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         if(v.getId()==R.id.circle_five||v.getId()==R.id.circle_four||v.getId()==R.id.circle_three||v.getId()==R.id.circle_two||v.getId()==R.id.circle_one){
             ImageView iv5 = (ImageView)findViewById(R.id.circle_five);
             iv5.setImageDrawable(draw2);
-            AnimationDrawable ad5 = (AnimationDrawable) iv5.getDrawable();
-            ad5.stop();
-            ad5.start();
+            AnimationDrawable ad05 = (AnimationDrawable) iv5.getDrawable();
+            ad05.stop();
+            ad05.start();
             iv5.setSelected(false);
 
             ImageView iv4 = (ImageView)findViewById(R.id.circle_four);
             iv4.setImageDrawable(draw2);
-            AnimationDrawable ad4 = (AnimationDrawable) iv4.getDrawable();
-            ad4.stop();
-            ad4.start();
+            AnimationDrawable ad04 = (AnimationDrawable) iv4.getDrawable();
+            ad04.stop();
+            ad04.start();
             iv4.setSelected(false);
 
             ImageView iv3 = (ImageView)findViewById(R.id.circle_three);
             iv3.setImageDrawable(draw2);
-            AnimationDrawable ad3 = (AnimationDrawable) iv3.getDrawable();
-            ad3.stop();
-            ad3.start();
+            AnimationDrawable ad03 = (AnimationDrawable) iv3.getDrawable();
+            ad03.stop();
+            ad03.start();
             iv3.setSelected(false);
 
             ImageView iv2 = (ImageView)findViewById(R.id.circle_two);
             iv2.setImageDrawable(draw2);
-            AnimationDrawable ad2 = (AnimationDrawable) iv2.getDrawable();
-            ad2.stop();
-            ad2.start();
+            AnimationDrawable ad02 = (AnimationDrawable) iv2.getDrawable();
+            ad02.stop();
+            ad02.start();
             iv2.setSelected(false);
 
             ImageView iv1 = (ImageView)findViewById(R.id.circle_five);
             iv1.setImageDrawable(draw2);
-            AnimationDrawable ad1 = (AnimationDrawable) iv1.getDrawable();
-            ad1.stop();
-            ad1.start();
+            AnimationDrawable ad01 = (AnimationDrawable) iv1.getDrawable();
+            ad01.stop();
+            ad01.start();
             iv1.setSelected(false);
         }
 
