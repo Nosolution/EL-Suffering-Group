@@ -1,9 +1,11 @@
 package com.example.el_project;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
@@ -54,10 +57,11 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Task task = mTaskList.get(position);
-                Toast.makeText(view.getContext(), "you clicked view " + task.getName(), Toast.LENGTH_SHORT).show();
+//                Task task = mTaskList.get(position);
+//                Toast.makeText(view.getContext(), "you clicked view " + task.getName(), Toast.LENGTH_SHORT).show();
                 if (!editMode){
                     //单点事件
+                    showDetails(position);
                 }
                 else{
                     adapter.setItemChecked(position,adapter.isItemChecked(position));
@@ -148,6 +152,43 @@ public class MainActivity extends AppCompatActivity {
 //            super.onBackPressed();
 //        }
 //    }
+
+    private void showDetails(int position){
+        final AlertDialog.Builder detailsDialog =
+                new AlertDialog.Builder(MainActivity.this);
+        detailsDialog.setIcon(R.drawable.circle);
+        detailsDialog.setTitle("详情");
+        detailsDialog.setMessage(constructDetails(position));
+        detailsDialog.setPositiveButton("返回", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(MainActivity.this, "点击了返回按钮", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        detailsDialog.setNegativeButton("修改", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(MainActivity.this, "点击了修改按钮", Toast.LENGTH_SHORT).show();
+            }
+        });
+        detailsDialog.show();
+    }
+
+    private String constructDetails(int position){
+        String finalString= "";
+        String temp="";
+        finalString+="任务："+taskList.get(position)[0]+"\n";
+        String[] tempstring=taskList.get(position)[1].split(":");
+        finalString+="预计时间:"+tempstring[0]+"时"+tempstring[1]+"分\n";
+        temp=taskList.get(position)[2];
+        finalString+="最后日期："+(temp==null ? "无":temp)+"\n";
+        finalString+="紧急程度："+taskList.get(position)[3]+"\n";
+        finalString+="是否是每日任务："+(taskList.get(position)[4].equals( "1" )? "是":"不是")+"\n";
+        finalString+="备注:"+taskList.get(position)[5]+"\n";
+        return finalString;
+    }
+
 }
 
 
