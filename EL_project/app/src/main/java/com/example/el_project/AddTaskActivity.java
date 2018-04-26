@@ -27,7 +27,9 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,6 +47,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     private EditText commentEditText;
     private Button addTaskList;//加入待办按钮
     private Button startNow;//立即开始按钮
+    private Map ivMap;
 
     private SparseBooleanArray emergencyDegree;
     private boolean updateFlag;
@@ -78,6 +81,14 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         selectTime.setOnClickListener(this);
         ddlTime=(TextView)findViewById(R.id.ddlTime);
         initTimePicker();
+
+        //建立字典
+        ivMap= new HashMap();
+        ivMap.put(R.id.circle_one,1);
+        ivMap.put(R.id.circle_two,2);
+        ivMap.put(R.id.circle_three,3);
+        ivMap.put(R.id.circle_four,4);
+        ivMap.put(R.id.circle_five,5);
 
         //是否打开为每日任务
         swc=(Switch)findViewById(R.id.open);
@@ -202,45 +213,53 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
 
     //查询对应位置是否已经被选择
     private boolean isSelected(int id){
-        switch (id){
-            case R.id.circle_one:
-                return emergencyDegree.valueAt(0);
-            case R.id.circle_two:
-                return emergencyDegree.valueAt(1);
-            case R.id.circle_three:
-                return emergencyDegree.valueAt(2);
-            case R.id.circle_four:
-                return emergencyDegree.valueAt(3);
-            case R.id.circle_five:
-                return emergencyDegree.valueAt(4);
-            default:
-                return false;
+//        switch (id){
+//            case R.id.circle_one:
+//                return emergencyDegree.valueAt(0);
+//            case R.id.circle_two:
+//                return emergencyDegree.valueAt(1);
+//            case R.id.circle_three:
+//                return emergencyDegree.valueAt(2);
+//            case R.id.circle_four:
+//                return emergencyDegree.valueAt(3);
+//            case R.id.circle_five:
+//                return emergencyDegree.valueAt(4);
+//            default:
+//                return false;
+//        }
+        if(ivMap.containsKey(id)) {
+            return emergencyDegree.valueAt((int) ivMap.get(id)-1);
         }
+        else return false;
     }
 
     //设置对应的布尔数组
     private void setSelected(int id,boolean flag){
-        switch (id){
-            case R.id.circle_one:
-                emergencyDegree.clear();
-                emergencyDegree.put(0,flag);
-                break;
-            case R.id.circle_two:
-                emergencyDegree.clear();
-                emergencyDegree.put(1,flag);
-                break;
-            case R.id.circle_three:
-                emergencyDegree.clear();
-                emergencyDegree.put(2,flag);
-                break;
-            case R.id.circle_four:
-                emergencyDegree.clear();
-                emergencyDegree.put(3,flag);
-                break;
-            case R.id.circle_five:
-                emergencyDegree.clear();
-                emergencyDegree.put(4,flag);
-                break;
+//        switch (id){
+//            case R.id.circle_one:
+//                emergencyDegree.clear();
+//                emergencyDegree.put(0,flag);
+//                break;
+//            case R.id.circle_two:
+//                emergencyDegree.clear();
+//                emergencyDegree.put(1,flag);
+//                break;
+//            case R.id.circle_three:
+//                emergencyDegree.clear();
+//                emergencyDegree.put(2,flag);
+//                break;
+//            case R.id.circle_four:
+//                emergencyDegree.clear();
+//                emergencyDegree.put(3,flag);
+//                break;
+//            case R.id.circle_five:
+//                emergencyDegree.clear();
+//                emergencyDegree.put(4,flag);
+//                break;
+//        }
+        if(ivMap.containsKey(id)){
+            emergencyDegree.clear();
+            emergencyDegree.put((int)ivMap.get(id)-1,flag);
         }
     }
 
