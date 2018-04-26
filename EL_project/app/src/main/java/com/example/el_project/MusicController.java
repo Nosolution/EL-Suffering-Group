@@ -38,10 +38,20 @@ public class MusicController {
 
     }
 
+    public boolean isPlaying(){
+        return mediaPlayer.isPlaying();
+    }
+
+
+    //音乐播放开始，也是恢复暂停
     public void start(){
         if(!mediaPlayer.isPlaying()){
             mediaPlayer.start();
         }
+    }
+
+    public void resume(){
+        start();
     }
 
     public void pause(){

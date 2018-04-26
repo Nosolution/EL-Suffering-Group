@@ -49,14 +49,14 @@ public abstract class CountTimer {
         mHandler.removeMessages(MSG);
     }
 
-    /*TODO:pause待完成
+    /*
      * */
     public synchronized final void pause(){
         mPaused = true;
         mHandler.removeMessages(MSG);
     }
 
-    /*TODO:resume待完成
+    /*
      * */
     public synchronized final void resume(){
         mPaused = false;
@@ -68,13 +68,24 @@ public abstract class CountTimer {
      * 启动计时器
      * */
     public synchronized final CountTimer start(){
+        return startWithPassedTime(0);
+    }
+
+    /*
+     * 以一定的已计算时间启动计时器
+     * */
+    public synchronized final CountTimer startWithPassedTime(long millisGoneThrough){
         mCancelled = false;
         mPaused = false;
 
-        mStartTime = SystemClock.elapsedRealtime();
+        mStartTime = SystemClock.elapsedRealtime() - millisGoneThrough;
         mRelativeStartTime = mStartTime;
         mHandler.sendMessage(mHandler.obtainMessage(MSG));
         return this;
+    }
+
+    public final long getMillisPassed(){
+        return millisPassed;
     }
 
     /*

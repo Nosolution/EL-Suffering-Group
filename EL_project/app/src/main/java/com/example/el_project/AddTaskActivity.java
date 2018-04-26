@@ -49,7 +49,6 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
 
     private SparseBooleanArray emergencyDegree;
     private boolean updateFlag;
-    private int time1,time2,time3,time4,time5,sumTime=0;
     private Drawable draw1,draw2;
 
 //TODO:定义变量
@@ -275,7 +274,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //查询对应位置是否已经被选择
-    private boolean getSelected(int id){
+    private boolean isSelected(int id){
         switch (id){
             case R.id.circle_one:
                 return emergencyDegree.valueAt(0);

@@ -17,8 +17,8 @@ public class GeneralSetting {
     private static boolean musicOn = false;               //音乐是否开启
     private static boolean tomatoClockEnable = false;     //番茄钟是否开启
     private static boolean callWhenTimeUpEnable = false;  //是否倒计时到时时提醒
-    private static int tomatoClockTime = 25;              //番茄钟设置时长
-    private static int tomatoBreakTime = 5;               //番茄钟间隔休息时间
+    private static int tomatoClockTime = 25;              //番茄钟设置时长(分钟计)
+    private static int tomatoBreakTime = 5;               //番茄钟间隔休息时间（分钟计）
 
     private static void initializeSetting(Context context){
         SharedPreferences pref = context.getSharedPreferences("general_setting", Context.MODE_PRIVATE);
@@ -49,6 +49,9 @@ public class GeneralSetting {
     }
 
     public static void setMusicOn(Context context, boolean enable){
+        if(!settingInitialized){
+            initializeSetting(context);
+        }
         musicOn = enable;
         syncSetting(context);
     }
@@ -61,6 +64,9 @@ public class GeneralSetting {
     }
 
     public static void setTomatoClockEnable(Context context, boolean enable){
+        if(!settingInitialized){
+            initializeSetting(context);
+        }
         tomatoClockEnable = enable;
         syncSetting(context);
     }
@@ -73,6 +79,9 @@ public class GeneralSetting {
     }
 
     public static void setCallWhenTimeUpEnable(Context context, boolean enable){
+        if(!settingInitialized){
+            initializeSetting(context);
+        }
         callWhenTimeUpEnable = enable;
         syncSetting(context);
     }
@@ -83,8 +92,11 @@ public class GeneralSetting {
         return tomatoClockTime;
     }
 
-    public static void setTomatoClockTime(Context context, int time){
-        tomatoClockTime = time;
+    public static void setTomatoClockTime(Context context, int timeInMinutes){
+        if(!settingInitialized){
+            initializeSetting(context);
+        }
+        tomatoClockTime = timeInMinutes;
         syncSetting(context);
     }
 
@@ -95,8 +107,11 @@ public class GeneralSetting {
         return tomatoBreakTime;
     }
 
-    public static void setTomatoBreakTime(Context context, int time){
-        tomatoBreakTime = time;
+    public static void setTomatoBreakTime(Context context, int timeInMinutes){
+        if(!settingInitialized){
+            initializeSetting(context);
+        }
+        tomatoBreakTime = timeInMinutes;
         syncSetting(context);
     }
 
