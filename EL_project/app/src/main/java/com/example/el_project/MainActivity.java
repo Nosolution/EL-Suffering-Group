@@ -162,14 +162,12 @@ public class MainActivity extends AppCompatActivity {
         detailsDialog.setPositiveButton("返回", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MainActivity.this, "点击了返回按钮", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         });
         detailsDialog.setNegativeButton("修改", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MainActivity.this, "点击了修改按钮", Toast.LENGTH_SHORT).show();
             }
         });
         detailsDialog.show();

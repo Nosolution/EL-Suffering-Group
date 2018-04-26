@@ -141,7 +141,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.circle_three :
             case R.id.circle_two :
             case R.id.circle_one :
-                if(!getSelected(v.getId())) {
+                if(!isSelected(v.getId())) {
                     ImageView iv = (ImageView) v;
                     AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
                     ad.stop();
@@ -201,7 +201,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //查询对应位置是否已经被选择
-    private boolean getSelected(int id){
+    private boolean isSelected(int id){
         switch (id){
             case R.id.circle_one:
                 return emergencyDegree.valueAt(0);
