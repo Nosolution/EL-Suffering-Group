@@ -8,9 +8,10 @@
 	android:layout_height="match_parent"
 	tools:context=".DrawerSettingActivity">
 
-	<FrameLayout
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
 		<android.support.v7.widget.Toolbar
 			android:id="@+id/setting_toolbar"
@@ -20,12 +21,16 @@
 			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-	</FrameLayout>
+		<!--<Button-->
+			<!--android:layout_width="wrap_content"-->
+			<!--android:layout_height="wrap_content"-->
+			<!--android:text="123"/>-->
+	</LinearLayout>
 
 	<!--右侧布局-->
 	<RelativeLayout
 		android:id="@+id/left_drawer"
-		android:layout_width="210dp"
+		android:layout_width="230dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="end"
 		android:background="#FFF">
@@ -80,9 +85,7 @@
 						android:id="@+id/switch_if_music_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_alignParentEnd="true"
-						android:textOff=""
-						android:textOn="" />
+						android:layout_alignParentEnd="true" />
 				</RelativeLayout>
 
 			</LinearLayout>
@@ -115,9 +118,43 @@
 						android:id="@+id/switch_if_tomato_clock_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:layout_alignParentEnd="true" />
+				</RelativeLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="30dp"
+				android:orientation="horizontal">
+
+				<RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+
+					<TextView
+						android:id="@+id/text_clock_on"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="30dp"
+						android:text="@string/string_tomato_clock_on"
+						android:textSize="18sp"
+						android:visibility="gone"/>
+
+					<TextView
+						android:id="@+id/text_chosen_time"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_centerHorizontal="true"
+						android:visibility="gone"/>
+
+					<Spinner
+						android:id="@+id/spinner_choose_time"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
-						android:textOff=""
-						android:textOn="" />
+						android:visibility="gone"></Spinner>
+
+
 				</RelativeLayout>
 			</LinearLayout>
 

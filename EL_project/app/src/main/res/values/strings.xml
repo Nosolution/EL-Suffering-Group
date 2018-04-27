@@ -31,4 +31,5 @@
     <string name="edit2">备注</string>
     <string name="string_if_music_on">音乐</string>
     <string name="string_if_tomato_clock_on">番茄钟</string>
+    <string name="string_tomato_clock_on">时长</string>
 </resources>

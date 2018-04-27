@@ -28,7 +28,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	//自定义的ViewHolder，持有每个Item的的所有界面元素
 	public static class ViewHolder extends RecyclerView.ViewHolder{
 		TextView taskName;
-//		ImageView taskImage;
 		LinearLayout layoutBackground;
 //		View taskView;
 
