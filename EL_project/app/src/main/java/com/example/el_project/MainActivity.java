@@ -58,23 +58,25 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                Task task = mTaskList.get(position);
+                Task task = mTaskList.get(position);
 //                Toast.makeText(view.getContext(), "you clicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-                if (!editMode){
-                    //单点事件
+                if (!getEditMode()){
                     showDetails(position);
                 }
                 else{
-                    adapter.setItemChecked(position,adapter.isItemChecked(position));
+                    task.switchBackground();
+                    adapter.changeItemBackGround(position);
                 }
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
                 Task task = mTaskList.get(position);
-                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-                if(!editMode){
+//                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
+                if(!getEditMode()){
                     setEditMode(true);
+                    task.switchBackground();
+                    adapter.changeItemBackGround(position);
                 }
             }
         });
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5]);
+                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
                 mTaskList.add(task);
                 String[] tempstring = {cursor.getString(cursor.getColumnIndex("task")),
                         cursor.getString(cursor.getColumnIndex("assumedtime")),
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if (cursor.moveToPosition(mTaskList.size())) {
             do {
-                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5]);
+                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
                 adapter.addItem(task);
                 Toast.makeText(this, "Succeeded to update", Toast.LENGTH_SHORT).show();
                 String[] tempstring = {cursor.getString(cursor.getColumnIndex("task")),
@@ -143,16 +145,18 @@ public class MainActivity extends AppCompatActivity {
     private void setEditMode(boolean flag) {
         editMode=flag;
     }
+    private boolean getEditMode(){return editMode;}
 
-//    @Override
-//    public void onBackPressed() {
-//        if(editMode){
-//            setEditMode(false);
-//        }
-//        else{
-//            super.onBackPressed();
-//        }
-//    }
+    @Override
+    public void onBackPressed() {
+        if(getEditMode()){
+            setEditMode(false);
+            adapter.cleanSelected();//编辑模式下点击返回键退出编辑模式
+        }
+        else{
+            super.onBackPressed();
+        }
+    }
 
     private void showDetails(int position){
         final AlertDialog.Builder detailsDialog =
