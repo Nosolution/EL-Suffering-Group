@@ -1,24 +1,17 @@
 package com.example.el_project;
 
-import android.app.DatePickerDialog;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.SparseBooleanArray;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -35,7 +27,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class AddTaskActivity extends AppCompatActivity implements View.OnClickListener{
+public class EditTaskActivity extends AppCompatActivity implements View.OnClickListener{
 
     private RelativeLayout selectTime;
     private TextView ddlTime;
@@ -47,10 +39,12 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     private EditText assumedTimeEditText1;
     private EditText assumedTimeEditText2;
     private EditText commentEditText;
-    private Button addTaskList;//加入待办按钮
+    private Button finishEditing;//加入待办按钮
     private Button startNow;//立即开始按钮
     private Map ivMap;//iv字典，Id到位置的映射
     private int selectedImageViewPosition;//被选择的ImageView的位置
+    private boolean editMode;//是否是编辑任务
+    private String taskId;//数据库中task的ID，作为唯一标识符
 
 //    private SparseBooleanArray emergencyDegree;
     private boolean updateFlag;
@@ -61,14 +55,15 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_task);
+        setContentView(R.layout.activity_edit_task);
 
 
-        addTaskList = (Button)findViewById(R.id.add_to_tasklist);
+        editMode=false;
+        taskId=null;
+        finishEditing = (Button)findViewById(R.id.finish_editing);
         startNow = (Button)findViewById(R.id.start_now);
-        addTaskList.setOnClickListener(this);
+        finishEditing.setOnClickListener(this);
         textChange tc = new textChange();//文本改变监视器
-//        emergencyDegree = new SparseBooleanArray(5);
 
         taskNameEditText = (EditText)findViewById(R.id.task_name_et);
         taskNameEditText.addTextChangedListener(tc);
@@ -77,6 +72,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         assumedTimeEditText2 = (EditText)findViewById(R.id.assumed_time_et2);
         assumedTimeEditText2.addTextChangedListener(tc);
         commentEditText = (EditText)findViewById(R.id.comment_et);
+
         //两张动画
         draw1=(AnimationDrawable)getDrawable(R.drawable.circle_animation);//点亮动画
         draw2=(AnimationDrawable)getDrawable(R.drawable.back_circle_animation);//点灭动画
@@ -128,10 +124,20 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         iv5=(ImageView)findViewById(R.id.circle_five);
         iv5.setOnClickListener(this);
 
-        addTaskList = (Button)findViewById(R.id.add_to_tasklist);
-        addTaskList.setOnClickListener(this);
+        finishEditing = (Button)findViewById(R.id.finish_editing);
+        finishEditing.setOnClickListener(this);
         startNow = (Button)findViewById(R.id.start_now);
         startNow.setOnClickListener(this);
+
+        //判断Intent来源，决定后续操作
+        Intent intent=getIntent();
+        if(intent.hasExtra("details")){
+            editMode=true;
+            String[] taskDetails=intent.getStringArrayExtra("details");
+            taskId=taskDetails[0];
+            setTaskDetails(taskDetails);
+            finishEditing.setText("修改完成");
+        }
     }
 
     private void initTimePicker() {
@@ -148,6 +154,23 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         cdp.showSpecificTime(true);
         cdp.setIsLoop(true);
 
+    }
+
+    private void setTaskDetails(String[] taskDetails){
+        taskNameEditText.setText(taskDetails[1]);
+        String[]tempString=taskDetails[2].split(":");
+        assumedTimeEditText1.setText(tempString[0]);
+        assumedTimeEditText2.setText(tempString[1]);
+
+        for(Object key :ivMap.keySet()){
+            if(taskDetails[4].equals(String.valueOf(ivMap.get(key)))){
+                setSelected((int)key);
+            }
+        }
+        if(taskDetails[5].equals("1")){
+            swc.setChecked(true);
+        }
+        commentEditText.setText(taskDetails[6]);
     }
 
     @Override
@@ -198,21 +221,13 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
             ImageView iv ;
             AnimationDrawable ad;
             if (isSelected(id)) {
-                setSelected(0);
-                iv = (ImageView) findViewById(id);
-                ad = (AnimationDrawable) iv.getDrawable();
-                ad.stop();
-                iv.setImageDrawable(draw2);
-                ad=(AnimationDrawable) iv.getDrawable();
-                ad.start();
+                selectedImageViewPosition=0;
+                setNotSelected(id);
             }
             else{
                 setDefaultImageView();
-                setSelected((int)ivMap.get(id));
-                iv =(ImageView)findViewById(id);
-                iv.setImageDrawable(draw1);
-                ad =(AnimationDrawable) iv.getDrawable();
-                ad.start();
+                selectedImageViewPosition=(int)ivMap.get(id);
+                setSelected(id);
             }
         }
         else {
@@ -220,8 +235,9 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
                 case R.id.selectTime:
                     cdp.show(ddlTime.getText().toString());
                     break;
-                case R.id.add_to_tasklist:
-                    addTask();
+                case R.id.finish_editing:
+                    if(!editMode) addTask();
+                    else modifyTask();
                     updateFlag = true;
                     break;
                 case R.id.start_now:
@@ -242,11 +258,26 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
         db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
-        Toast toast = Toast.makeText(AddTaskActivity.this,"成功添加任务",Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(EditTaskActivity.this,"成功添加任务",Toast.LENGTH_SHORT);
         showMyToast(toast,1000);//提示成功添加任务
         taskNameEditText.setText("");assumedTimeEditText1.setText("");
         assumedTimeEditText2.setText("");commentEditText.setText("");//清空所有Edittext中的内容
         swc.setChecked(false);
+    }
+
+    //修改任务
+    private void modifyTask(){
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("task",taskNameEditText.getText().toString() );
+        values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
+        values.put("deadline",ddlTime.getText().toString());
+        values.put("emergencydegree",selectedImageViewPosition>=0? selectedImageViewPosition : 1);
+        values.put("isdailytask",isDailyTask());
+        values.put("comments",commentEditText.getText().toString());
+        db.update("Tasklist",values,"id=?",new String[]{taskId});
+        Toast toast = Toast.makeText(EditTaskActivity.this,"成功修改任务",Toast.LENGTH_SHORT);
+        showMyToast(toast,1000);
     }
 
     //自定义Toast显示时间，cnt为所需显示时间
@@ -272,9 +303,23 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         return selectedImageViewPosition == (int) ivMap.get(id);
     }
 
-    //设置选择位置
-    private void setSelected(int position){
-        selectedImageViewPosition=position;
+    //设置ImageView为被选中
+    private void setSelected(int id){
+        selectedImageViewPosition=(int)ivMap.get(id);
+        ImageView iv =(ImageView)findViewById(id);
+        iv.setImageDrawable(draw1);
+        AnimationDrawable ad =(AnimationDrawable) iv.getDrawable();
+        ad.start();
+    }
+
+    //设置ImageView不被选中
+    private void setNotSelected(int id){
+        ImageView iv = (ImageView) findViewById(id);
+        AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
+        ad.stop();
+        iv.setImageDrawable(draw2);
+        ad=(AnimationDrawable) iv.getDrawable();
+        ad.start();
     }
 
     //将点亮的ImageView设为未点亮状态
@@ -287,6 +332,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
                 iv.setImageDrawable(draw2);
                 ad=(AnimationDrawable) iv.getDrawable();
                 ad.start();
+                break;
             }
         }
     }
@@ -303,6 +349,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     public void onBackPressed() {
         if (updateFlag) {
             Intent intent = new Intent();
+            intent.putExtra("task_ID",taskId);
             setResult(RESULT_OK, intent);
             finish();
         }
@@ -327,11 +374,11 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
             boolean flag2=assumedTimeEditText1.getText().toString().length()>0;
             boolean flag3=assumedTimeEditText2.getText().toString().length()>0;
             if(flag1&&flag2&&flag3){
-                addTaskList.setEnabled(true);
+                finishEditing.setEnabled(true);
                 startNow.setEnabled(true);
             }
             else{
-                addTaskList.setEnabled(false);
+                finishEditing.setEnabled(false);
                 startNow.setEnabled(false);
             }
         }

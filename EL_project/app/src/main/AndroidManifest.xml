@@ -34,7 +34,7 @@
 		</activity>
 
         <activity
-            android:name=".AddTaskActivity"
+            android:name=".EditTaskActivity"
             android:label="@string/add_task_activity_title">
 
         </activity>

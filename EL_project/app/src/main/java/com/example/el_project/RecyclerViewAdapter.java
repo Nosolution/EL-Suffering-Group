@@ -89,6 +89,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		notifyItemInserted(mTaskList.size()-1);
 	}
 
+	public void modifyItem(int i,Task task){
+		mTaskList.set(i,task);
+		notifyItemChanged(i);
+	}
+
 	//修改Item的选择状态，改变背景
 	public void changeItemBackGround(int position){
 		notifyItemChanged(position);

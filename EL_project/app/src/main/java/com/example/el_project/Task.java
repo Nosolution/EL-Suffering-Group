@@ -4,20 +4,22 @@ public class Task {
 	private String name;
 //	private int imageId;
 	private int backgroundId;
-	private int checkedBackgroundId;
+	private int selectedBackgroundId;
 	private int defaultBackground;
 
 	public Task(String name,int backgroundId,int checkedbackgroundId){
 		this.name=name;
 //		this.imageId=imageId;
 		this.backgroundId=backgroundId;
-		this.checkedBackgroundId=checkedbackgroundId;
+		this.selectedBackgroundId =checkedbackgroundId;
 		this.defaultBackground=backgroundId;
 	}
 
 	public String getName(){
 		return name;
 	}
+
+	public void setName(String name){this.name=name;}
 
 //	public int getImageId(){
 //		return imageId;
@@ -27,12 +29,12 @@ public class Task {
 		return backgroundId;
 	}
 
-	public int getCheckedBackgroundId(){return checkedBackgroundId;}
+	public int getSelectedBackgroundId(){return selectedBackgroundId;}
 
 	public void switchBackground(){
 		int temp=backgroundId;
-		backgroundId=checkedBackgroundId;
-		checkedBackgroundId=temp;
+		backgroundId= selectedBackgroundId;
+		selectedBackgroundId =temp;
 	}
 
 	public void initBackground(){

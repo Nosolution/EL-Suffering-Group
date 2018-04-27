@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,AddTaskActivity.class);
+                Intent intent = new Intent(MainActivity.this,EditTaskActivity.class);
                 startActivityForResult(intent,1);//对是否点击了完成按钮实现监听
             }
         });
@@ -94,8 +94,14 @@ public class MainActivity extends AppCompatActivity {
     //重载方法，若点击了完成按钮，返回此Acivity时更新recyclerview
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
-            updateTasks();
+        if(resultCode == RESULT_OK ){
+            if(requestCode==1) {
+                updateTasks();
+            }
+            else if(requestCode==2){
+                String taskId=data.getStringExtra("task_ID");
+                modifyTask(taskId);
+            }
         }
     }
 
@@ -107,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
             do {
                 Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
                 mTaskList.add(task);
-                String[] tempstring = {cursor.getString(cursor.getColumnIndex("task")),
+                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("task")),
                         cursor.getString(cursor.getColumnIndex("assumedtime")),
                         cursor.getString(cursor.getColumnIndex("deadline")),
                         String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
@@ -128,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
                 Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
                 adapter.addItem(task);
                 Toast.makeText(this, "Succeeded to update", Toast.LENGTH_SHORT).show();
-                String[] tempstring = {cursor.getString(cursor.getColumnIndex("task")),
+                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("task")),
                         cursor.getString(cursor.getColumnIndex("assumedtime")),
                         cursor.getString(cursor.getColumnIndex("deadline")),
                         String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
@@ -142,9 +150,30 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
     }
 
-    private void setEditMode(boolean flag) {
-        editMode=flag;
+    private void modifyTask(String taskId){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.query("Tasklist",null,"id="+taskId,null,null,null,null);
+        if(cursor.moveToFirst()) {
+            for (int i = 0; i < taskList.size(); i++) {
+                if (taskId.equals(taskList.get(i)[0])) {
+                    Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), mTaskList.get(i).getBackgroundId(), mTaskList.get(i).getSelectedBackgroundId());
+                    adapter.modifyItem(i, task);
+                    String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
+                            cursor.getString(cursor.getColumnIndex("task")),
+                            cursor.getString(cursor.getColumnIndex("assumedtime")),
+                            cursor.getString(cursor.getColumnIndex("deadline")),
+                            String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
+                            String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
+                            cursor.getString(cursor.getColumnIndex("comments"))};
+                    taskList.set(i, tempstring);
+                    break;
+                }
+            }
+        }
+        cursor.close();
     }
+
+    private void setEditMode(boolean flag) {editMode=flag;}
     private boolean getEditMode(){return editMode;}
 
     @Override
@@ -158,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showDetails(int position){
+    private void showDetails(final int position){
         final AlertDialog.Builder detailsDialog =
                 new AlertDialog.Builder(MainActivity.this);
         detailsDialog.setIcon(R.drawable.circle);
@@ -173,6 +202,10 @@ public class MainActivity extends AppCompatActivity {
         detailsDialog.setNegativeButton("修改", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                String[] taskDetails=taskList.get(position);
+                Intent intent=new Intent(MainActivity.this,EditTaskActivity.class);
+                intent.putExtra("details",taskDetails);
+                startActivityForResult(intent,2);
             }
         });
         detailsDialog.show();
@@ -181,14 +214,14 @@ public class MainActivity extends AppCompatActivity {
     private String constructDetails(int position){
         String finalString= "";
         String temp="";
-        finalString+="任务："+taskList.get(position)[0]+"\n";
-        String[] tempstring=taskList.get(position)[1].split(":");
-        finalString+="预计时间:"+tempstring[0]+"时"+tempstring[1]+"分\n";
-        temp=taskList.get(position)[2];
+        finalString+="任务："+taskList.get(position)[1]+"\n";
+        String[] tempString=taskList.get(position)[2].split(":");
+        finalString+="预计时间:"+tempString[0]+"时"+tempString[1]+"分\n";
+        temp=taskList.get(position)[3];
         finalString+="最后日期："+(temp==null ? "无":temp)+"\n";
-        finalString+="紧急程度："+taskList.get(position)[3]+"\n";
-        finalString+="是否是每日任务："+(taskList.get(position)[4].equals( "1" )? "是":"不是")+"\n";
-        finalString+="备注:"+taskList.get(position)[5]+"\n";
+        finalString+="紧急程度："+taskList.get(position)[4]+"\n";
+        finalString+="是否是每日任务："+(taskList.get(position)[5].equals( "1" )? "是":"不是")+"\n";
+        finalString+="备注:"+taskList.get(position)[6]+"\n";
         return finalString;
     }
 
