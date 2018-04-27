@@ -1,4 +1,11 @@
-——————Commite version1.04——————
+——————Commit version1.05——————
+添加了修改功能。
+将AddTaskActivity更名为EditTaskActivity,其他的一些组件或者变量的名称也做了相应的调整。
+
+写着写着感觉写的代码就是一坨*，后面找时间优化一下。许多细节也有待完善。
+					——Edited by ns
+
+——————Commit version1.04——————
 实现了点击事件显示详情功能,修改功能待完善
 修复了添加任务界面的紧急程度的动画的bug
 实现了长按改变背景:
