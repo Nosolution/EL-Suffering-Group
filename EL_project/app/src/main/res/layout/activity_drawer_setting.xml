@@ -45,17 +45,17 @@
 			<ImageButton
 				android:id="@+id/giveup_button"
 				style="@style/imagebutton"
-				android:src="@drawable/giveup_watercolor" />
+				android:background="@drawable/giveup_watercolor" />
 
 			<ImageButton
 				android:id="@+id/runing_button"
 				style="@style/imagebutton"
-				android:src="@drawable/stop_watercolor" />
+				android:background="@drawable/stop_watercolor" />
 
 			<ImageButton
 				android:id="@+id/end_button"
 				style="@style/imagebutton"
-				android:src="@drawable/end_watercolor" />
+				android:background="@drawable/end_watercolor" />
 		</LinearLayout>
 	</LinearLayout>
 
