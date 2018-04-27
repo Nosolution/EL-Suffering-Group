@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -28,7 +29,9 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,8 +49,10 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     private EditText commentEditText;
     private Button addTaskList;//加入待办按钮
     private Button startNow;//立即开始按钮
+    private Map ivMap;//iv字典，Id到位置的映射
+    private int selectedImageViewPosition;//被选择的ImageView的位置
 
-    private SparseBooleanArray emergencyDegree;
+//    private SparseBooleanArray emergencyDegree;
     private boolean updateFlag;
     private Drawable draw1,draw2;
 
@@ -63,7 +68,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         startNow = (Button)findViewById(R.id.start_now);
         addTaskList.setOnClickListener(this);
         textChange tc = new textChange();//文本改变监视器
-        emergencyDegree = new SparseBooleanArray(5);
+//        emergencyDegree = new SparseBooleanArray(5);
 
         taskNameEditText = (EditText)findViewById(R.id.task_name_et);
         taskNameEditText.addTextChangedListener(tc);
@@ -73,8 +78,8 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         assumedTimeEditText2.addTextChangedListener(tc);
         commentEditText = (EditText)findViewById(R.id.comment_et);
         //两张动画
-        draw1=(AnimationDrawable)((ImageView)findViewById(R.id.circle_one)).getDrawable();
-        draw2=(AnimationDrawable)((ImageView)findViewById(R.id.circle_back)).getDrawable();
+        draw1=(AnimationDrawable)getDrawable(R.drawable.circle_animation);//点亮动画
+        draw2=(AnimationDrawable)getDrawable(R.drawable.back_circle_animation);//点灭动画
         //打开数据库
         dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
         updateFlag=false;
@@ -84,6 +89,15 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         selectTime.setOnClickListener(this);
         ddlTime=(TextView)findViewById(R.id.ddlTime);
         initTimePicker();
+
+        //建立字典
+        ivMap= new HashMap();
+        ivMap.put(R.id.circle_one,1);
+        ivMap.put(R.id.circle_two,2);
+        ivMap.put(R.id.circle_three,3);
+        ivMap.put(R.id.circle_four,4);
+        ivMap.put(R.id.circle_five,5);
+        selectedImageViewPosition=0;//被选择位置默认为0
 
         //是否打开为每日任务
         swc=(Switch)findViewById(R.id.open);
@@ -141,98 +155,78 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
 
         //全部熄灭
-        if(v.getId()==R.id.circle_five||v.getId()==R.id.circle_four||v.getId()==R.id.circle_three||v.getId()==R.id.circle_two||v.getId()==R.id.circle_one){
-            ImageView iv5 = (ImageView)findViewById(R.id.circle_five);
-            iv5.setImageDrawable(draw2);
-            AnimationDrawable ad05 = (AnimationDrawable) iv5.getDrawable();
-            ad05.stop();
-            ad05.start();
-            iv5.setSelected(false);
-
-            ImageView iv4 = (ImageView)findViewById(R.id.circle_four);
-            iv4.setImageDrawable(draw2);
-            AnimationDrawable ad04 = (AnimationDrawable) iv4.getDrawable();
-            ad04.stop();
-            ad04.start();
-            iv4.setSelected(false);
-
-            ImageView iv3 = (ImageView)findViewById(R.id.circle_three);
-            iv3.setImageDrawable(draw2);
-            AnimationDrawable ad03 = (AnimationDrawable) iv3.getDrawable();
-            ad03.stop();
-            ad03.start();
-            iv3.setSelected(false);
-
-            ImageView iv2 = (ImageView)findViewById(R.id.circle_two);
-            iv2.setImageDrawable(draw2);
-            AnimationDrawable ad02 = (AnimationDrawable) iv2.getDrawable();
-            ad02.stop();
-            ad02.start();
-            iv2.setSelected(false);
-
-            ImageView iv1 = (ImageView)findViewById(R.id.circle_five);
-            iv1.setImageDrawable(draw2);
-            AnimationDrawable ad01 = (AnimationDrawable) iv1.getDrawable();
-            ad01.stop();
-            ad01.start();
-            iv1.setSelected(false);
-        }
+//        if(v.getId()==R.id.circle_five||v.getId()==R.id.circle_four||v.getId()==R.id.circle_three||v.getId()==R.id.circle_two||v.getId()==R.id.circle_one){
+//            ImageView iv5 = (ImageView)findViewById(R.id.circle_five);
+//            iv5.setImageDrawable(draw2);
+//            AnimationDrawable ad05 = (AnimationDrawable) iv5.getDrawable();
+//            ad05.stop();
+//            ad05.start();
+//            iv5.setSelected(false);
+//
+//            ImageView iv4 = (ImageView)findViewById(R.id.circle_four);
+//            iv4.setImageDrawable(draw2);
+//            AnimationDrawable ad04 = (AnimationDrawable) iv4.getDrawable();
+//            ad04.stop();
+//            ad04.start();
+//            iv4.setSelected(false);
+//
+//            ImageView iv3 = (ImageView)findViewById(R.id.circle_three);
+//            iv3.setImageDrawable(draw2);
+//            AnimationDrawable ad03 = (AnimationDrawable) iv3.getDrawable();
+//            ad03.stop();
+//            ad03.start();
+//            iv3.setSelected(false);
+//
+//            ImageView iv2 = (ImageView)findViewById(R.id.circle_two);
+//            iv2.setImageDrawable(draw2);
+//            AnimationDrawable ad02 = (AnimationDrawable) iv2.getDrawable();
+//            ad02.stop();
+//            ad02.start();
+//            iv2.setSelected(false);
+//
+//            ImageView iv1 = (ImageView)findViewById(R.id.circle_five);
+//            iv1.setImageDrawable(draw2);
+//            AnimationDrawable ad01 = (AnimationDrawable) iv1.getDrawable();
+//            ad01.stop();
+//            ad01.start();
+//            iv1.setSelected(false);
+//        }
 
         //开始处理点击事件
-        switch (v.getId()){
-            case R.id.selectTime:
-                cdp.show(ddlTime.getText().toString());
-                break;
-            case R.id.circle_five :
-                iv5.setImageDrawable(draw1);
-                AnimationDrawable ad5 = (AnimationDrawable) iv5.getDrawable();
-                ad5.stop();
-                ad5.start();
-                iv5.setSelected(true);
-            case R.id.circle_four :
-                iv4.setImageDrawable(draw1);
-                AnimationDrawable ad4 = (AnimationDrawable) iv4.getDrawable();
-                ad4.stop();
-                ad4.start();
-                iv4.setSelected(true);
-            case R.id.circle_three :
-                iv3.setImageDrawable(draw1);
-                AnimationDrawable ad3 = (AnimationDrawable) iv3.getDrawable();
-                ad3.stop();
-                ad3.start();
-                iv3.setSelected(true);
-            case R.id.circle_two :
-                iv2.setImageDrawable(draw1);
-                AnimationDrawable ad2 = (AnimationDrawable) iv2.getDrawable();
-                ad2.stop();
-                ad2.start();
-                iv2.setSelected(true);
-                //TODO:不能点亮，有待解决
-            case R.id.circle_one :
-                iv1.setImageDrawable(draw1);
-                AnimationDrawable ad1 = (AnimationDrawable) iv1.getDrawable();
-                ad1.stop();
-                ad1.start();
-                iv1.setSelected(true);
-//                if(!getSelected(v.getId())) {
-//                    ImageView iv = (ImageView) v;
-//                    AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
-//                    ad.stop();
-//                    ad.start();
-//                    setSelected(v.getId(),true);
-//                }
-//                else{
-//                    ImageView iv = (ImageView) v;
-//                    AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
-//                    ad.stop();
-//                }
-                break;
-            case R.id.add_to_tasklist:
-                addTask();
-                updateFlag=true;
-                break;
-            case R.id.start_now:
-                //待完成
+        int id=v.getId();
+        if(ivMap.containsKey(id)) {//判断是否是紧急程度的ImageView
+            ImageView iv ;
+            AnimationDrawable ad;
+            if (isSelected(id)) {
+                setSelected(0);
+                iv = (ImageView) findViewById(id);
+                ad = (AnimationDrawable) iv.getDrawable();
+                ad.stop();
+                iv.setImageDrawable(draw2);
+                ad=(AnimationDrawable) iv.getDrawable();
+                ad.start();
+            }
+            else{
+                setDefaultImageView();
+                setSelected((int)ivMap.get(id));
+                iv =(ImageView)findViewById(id);
+                iv.setImageDrawable(draw1);
+                ad =(AnimationDrawable) iv.getDrawable();
+                ad.start();
+            }
+        }
+        else {
+            switch (id) {
+                case R.id.selectTime:
+                    cdp.show(ddlTime.getText().toString());
+                    break;
+                case R.id.add_to_tasklist:
+                    addTask();
+                    updateFlag = true;
+                    break;
+                case R.id.start_now:
+                    //待完成
+            }
         }
     };
 
@@ -244,7 +238,7 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         values.put("task",taskNameEditText.getText().toString() );
         values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
         values.put("deadline",ddlTime.getText().toString());//对应每一列传值
-        values.put("emergencydegree",emergencyDegree.indexOfValue(true)>=0? emergencyDegree.indexOfValue(true)+1 : 1);//默认值为1
+        values.put("emergencydegree",selectedImageViewPosition>=0? selectedImageViewPosition : 1);//默认值为1
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
         db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
@@ -273,47 +267,27 @@ public class AddTaskActivity extends AppCompatActivity implements View.OnClickLi
         },cnt);
     }
 
-    //查询对应位置是否已经被选择
+    //判断该id对应的ImageView是否已被选择
     private boolean isSelected(int id){
-        switch (id){
-            case R.id.circle_one:
-                return emergencyDegree.valueAt(0);
-            case R.id.circle_two:
-                return emergencyDegree.valueAt(1);
-            case R.id.circle_three:
-                return emergencyDegree.valueAt(2);
-            case R.id.circle_four:
-                return emergencyDegree.valueAt(3);
-            case R.id.circle_five:
-                return emergencyDegree.valueAt(4);
-            default:
-                return false;
-        }
+        return selectedImageViewPosition == (int) ivMap.get(id);
     }
 
-    //设置对应的布尔数组
-    private void setSelected(int id,boolean flag){
-        switch (id){
-            case R.id.circle_one:
-                emergencyDegree.clear();
-                emergencyDegree.put(0,flag);
-                break;
-            case R.id.circle_two:
-                emergencyDegree.clear();
-                emergencyDegree.put(1,flag);
-                break;
-            case R.id.circle_three:
-                emergencyDegree.clear();
-                emergencyDegree.put(2,flag);
-                break;
-            case R.id.circle_four:
-                emergencyDegree.clear();
-                emergencyDegree.put(3,flag);
-                break;
-            case R.id.circle_five:
-                emergencyDegree.clear();
-                emergencyDegree.put(4,flag);
-                break;
+    //设置选择位置
+    private void setSelected(int position){
+        selectedImageViewPosition=position;
+    }
+
+    //将点亮的ImageView设为未点亮状态
+    private void setDefaultImageView(){
+        for(Object key:ivMap.keySet()){
+            if((int)ivMap.get(key)==selectedImageViewPosition){
+                ImageView iv = (ImageView) findViewById((int)key);
+                AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
+                ad.stop();
+                iv.setImageDrawable(draw2);
+                ad=(AnimationDrawable) iv.getDrawable();
+                ad.start();
+            }
         }
     }
 

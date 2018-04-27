@@ -43,7 +43,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	}
 
 
-
 	//重写三个方法
 	//创建ViewHolder实例，新的view被LayoutManager调用
 	@NonNull
@@ -90,18 +89,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		notifyItemInserted(mTaskList.size()-1);
 	}
 
+	//修改Item的选择状态，改变背景
+	public void changeItemBackGround(int position){
+		notifyItemChanged(position);
+		setItemSelected(position,!isItemSelected(position));
+	}
+
 	//更新adpter的数据和选择状态
 	public void updateDataSet(ArrayList<Task> list) {
 		this.mTaskList = list;
 		mSelectedPositions = new SparseBooleanArray();
 	}
 
-
-	//获得选中条目的结果
+	//获得选中条目的动态数组
 	public ArrayList<Task> getSelectedItem() {
 		ArrayList<Task> selectedList = new ArrayList<>();
 		for (int i = 0; i < mTaskList.size(); i++) {
-			if (isItemChecked(i)) {
+			if (isItemSelected(i)) {
 				selectedList.add(mTaskList.get(i));
 			}
 		}
@@ -113,12 +117,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	}
 
 	//设置给定位置条目的选择状态
-	public void setItemChecked(int position,boolean ischecked){
+	public void setItemSelected(int position,boolean ischecked){
 		mSelectedPositions.put(position,ischecked);
 	}
 
 	//根据位置判断条目是否选中
-	public boolean isItemChecked(int position){
+	public boolean isItemSelected(int position){
 		return mSelectedPositions.get(position);
 	}
 
@@ -130,6 +134,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	//设置给定位置条目的可选与否的状态
 	public void setSelectable(boolean selectable) {
 		mIsSelectable = selectable;
+	}
+
+	//清除选择状态
+	public void cleanSelected(){
+		for(int i=0;i<mTaskList.size();i++){
+			if (isItemSelected(i)){
+				Task task=mTaskList.get(i);
+				task.switchBackground();
+				notifyItemChanged(i);
+			}
+		}
+		mSelectedPositions.clear();
 	}
 
 
