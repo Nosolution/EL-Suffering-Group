@@ -226,7 +226,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             }
             else{
                 setDefaultImageView();
-                selectedImageViewPosition=(int)ivMap.get(id);
                 setSelected(id);
             }
         }
