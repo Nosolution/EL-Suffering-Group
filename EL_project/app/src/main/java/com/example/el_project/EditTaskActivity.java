@@ -63,6 +63,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         finishEditing = (Button)findViewById(R.id.finish_editing);
         startNow = (Button)findViewById(R.id.start_now);
         finishEditing.setOnClickListener(this);
+        startNow.setOnClickListener(this);
         textChange tc = new textChange();//文本改变监视器
 
         taskNameEditText = (EditText)findViewById(R.id.task_name_et);
@@ -158,6 +159,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setTaskDetails(String[] taskDetails){
+        taskId=taskDetails[0];
         taskNameEditText.setText(taskDetails[1]);
         String[]tempString=taskDetails[2].split(":");
         assumedTimeEditText1.setText(tempString[0]);
@@ -200,10 +202,17 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                     updateFlag = true;
                     break;
                 case R.id.start_now:
-                    //待完成
+                    Intent intent=new Intent(EditTaskActivity.this,TaskTimingActivity.class);
+                    intent.putExtra("intent_task_id",Integer.valueOf(taskId));
+                    intent.putExtra("intent_task_name",taskNameEditText.getText().toString());
+                    intent.putExtra("intent_task_hours_required",assumedTimeEditText1.getText().toString());
+                    intent.putExtra("intent_task_minutes_required",assumedTimeEditText2.getText().toString());
+                    intent.putExtra("intent_task_comments",commentEditText.getText().toString());
+                    startActivityForResult(intent,3);
+                    break;
             }
         }
-    };
+    }
 
 
     //完成添加任务
