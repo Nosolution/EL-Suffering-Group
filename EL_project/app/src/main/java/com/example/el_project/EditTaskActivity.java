@@ -75,7 +75,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         //两张动画
         draw1=(AnimationDrawable)getDrawable(R.drawable.circle_animation);//点亮动画
-        draw2=(AnimationDrawable)getDrawable(R.drawable.back_circle_animation);//点灭动画
+//        draw2=(AnimationDrawable)getDrawable(R.drawable.back_circle_animation);//点灭动画
         //打开数据库
         dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
         updateFlag=false;
@@ -138,6 +138,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             setTaskDetails(taskDetails);
             finishEditing.setText("修改完成");
         }
+        initButton(editMode);//根据是否是编辑模式来设置按钮可按或不可按
     }
 
     private void initTimePicker() {
@@ -177,51 +178,10 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     //TODO:onclick
     public void onClick(View v) {
 
-        //全部熄灭
-//        if(v.getId()==R.id.circle_five||v.getId()==R.id.circle_four||v.getId()==R.id.circle_three||v.getId()==R.id.circle_two||v.getId()==R.id.circle_one){
-//            ImageView iv5 = (ImageView)findViewById(R.id.circle_five);
-//            iv5.setImageDrawable(draw2);
-//            AnimationDrawable ad05 = (AnimationDrawable) iv5.getDrawable();
-//            ad05.stop();
-//            ad05.start();
-//            iv5.setSelected(false);
-//
-//            ImageView iv4 = (ImageView)findViewById(R.id.circle_four);
-//            iv4.setImageDrawable(draw2);
-//            AnimationDrawable ad04 = (AnimationDrawable) iv4.getDrawable();
-//            ad04.stop();
-//            ad04.start();
-//            iv4.setSelected(false);
-//
-//            ImageView iv3 = (ImageView)findViewById(R.id.circle_three);
-//            iv3.setImageDrawable(draw2);
-//            AnimationDrawable ad03 = (AnimationDrawable) iv3.getDrawable();
-//            ad03.stop();
-//            ad03.start();
-//            iv3.setSelected(false);
-//
-//            ImageView iv2 = (ImageView)findViewById(R.id.circle_two);
-//            iv2.setImageDrawable(draw2);
-//            AnimationDrawable ad02 = (AnimationDrawable) iv2.getDrawable();
-//            ad02.stop();
-//            ad02.start();
-//            iv2.setSelected(false);
-//
-//            ImageView iv1 = (ImageView)findViewById(R.id.circle_five);
-//            iv1.setImageDrawable(draw2);
-//            AnimationDrawable ad01 = (AnimationDrawable) iv1.getDrawable();
-//            ad01.stop();
-//            ad01.start();
-//            iv1.setSelected(false);
-//        }
-
         //开始处理点击事件
         int id=v.getId();
         if(ivMap.containsKey(id)) {//判断是否是紧急程度的ImageView
-            ImageView iv ;
-            AnimationDrawable ad;
             if (isSelected(id)) {
-                selectedImageViewPosition=0;
                 setNotSelected(id);
             }
             else{
@@ -306,31 +266,24 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private void setSelected(int id){
         selectedImageViewPosition=(int)ivMap.get(id);
         ImageView iv =(ImageView)findViewById(id);
-        iv.setImageDrawable(draw1);
         AnimationDrawable ad =(AnimationDrawable) iv.getDrawable();
         ad.start();
     }
 
     //设置ImageView不被选中
     private void setNotSelected(int id){
+        selectedImageViewPosition=0;
         ImageView iv = (ImageView) findViewById(id);
         AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
+        ad.selectDrawable(0);//回到第一帧并暂停
         ad.stop();
-        iv.setImageDrawable(draw2);
-        ad=(AnimationDrawable) iv.getDrawable();
-        ad.start();
     }
 
     //将点亮的ImageView设为未点亮状态
     private void setDefaultImageView(){
         for(Object key:ivMap.keySet()){
             if((int)ivMap.get(key)==selectedImageViewPosition){
-                ImageView iv = (ImageView) findViewById((int)key);
-                AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
-                ad.stop();
-                iv.setImageDrawable(draw2);
-                ad=(AnimationDrawable) iv.getDrawable();
-                ad.start();
+                setNotSelected((int)key);
                 break;
             }
         }
@@ -355,6 +308,11 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         else{
             super.onBackPressed();
         }
+    }
+
+    private void initButton(boolean editMode){
+        finishEditing.setEnabled(editMode);
+        startNow.setEnabled(editMode);
     }
 
     //内部类，监控Edittext文本变化，实现必填与选填功能
