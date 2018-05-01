@@ -22,25 +22,43 @@
 			android:layout_height="?attr/actionBarSize"
 			android:background="?attr/colorPrimary"
 			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+			app:title="@string/task2"/>
+		<!--TODO:待改动显示内容-->
 
-		<!--TODO:在这里写界面-->
+		<!--在这里写界面-->
 
-		<TextView
-			android:id="@+id/time_action"
+		<RelativeLayout
 			android:layout_width="300dp"
 			android:layout_height="300dp"
-			android:text="00:00"
-			style="@style/doingtask"
 			android:background="@drawable/doing_task"
-			android:layout_gravity="center"
-			android:gravity="center"/>
+			android:layout_gravity="center">
 
+			<TextView
+				android:id="@+id/time_action"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="00:00"
+				style="@style/doingtask"
+				android:layout_centerVertical="true"
+				android:layout_centerHorizontal="true"/>
+
+			<TextView
+				android:id="@+id/time_left"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/time3"
+				android:textSize="20dp"
+				android:textColor="@color/color4"
+				android:layout_below="@id/time_action"
+				android:layout_centerHorizontal="true"/>
+		</RelativeLayout>
+<!--三个按钮-->
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="80dp"
 			android:orientation="horizontal"
-			android:layout_marginTop="30dp">
+			android:layout_marginTop="10dp">
 
 			<ImageButton
 				android:id="@+id/give_up_button"
@@ -56,6 +74,46 @@
 				android:id="@+id/finish_button"
 				style="@style/imagebutton"
 				android:background="@drawable/end_watercolor" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<LinearLayout
+				android:id="@+id/layout_remark"
+				android:layout_width="wrap_content"
+				android:layout_height="90dp"
+				android:layout_gravity="bottom"
+				android:orientation="vertical">
+
+				<View
+					android:layout_width="match_parent"
+					android:layout_height="0.5dp"
+					android:background="@color/split_line">
+				</View>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/edit2"
+					android:textSize="20dp"
+					android:textColor="@color/pink"
+					android:layout_marginLeft="30dp"/>
+
+				<TextView
+					android:id="@+id/edit_remark"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/edit3"
+					android:layout_marginLeft="40dp"
+					android:layout_marginTop="5dp"
+					android:layout_marginRight="20dp"
+					android:maxEms="35"
+					android:ellipsize="end"
+					android:singleLine="true"/>
+
+			</LinearLayout>
 		</LinearLayout>
 	</LinearLayout>
 

@@ -68,10 +68,10 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         taskNameEditText = (EditText)findViewById(R.id.task_name_et);
         taskNameEditText.addTextChangedListener(tc);
-        assumedTimeEditText1 = (EditText)findViewById(R.id.assumed_time_et1);
-        assumedTimeEditText1.addTextChangedListener(tc);
-        assumedTimeEditText2 = (EditText)findViewById(R.id.assumed_time_et2);
-        assumedTimeEditText2.addTextChangedListener(tc);
+//        assumedTimeEditText1 = (EditText)findViewById(R.id.assumed_time_et1);
+//        assumedTimeEditText1.addTextChangedListener(tc);
+//        assumedTimeEditText2 = (EditText)findViewById(R.id.assumed_time_et2);
+//        assumedTimeEditText2.addTextChangedListener(tc);
         commentEditText = (EditText)findViewById(R.id.comment_et);
 
         //两张动画

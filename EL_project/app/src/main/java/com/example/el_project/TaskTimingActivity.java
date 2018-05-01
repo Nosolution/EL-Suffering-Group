@@ -23,17 +23,19 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
+public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	private Switch switch_clock_status;
 	private Switch switch_music_status;
@@ -51,6 +53,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private MusicController musicController;
 	private CountDownTimer tomatoClockCountDown;   //番茄钟倒计时
 	private CountDownTimer tomatoClockBreakCountDown;//番茄钟休息倒计时
+	private LinearLayout remarkLayout;             //备注所在的布局
+	private LinearLayout.LayoutParams remarkLayoutLayoutParams; //布局大小
+	private TextView remareText;                   //备注
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +75,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		switch_music_status.setChecked(GeneralSetting.getMusicOn(this));
 		switch_clock_status.setOnCheckedChangeListener(this);
 		switch_music_status.setOnCheckedChangeListener(this);
-
+		//计时动画
 		TextView tv=(TextView)findViewById(R.id.time_action);
 		AnimationDrawable ad=(AnimationDrawable)tv.getBackground();
 		ad.start();
@@ -113,6 +118,13 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			initStartTomatoClock();
 		}
 		*/
+
+		//TODO:不太懂现有的点击事件，自己写了单独一个 cz
+		remarkLayout=(LinearLayout)findViewById(R.id.layout_remark);
+		remarkLayout.setOnClickListener(this);
+		remarkLayoutLayoutParams=(LinearLayout.LayoutParams)remarkLayout.getLayoutParams();
+		remareText=(TextView)findViewById(R.id.edit_remark);
+
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu){
@@ -255,7 +267,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				}
 			}
 		});
+
 	}
+
 
 	//从数据库删除当前任务
 	private void removeTaskFromDB(){
@@ -407,5 +421,20 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	//从时分秒计转换到毫秒，注意：返回类型为long
 	public long hourMinSec2Miillis(int hour, int minute, int second){
 		return (long) hourMinSec2Seconds(hour, minute, second) * 1000;
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()){
+			case R.id.layout_remark:
+				if(remarkLayoutLayoutParams.height==90){
+					remarkLayoutLayoutParams.height=100;
+					remareText.setMaxLines(8);
+				}else if(remarkLayoutLayoutParams.height==100){
+					remarkLayoutLayoutParams.height=90;
+					remareText.setMaxLines(2);
+					remareText.setEllipsize(TextUtils.TruncateAt.END);
+				}
+		}
 	}
 }
