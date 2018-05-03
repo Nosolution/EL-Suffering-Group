@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">EL_project</string>
+    <string name="app_name">EL_project</string>
     <string name="add_task_activity_title">添加任务</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="cancle">取消</string>
@@ -32,4 +32,9 @@
     <string name="string_if_music_on">音乐</string>
     <string name="string_if_tomato_clock_on">番茄钟</string>
     <string name="string_tomato_clock_on">时长</string>
+    <string name="bar">添加任务</string>
+
+    <!--drawer_setting-->
+    <string name="edit3">  这里是备注内容测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试</string>
+    <string name="time3">距离完成还有00:00</string>
 </resources>
