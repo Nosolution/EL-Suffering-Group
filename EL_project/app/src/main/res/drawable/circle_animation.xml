@@ -4,9 +4,9 @@
     android:oneshot="true">
 
     <item android:drawable="@drawable/circle"
-        android:duration="250"></item>
+        android:duration="50"></item>
 
     <item android:drawable="@drawable/circle2"
-        android:duration="250"></item>
+        android:duration="50"></item>
 
 </animation-list>
