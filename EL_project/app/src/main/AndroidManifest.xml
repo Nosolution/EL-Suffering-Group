@@ -12,17 +12,20 @@
 		android:roundIcon="@mipmap/ic_launcher_round"
 		android:supportsRtl="true"
 		android:theme="@style/AppTheme">
-		<activity
-			android:name=".MainActivity"
-			android:label="赶快来创建你的任务表吧">
+
+		 <activity
+		 android:name=".MainActivity"
+		 android:label="赶快来创建你的任务表吧">
+
 			 <intent-filter>
-			 <action android:name="android.intent.action.MAIN" />
+				 <action android:name="android.intent.action.MAIN" />
 
-
-			 <category android:name="android.intent.category.LAUNCHER" />
+				 <category android:name="android.intent.category.LAUNCHER" />
 			 </intent-filter>
-		</activity>
-		<activity android:name=".DrawerSettingActivity">
+
+		 </activity>
+
+		<activity android:name=".TaskTimingActivity">
 			<!--<intent-filter>-->
 				<!--<action android:name="android.intent.action.MAIN" />-->
 
@@ -30,23 +33,22 @@
 			<!--</intent-filter>-->
 		</activity>
 
-        <!--<activity-->
-            <!--android:name=".AddTaskActivity"-->
-            <!--android:label="@string/add_task_activity_title">-->
+        <activity
+            android:name=".EditTaskActivity"
+            android:label="@string/add_task_activity_title">
+			<!--<intent-filter>-->
+				<!--<action android:name="android.intent.action.MAIN" />-->
 
-        <!--</activity>-->
-
-		<activity
-			android:name=".EditTaskActivity"
-			android:label="@string/add_task_activity_title">
-
+				<!--<category android:name="android.intent.category.LAUNCHER" />-->
+			<!--</intent-filter>-->
 		</activity>
-		
+
         <activity
 			android:name=".TaskOngoingActivity"
 			android:launchMode="singleTop">
 
         </activity>
-    </application>
+
+	</application>
 
 </manifest>
