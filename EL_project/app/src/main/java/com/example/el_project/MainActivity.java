@@ -82,17 +82,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onItemLongClick(View view, int position) {
-                Task task = mTaskList.get(position);
-//                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-                if(!getEditMode()){
-                    setEditMode(true);
-                    task.switchBackground();
-                    adapter.changeItemBackGround(position);
-                }
+//                Task task = mTaskList.get(position);
+////                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
+//                if(!getEditMode()){
+//                    setEditMode(true);
+//                    task.switchBackground();
+//                    adapter.changeItemBackGround(position);
+//                }
             }
         });
 
-        button1 =(FloatingActionButton)findViewById(R.id.fab_add);
+        button1 =findViewById(R.id.fab_add);
         fab_1 = findViewById(R.id.fab_1);
         fab_text = findViewById(R.id.fab_text);
         fab_start = findViewById(R.id.fab_start);
