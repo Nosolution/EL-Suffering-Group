@@ -15,26 +15,26 @@
 		<activity
 			android:name=".MainActivity"
 			android:label="赶快来创建你的任务表吧">
-			 <!--<intent-filter>-->
-			 <!--<action android:name="android.intent.action.MAIN" />-->
+			 <intent-filter>
+			 <action android:name="android.intent.action.MAIN" />
 
 
-			 <!--<category android:name="android.intent.category.LAUNCHER" />-->
-			 <!--</intent-filter>-->
+			 <category android:name="android.intent.category.LAUNCHER" />
+			 </intent-filter>
 		</activity>
 		<activity android:name=".DrawerSettingActivity">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
+			<!--<intent-filter>-->
+				<!--<action android:name="android.intent.action.MAIN" />-->
 
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
+				<!--<category android:name="android.intent.category.LAUNCHER" />-->
+			<!--</intent-filter>-->
 		</activity>
 
-        <activity
-            android:name=".AddTaskActivity"
-            android:label="@string/add_task_activity_title">
+        <!--<activity-->
+            <!--android:name=".AddTaskActivity"-->
+            <!--android:label="@string/add_task_activity_title">-->
 
-        </activity>
+        <!--</activity>-->
 
 		<activity
 			android:name=".EditTaskActivity"
@@ -42,7 +42,9 @@
 
 		</activity>
 		
-        <activity android:name=".TaskOngoingActivity">
+        <activity
+			android:name=".TaskOngoingActivity"
+			android:launchMode="singleTop">
 
         </activity>
     </application>
