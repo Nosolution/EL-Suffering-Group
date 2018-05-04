@@ -37,16 +37,16 @@ public class MainActivity extends AppCompatActivity {
     //颜色ID数组，用于循环改变任务背景颜色
 
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
-    private boolean editMode;
+    private int selectedPosition;//被选中的Item位置
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editMode = false;
         dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 1);
         initTasks();  //初始化数据
+        selectedPosition=-1;
 
         Toolbar toolbar = findViewById(R.id.title_toolbar);
         setSupportActionBar(toolbar);
@@ -67,14 +67,22 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(View view, int position) {
                 Task task = mTaskList.get(position);
 //                Toast.makeText(view.getContext(), "you clicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-                if (!getEditMode()){
-                    showDetails(position);
-                    if (!fabOpened) {
-                        openMenu(button1);
-                    }
-
+                if (!fabOpened&&selectedPosition==-1) {
+                    openMenu(button1);
+                    selectedPosition=position;
+                    task.switchBackground();
+                    adapter.changeItemBackGround(position);
+                }
+                else if(fabOpened&&selectedPosition!=position){
+                    Task previousTask=mTaskList.get(selectedPosition);
+                    previousTask.switchBackground();
+                    adapter.changeItemBackGround(selectedPosition);
+                    closeMenu(button1);
+                    selectedPosition=-1;
                 }
                 else{
+                    closeMenu(button1);
+                    selectedPosition=-1;
                     task.switchBackground();
                     adapter.changeItemBackGround(position);
                 }
@@ -84,11 +92,26 @@ public class MainActivity extends AppCompatActivity {
             public void onItemLongClick(View view, int position) {
                 Task task = mTaskList.get(position);
 //                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-                if(!getEditMode()){
-                    setEditMode(true);
+                if (!fabOpened&&selectedPosition==-1) {
+                    openMenu(button1);
+                    selectedPosition=position;
                     task.switchBackground();
                     adapter.changeItemBackGround(position);
                 }
+                else if(fabOpened&&selectedPosition!=position){
+                    Task previousTask=mTaskList.get(selectedPosition);
+                    previousTask.switchBackground();
+                    adapter.changeItemBackGround(selectedPosition);
+                    closeMenu(button1);
+                    selectedPosition=-1;
+                }
+                else{
+                    closeMenu(button1);
+                    selectedPosition=-1;
+                    task.switchBackground();
+                    adapter.changeItemBackGround(position);
+                }
+
             }
         });
 
@@ -107,7 +130,18 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(intent,1);//对是否点击了完成按钮实现监听
                 } else {
                     closeMenu(button1);
+                    Task task = mTaskList.get(selectedPosition);
+                    task.switchBackground();
+                    adapter.changeItemBackGround(selectedPosition);
+                    selectedPosition=-1;
                 }
+            }
+        });
+
+        fab_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDetails(selectedPosition);
             }
         });
     }
@@ -221,18 +255,18 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
     }
 
-    private void setEditMode(boolean flag) {editMode=flag;}
-    private boolean getEditMode(){return editMode;}
 
     @Override
     public void onBackPressed() {
-        if(getEditMode()){
-            setEditMode(false);
-            adapter.cleanSelected();//编辑模式下点击返回键退出编辑模式
-        }
-        else{
-            super.onBackPressed();
-        }
+//        if(fabOpened){
+//            closeMenu(button1);
+//            selectedPosition=-1;
+////            adapter.cleanSelected();//编辑模式下点击返回键退出编辑模式
+//        }
+//        else{
+//            super.onBackPressed();
+//        }
+        super.onBackPressed();
     }
 
     private void showDetails(final int position){

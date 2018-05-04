@@ -17,7 +17,7 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 	private List<Task> mTaskList;
-	private SparseBooleanArray mSelectedPositions = new SparseBooleanArray();//储存被选中的Item的位置
+//	private SparseBooleanArray mSelectedPositions = new SparseBooleanArray();//储存被选中的Item的位置
 	private boolean mIsSelectable = false; //是否可被编辑
 
 	//提供一个合适的construction（由dataset类型决定）//构造方法上移，看起来更美观
@@ -96,61 +96,61 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	//修改Item的选择状态，改变背景
 	public void changeItemBackGround(int position){
 		notifyItemChanged(position);
-		setItemSelected(position,!isItemSelected(position));
+//		setItemSelected(position,!isItemSelected(position));
 	}
 
 	//更新adpter的数据和选择状态
 	public void updateDataSet(ArrayList<Task> list) {
 		this.mTaskList = list;
-		mSelectedPositions = new SparseBooleanArray();
+//		mSelectedPositions = new SparseBooleanArray();
 	}
 
-	//获得选中条目的动态数组
-	public ArrayList<Task> getSelectedItem() {
-		ArrayList<Task> selectedList = new ArrayList<>();
-		for (int i = 0; i < mTaskList.size(); i++) {
-			if (isItemSelected(i)) {
-				selectedList.add(mTaskList.get(i));
-			}
-		}
-		return selectedList;
-	}
+//	//获得选中条目的动态数组
+//	public ArrayList<Task> getSelectedItem() {
+//		ArrayList<Task> selectedList = new ArrayList<>();
+//		for (int i = 0; i < mTaskList.size(); i++) {
+//			if (isItemSelected(i)) {
+//				selectedList.add(mTaskList.get(i));
+//			}
+//		}
+//		return selectedList;
+//	}
 
 	public void initSelectPositions(){
 
 	}
 
-	//设置给定位置条目的选择状态
-	public void setItemSelected(int position,boolean ischecked){
-		mSelectedPositions.put(position,ischecked);
-	}
-
-	//根据位置判断条目是否选中
-	public boolean isItemSelected(int position){
-		return mSelectedPositions.get(position);
-	}
-
-	//根据位置判断条目是否可选
-	public boolean isSelectable() {
-		return mIsSelectable;
-	}
-
-	//设置给定位置条目的可选与否的状态
-	public void setSelectable(boolean selectable) {
-		mIsSelectable = selectable;
-	}
-
-	//清除选择状态
-	public void cleanSelected(){
-		for(int i=0;i<mTaskList.size();i++){
-			if (isItemSelected(i)){
-				Task task=mTaskList.get(i);
-				task.switchBackground();
-				notifyItemChanged(i);
-			}
-		}
-		mSelectedPositions.clear();
-	}
+//	//设置给定位置条目的选择状态
+//	public void setItemSelected(int position,boolean ischecked){
+//		mSelectedPositions.put(position,ischecked);
+//	}
+//
+//	//根据位置判断条目是否选中
+//	public boolean isItemSelected(int position){
+//		return mSelectedPositions.get(position);
+//	}
+//
+//	//根据位置判断条目是否可选
+//	public boolean isSelectable() {
+//		return mIsSelectable;
+//	}
+//
+//	//设置给定位置条目的可选与否的状态
+//	public void setSelectable(boolean selectable) {
+//		mIsSelectable = selectable;
+//	}
+//
+//	//清除选择状态
+//	public void cleanSelected(){
+//		for(int i=0;i<mTaskList.size();i++){
+//			if (isItemSelected(i)){
+//				Task task=mTaskList.get(i);
+//				task.switchBackground();
+//				notifyItemChanged(i);
+//			}
+//		}
+//		mSelectedPositions.clear();
+//	}
 
 
 	//自定义Item点击接口
