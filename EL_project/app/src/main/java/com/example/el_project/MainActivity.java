@@ -19,16 +19,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private MyDatabaseHelper dbHelper;
-    private FloatingActionButton button1;
-    private android.support.design.widget.FloatingActionButton fab_1, fab_text, fab_start;
-    private boolean fabOpened = false;
+    private FloatingActionButton baseButton;
+    private android.support.design.widget.FloatingActionButton fabDelete, fabDetail, fabStart;
+    private boolean isFabOpened = false;
     private Animation in_from_fab;
     private Animation out_to_fab;
 
@@ -37,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
     //颜色ID数组，用于循环改变任务背景颜色
 
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
-    private boolean editMode;
+    private int selectedPosition;//被选中的Item位置
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editMode = false;
         dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 1);
         initTasks();  //初始化数据
+        selectedPosition=-1;
 
         Toolbar toolbar = findViewById(R.id.title_toolbar);
         setSupportActionBar(toolbar);
@@ -67,49 +66,103 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(View view, int position) {
                 Task task = mTaskList.get(position);
 //                Toast.makeText(view.getContext(), "you clicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-                if (!getEditMode()){
-                    showDetails(position);
-                    if (!fabOpened) {
-                        openMenu(button1);
-                    }
-
+                if (!isFabOpened&&selectedPosition==-1) {
+                    openMenu(baseButton);
+                    selectedPosition=position;
+                    task.switchBackground();
+                    adapter.changeItemBackGround(position);
+                }
+                else if(isFabOpened&&selectedPosition!=position){
+                    Task previousTask=mTaskList.get(selectedPosition);
+                    previousTask.switchBackground();
+                    adapter.changeItemBackGround(selectedPosition);
+                    closeMenu(baseButton);
+                    selectedPosition=-1;
                 }
                 else{
+                    closeMenu(baseButton);
+                    selectedPosition=-1;
                     task.switchBackground();
                     adapter.changeItemBackGround(position);
                 }
             }
 
+            //长按与短按功能相同
             @Override
             public void onItemLongClick(View view, int position) {
-//                Task task = mTaskList.get(position);
-////                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-//                if(!getEditMode()){
-//                    setEditMode(true);
-//                    task.switchBackground();
-//                    adapter.changeItemBackGround(position);
-//                }
+                Task task = mTaskList.get(position);
+//                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
+                if (!isFabOpened&&selectedPosition==-1) {
+                    openMenu(baseButton);
+                    selectedPosition=position;
+                    task.switchBackground();
+                    adapter.changeItemBackGround(position);
+                }
+                else if(isFabOpened&&selectedPosition!=position){
+                    Task previousTask=mTaskList.get(selectedPosition);
+                    previousTask.switchBackground();
+                    adapter.changeItemBackGround(selectedPosition);
+                    closeMenu(baseButton);
+                    selectedPosition=-1;
+                }
+                else{
+                    closeMenu(baseButton);
+                    selectedPosition=-1;
+                    task.switchBackground();
+                    adapter.changeItemBackGround(position);
+                }
+
             }
         });
 
-        button1 =findViewById(R.id.fab_add);
-        fab_1 = findViewById(R.id.fab_1);
-        fab_text = findViewById(R.id.fab_text);
-        fab_start = findViewById(R.id.fab_start);
-        fab_1.setVisibility(View.INVISIBLE);
-        fab_text.setVisibility(View.INVISIBLE);
-        fab_start.setVisibility(View.INVISIBLE);
-        button1.setOnClickListener(new View.OnClickListener() {
+        baseButton =findViewById(R.id.fab_base);
+        fabDelete = findViewById(R.id.fab_delete);
+        fabDetail = findViewById(R.id.fab_detail);
+        fabStart = findViewById(R.id.fab_start);
+        fabDelete.setVisibility(View.INVISIBLE);
+        fabDetail.setVisibility(View.INVISIBLE);
+        fabStart.setVisibility(View.INVISIBLE);
+
+        baseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!fabOpened) {
+                if (!isFabOpened) {
                     Intent intent = new Intent(MainActivity.this,EditTaskActivity.class);
                     startActivityForResult(intent,1);//对是否点击了完成按钮实现监听
                 } else {
-                    closeMenu(button1);
+                    closeMenu(baseButton);
+                    Task task = mTaskList.get(selectedPosition);
+                    task.switchBackground();
+                    adapter.changeItemBackGround(selectedPosition);
+                    selectedPosition=-1;
                 }
             }
         });
+        //立即开始任务
+        fabStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               startTask();
+            }
+        });
+
+        //显示详情
+        fabDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDetails(selectedPosition);
+            }
+        });
+
+        //删除任务
+        fabDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //待完成
+            }
+        });
+
+
     }
 
     // 点击task后，悬浮按钮产生的动画
@@ -117,14 +170,14 @@ public class MainActivity extends AppCompatActivity {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotation", 0, -155, -135 );
         animator.setDuration(500);
         animator.start();
-        fabOpened = true;
+        isFabOpened = true;
         in_from_fab = AnimationUtils.loadAnimation(MainActivity.this, R.anim.in_from_fab);
-        fab_1.setVisibility(View.VISIBLE);
-        fab_text.setVisibility(View.VISIBLE);
-        fab_start.setVisibility(View.VISIBLE);
-        fab_1.startAnimation(in_from_fab);
-        fab_text.startAnimation(in_from_fab);
-        fab_start.startAnimation(in_from_fab);
+        fabDelete.setVisibility(View.VISIBLE);
+        fabDetail.setVisibility(View.VISIBLE);
+        fabStart.setVisibility(View.VISIBLE);
+        fabDelete.startAnimation(in_from_fab);
+        fabDetail.startAnimation(in_from_fab);
+        fabStart.startAnimation(in_from_fab);
 
     }
 
@@ -133,11 +186,11 @@ public class MainActivity extends AppCompatActivity {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotation", -135, 20, 0);
         animator.setDuration(500);
         animator.start();
-        fabOpened = false;
+        isFabOpened = false;
         out_to_fab = AnimationUtils.loadAnimation(MainActivity.this, R.anim.out_to_fab);
-        fab_1.startAnimation(out_to_fab);
-        fab_text.startAnimation(out_to_fab);
-        fab_start.startAnimation(out_to_fab);
+        fabDelete.startAnimation(out_to_fab);
+        fabDetail.startAnimation(out_to_fab);
+        fabStart.startAnimation(out_to_fab);
     }
     //重载方法，若点击了完成按钮，返回此Acivity时更新recyclerview
     @Override
@@ -221,18 +274,21 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
     }
 
-    private void setEditMode(boolean flag) {editMode=flag;}
-    private boolean getEditMode(){return editMode;}
+    private void startTask(){
+        Intent intent=new Intent(MainActivity.this,TaskTimingActivity.class);
+        intent.putExtra("intent_task_id",Integer.parseInt(taskList.get(selectedPosition)[0]));
+        intent.putExtra("intent_task_name",taskList.get(selectedPosition)[1]);
+        String[] tempString=taskList.get(selectedPosition)[2].split(":");
+        intent.putExtra("intent_task_hours_required", Integer.parseInt(tempString[0]));
+        intent.putExtra("intent_task_minutes_required", Integer.parseInt(tempString[1]));
+        intent.putExtra("intent_task_comments",taskList.get(selectedPosition)[6]);
+        startActivity(intent);
+    }
+
 
     @Override
     public void onBackPressed() {
-        if(getEditMode()){
-            setEditMode(false);
-            adapter.cleanSelected();//编辑模式下点击返回键退出编辑模式
-        }
-        else{
-            super.onBackPressed();
-        }
+        super.onBackPressed();
     }
 
     private void showDetails(final int position){

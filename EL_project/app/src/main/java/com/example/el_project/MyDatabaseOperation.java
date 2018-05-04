@@ -9,10 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class MyDatabaseOperation {
 //    private MyDatabaseHelper dbHelper= new MyDatabaseHelper("TaskStore.db", null, 1);
-    /*传入上下文context与任务id
-
+    /*
+    传入上下文context与任务id
      */
-    public static void removeTask(Context context,int id){
+    public static void deleteTask(Context context,int id){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,1);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         db.delete("Tasklist","id=?",new String[]{String.valueOf(id)});

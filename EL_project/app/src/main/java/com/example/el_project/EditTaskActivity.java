@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +38,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private Switch swc;
     private MyDatabaseHelper dbHelper;
     private EditText taskNameEditText;
-    private EditText assumedTimeEditText1;
-    private EditText assumedTimeEditText2;
     private EditText commentEditText;
     private Button finishEditing;//加入待办按钮
     private Button startNow;//立即开始按钮
@@ -45,10 +45,14 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private int selectedImageViewPosition;//被选择的ImageView的位置
     private boolean editMode;//是否是编辑任务
     private String taskId;//数据库中task的ID，作为唯一标识符
+    private Spinner hourSpinner,minuteSpinner;
+    private String hour, minute;//Spinner的显示文本
+    private String[]hourPosition={"00","01","02","03","04","05"};
+    private String[]minutePosition={"00","10","20","30","40","50",};
 
 //    private SparseBooleanArray emergencyDegree;
     private boolean updateFlag;
-    private Drawable draw1,draw2;
+    private Drawable draw1;
 
 //TODO:定义变量
 
@@ -65,18 +69,42 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         finishEditing.setOnClickListener(this);
         startNow.setOnClickListener(this);
         textChange tc = new textChange();//文本改变监视器
+        hour ="00";
+        minute ="00";
 
         taskNameEditText = (EditText)findViewById(R.id.task_name_et);
         taskNameEditText.addTextChangedListener(tc);
-//        assumedTimeEditText1 = (EditText)findViewById(R.id.assumed_time_et1);
-//        assumedTimeEditText1.addTextChangedListener(tc);
-//        assumedTimeEditText2 = (EditText)findViewById(R.id.assumed_time_et2);
-//        assumedTimeEditText2.addTextChangedListener(tc);
+        hourSpinner=findViewById(R.id.hour_spinner);
+        minuteSpinner=findViewById(R.id.minute_spinner);
         commentEditText = (EditText)findViewById(R.id.comment_et);
 
-        //两张动画
-        draw1=(AnimationDrawable)getDrawable(R.drawable.circle_animation);//点亮动画
-//        draw2=(AnimationDrawable)getDrawable(R.drawable.back_circle_animation);//点灭动画
+        //两个Spinner的点击事件
+        hourSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                hour =getResources().getStringArray(R.array.hour_list)[position];
+                decideButtonEnable();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        minuteSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                minute =getResources().getStringArray(R.array.minute_list)[position];
+                decideButtonEnable();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        draw1=getDrawable(R.drawable.circle_animation);//点亮动画
         //打开数据库
         dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
         updateFlag=false;
@@ -162,8 +190,22 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         taskId=taskDetails[0];
         taskNameEditText.setText(taskDetails[1]);
         String[]tempString=taskDetails[2].split(":");
-        assumedTimeEditText1.setText(tempString[0]);
-        assumedTimeEditText2.setText(tempString[1]);
+//        assumedTimeEditText1.setText(tempString[0]);
+//        assumedTimeEditText2.setText(tempString[1]);
+        for(int i=0;i<hourPosition.length;i++){
+            if(tempString[0].equals(hourPosition[i])){
+                hourSpinner.setSelection(i);
+                break;
+            }
+        }
+        for(int j=0;j<minutePosition.length;j++){
+            if(tempString[1].equals(minutePosition[j])){
+                minuteSpinner.setSelection(j);
+                break;
+            }
+        }
+        hour =tempString[0];
+        minute =tempString[1];
 
         for(Object key :ivMap.keySet()){
             if(taskDetails[4].equals(String.valueOf(ivMap.get(key)))){
@@ -205,10 +247,10 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                     Intent intent=new Intent(EditTaskActivity.this,TaskTimingActivity.class);
                     intent.putExtra("intent_task_id",Integer.valueOf(taskId));
                     intent.putExtra("intent_task_name",taskNameEditText.getText().toString());
-                    intent.putExtra("intent_task_hours_required",assumedTimeEditText1.getText().toString());
-                    intent.putExtra("intent_task_minutes_required",assumedTimeEditText2.getText().toString());
+                    intent.putExtra("intent_task_hours_required", Integer.parseInt(hour));
+                    intent.putExtra("intent_task_minutes_required", Integer.parseInt(minute));
                     intent.putExtra("intent_task_comments",commentEditText.getText().toString());
-                    startActivityForResult(intent,3);
+                    startActivity(intent);
                     break;
             }
         }
@@ -220,7 +262,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         SQLiteDatabase db = dbHelper.getWritableDatabase();//真正打开数据库
         ContentValues values = new ContentValues();//传值工具
         values.put("task",taskNameEditText.getText().toString() );
-        values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
+        values.put("assumedtime", hour +":"+ minute);
         values.put("deadline",ddlTime.getText().toString());//对应每一列传值
         values.put("emergencydegree",selectedImageViewPosition>=0? selectedImageViewPosition : 1);//默认值为1
         values.put("isdailytask",isDailyTask());
@@ -228,9 +270,11 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
         Toast toast = Toast.makeText(EditTaskActivity.this,"成功添加任务",Toast.LENGTH_SHORT);
         showMyToast(toast,1000);//提示成功添加任务
-        taskNameEditText.setText("");assumedTimeEditText1.setText("");
-        assumedTimeEditText2.setText("");commentEditText.setText("");//清空所有Edittext中的内容
+        taskNameEditText.setText("");
+        hourSpinner.setSelection(0);
+        minuteSpinner.setSelection(0);
         swc.setChecked(false);
+        commentEditText.setText("");
     }
 
     //修改任务
@@ -238,7 +282,8 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("task",taskNameEditText.getText().toString() );
-        values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
+//        values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
+        values.put("assumedtime", hour +":"+ minute);
         values.put("deadline",ddlTime.getText().toString());
         values.put("emergencydegree",selectedImageViewPosition>=0? selectedImageViewPosition : 1);
         values.put("isdailytask",isDailyTask());
@@ -324,6 +369,19 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         startNow.setEnabled(editMode);
     }
 
+    private void decideButtonEnable(){//检测文件名是否为空和Spinner选择的时间是否为0
+        boolean flag1=taskNameEditText.getText().toString().length()>0;
+        boolean flag2=!hour.equals("00")||!minute.equals("00");
+        if(flag1&&flag2){
+            finishEditing.setEnabled(true);
+            startNow.setEnabled(true);
+        }
+        else{
+            finishEditing.setEnabled(false);
+            startNow.setEnabled(false);
+        }
+    }
+
     //内部类，监控Edittext文本变化，实现必填与选填功能
     class textChange implements TextWatcher{
         @Override
@@ -336,17 +394,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            boolean flag1=taskNameEditText.getText().toString().length()>0;
-            boolean flag2=assumedTimeEditText1.getText().toString().length()>0;
-            boolean flag3=assumedTimeEditText2.getText().toString().length()>0;
-            if(flag1&&flag2&&flag3){
-                finishEditing.setEnabled(true);
-                startNow.setEnabled(true);
-            }
-            else{
-                finishEditing.setEnabled(false);
-                startNow.setEnabled(false);
-            }
+           decideButtonEnable();
         }
     }
 
