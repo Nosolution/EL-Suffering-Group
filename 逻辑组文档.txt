@@ -1,3 +1,8 @@
+——————Commit version1.06——————
+整合了代码，对接上了Spinner和展开动画
+添加删除任务的静态方法，在MyDatabaseOperation这个类中
+写好了对任务进行界面的接口，包装好了数据，点击相应按钮即可进入任务进行界面，只要任务进行界面接收好就行了
+
 ——————Commit version1.05——————
 添加了修改功能。
 将AddTaskActivity更名为EditTaskActivity,其他的一些组件或者变量的名称也做了相应的调整。
