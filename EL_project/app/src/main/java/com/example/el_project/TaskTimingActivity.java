@@ -7,18 +7,19 @@ package com.example.el_project;
 * 我把layout几项有改过名，Activity名字我也改了
 * 番茄钟功能暂未实现
 * 番茄钟到时通知功能暂未实现
-* 项目名等显示也暂未实现
 * */
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -91,6 +92,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 
 		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
+
 
 
 		//初始化Toolbar
@@ -508,13 +510,23 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockBreakCountDown.start();
 	}
 
+	//发送通知，暂只用于番茄钟提醒
+	//@param:提醒的标题，提醒的正文内容
 	private void sendNotification(String title, String text){
 
-		//TODO:通知发不出去
 		Intent intent = new Intent(this, TaskTimingActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		Notification notification= new Notification.Builder(this)
+
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+			NotificationChannel channel = new NotificationChannel("channel_tomato_clock", "ChannelTomatoClock", NotificationManager.IMPORTANCE_DEFAULT);
+			channel.enableLights(false); //是否在桌面icon右上角展示小红点
+			channel.setShowBadge(false); //是否在久按桌面图标时显示此渠道的通知
+			channel.enableVibration(false);
+			channel.setSound(null, null);
+			notificationManager.createNotificationChannel(channel);
+		}
+		Notification notification= new NotificationCompat.Builder(this, "channel_tomato_clock")
 				.setAutoCancel(true)
 				.setContentText(text)
 				.setContentTitle(title)
@@ -541,13 +553,13 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		return String.format("%02d:%02d:%02d", hour, minute, second);
 	}
 
-	public String millis2HourMinSecString(long millis, int itemNums){
+	public String millis2HourMinSecString(long millis, int itemNum){
 		long second = millis / 1000;
 		long minute = second / 60;
 		long hour = minute / 60;
 		minute = minute % 60;
 		second = second % 60;
-		if(itemNums == 2){
+		if(itemNum == 2){
 			return String.format("%02d:%02d", hour, minute);
 		}else {
 			return String.format("%02d:%02d:%02d", hour, minute, second);

@@ -245,7 +245,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                     break;
                 case R.id.start_now:
                     Intent intent=new Intent(EditTaskActivity.this,TaskTimingActivity.class);
-                    intent.putExtra("intent_task_id",Integer.valueOf(taskId));
+                    intent.putExtra("intent_task_id",Integer.parseInt(taskId));
                     intent.putExtra("intent_task_name",taskNameEditText.getText().toString());
                     intent.putExtra("intent_task_hours_required", Integer.parseInt(hour));
                     intent.putExtra("intent_task_minutes_required", Integer.parseInt(minute));
