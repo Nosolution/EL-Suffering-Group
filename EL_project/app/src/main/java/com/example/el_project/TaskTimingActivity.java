@@ -115,7 +115,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 		initMainFindView();              //初始那些计时控制部分控件对象
 		onClickListenerMainSetter();     //设置计时控制部分所有涉及到的有关的监听器
-//		initView();                      //初始化整个布局的其余部分，将包括显示的Task各项信息
 
 		//取得开始任务时传来的任务详细信息
 //		Intent intentTaskInfo = getIntent();
@@ -125,8 +124,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 //		int taskHoursRequired = intentTaskInfo.getIntExtra("intent_task_hours_required", 0);
 //		int taskMintersRequired = intentTaskInfo.getIntExtra("intent_task_minutes_required", 0);
 //		taskComments = intentTaskInfo.getStringExtra("intent_task_comments");
+//		Log.d("ReceiveTaskInfo", "onCreate: " + taskComments);
 //		taskMillisRequired = hourMinSec2Millis(taskHoursRequired, taskMintersRequired, 0);
-
+//
+//		initView();                      //初始化整个布局的其余部分，将包括显示的Task各项信息
 
 		//设置音乐开启
 		if(GeneralSetting.getMusicOn(this)) {
@@ -454,7 +455,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			@Override
 			public void onTick(long millisGoneThrough) {
 				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
-//				timeLeft.setText("距离完成还有" + millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough), 0), 2));
+				timeLeft.setText("距离完成还有" + millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough), 0), 2));
 			}
 		};
 	}
