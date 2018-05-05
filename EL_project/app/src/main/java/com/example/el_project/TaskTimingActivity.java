@@ -80,6 +80,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private TextView remarkText;                   //备注
 	private Spinner spinner_choose_time;
 	private List<Map<String,Object>> data_time;
+	private Toolbar toolbar;
 
 	private Tencent mTencent;
 
@@ -93,7 +94,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 
 		//初始化Toolbar
-		Toolbar toolbar=findViewById(R.id.setting_toolbar);
+		toolbar=findViewById(R.id.setting_toolbar);
 		setSupportActionBar(toolbar);
 		mDrawerLayout=findViewById(R.id.drawer_layout);
 		ActionBar actionBar=getSupportActionBar();
@@ -105,6 +106,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		text_clock_on = findViewById(R.id.text_clock_on);
 		text_chosen_time = findViewById(R.id.text_chosen_time);
 		timeLeft = findViewById(R.id.time_left);
+		remarkText = findViewById(R.id.edit_remark);
 		switch_clock_status.setChecked(GeneralSetting.getTomatoClockEnable(this));
 		switch_music_status.setChecked(GeneralSetting.getMusicOn(this));
 		switch_clock_status.setOnCheckedChangeListener(this);
@@ -125,17 +127,17 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		onClickListenerMainSetter();     //设置计时控制部分所有涉及到的有关的监听器
 
 		//取得开始任务时传来的任务详细信息
-//		Intent intentTaskInfo = getIntent();
-//		taskId = intentTaskInfo.getIntExtra("intent_task_id", 0);
-//		if (taskId == 0) finish();                                            //若未收到任务ID，退出
-//		taskName = intentTaskInfo.getStringExtra("intent_task_name");
-//		int taskHoursRequired = intentTaskInfo.getIntExtra("intent_task_hours_required", 0);
-//		int taskMintersRequired = intentTaskInfo.getIntExtra("intent_task_minutes_required", 0);
-//		taskComments = intentTaskInfo.getStringExtra("intent_task_comments");
-//		Log.d("ReceiveTaskInfo", "onCreate: " + taskComments);
-//		taskMillisRequired = hourMinSec2Millis(taskHoursRequired, taskMintersRequired, 0);
-//
-//		initView();                      //初始化整个布局的其余部分，将包括显示的Task各项信息
+		Intent intentTaskInfo = getIntent();
+		taskId = intentTaskInfo.getIntExtra("intent_task_id", 0);
+		if (taskId == 0) finish();                                            //若未收到任务ID，退出
+		taskName = intentTaskInfo.getStringExtra("intent_task_name");
+		int taskHoursRequired = intentTaskInfo.getIntExtra("intent_task_hours_required", 0);
+		int taskMintersRequired = intentTaskInfo.getIntExtra("intent_task_minutes_required", 0);
+		taskComments = intentTaskInfo.getStringExtra("intent_task_comments");
+		Log.d("ReceiveTaskInfo", "onCreate: " + taskComments);
+		taskMillisRequired = hourMinSec2Millis(taskHoursRequired, taskMintersRequired, 0);
+
+		initView();                      //初始化整个布局的其余部分，将包括显示的Task各项信息
 
 		//设置音乐开启
 		if(GeneralSetting.getMusicOn(this)) {
@@ -350,6 +352,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	//TODO:初始化整个布局，包括显示的Task各项信息
 	private void initView(){
+		toolbar.setTitle(taskName);                                        //设置toolbar标题显示任务名
 		remarkText.setText(taskComments);                                  //设置备注显示
 	}
 
@@ -463,7 +466,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			@Override
 			public void onTick(long millisGoneThrough) {
 				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
-//				timeLeft.setText("距离完成还有" + millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough), 0), 2));
+				timeLeft.setText("距离完成还有" + millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough + 60000), 0), 2));
 			}
 		};
 	}
