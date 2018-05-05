@@ -29,4 +29,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation files('libs/open_sdk_r5990_lite.jar')
 }

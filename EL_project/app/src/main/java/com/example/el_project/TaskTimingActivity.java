@@ -2,18 +2,20 @@ package com.example.el_project;
 
 
 /*
+ * @author NA
 * 任务计时界面，即任务进行中的界面，右侧划出可进行设置
 * 我把layout几项有改过名，Activity名字我也改了
 * 番茄钟功能暂未实现
 * 番茄钟到时通知功能暂未实现
 * 项目名等显示也暂未实现
-* ——NA
 * */
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
@@ -25,6 +27,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,13 +63,19 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private TextView tomatoClockTime;              //显示番茄钟倒计时
 	private TextView text_clock_on;
 	private TextView text_chosen_time;
-	private TextView text_time;
+	private TextView timeLeft;
 	private MusicController musicController;
 	private CountDownTimer tomatoClockCountDown;   //番茄钟倒计时
 	private CountDownTimer tomatoClockBreakCountDown;//番茄钟休息倒计时
+
+	private int taskId;                              //任务id
+	private long taskMillisRequired;                 //任务预计用时，毫秒
+	private String taskName;                         //任务名
+	private String taskComments;                      //任务备注
+
 	private LinearLayout remarkLayout;             //备注所在的布局
 	private LinearLayout.LayoutParams remarkLayoutLayoutParams; //布局大小
-	private TextView remareText;                   //备注
+	private TextView remarkText;                   //备注
 	private Spinner spinner_choose_time;
 	private List<Map<String,Object>> data_time;
 
@@ -82,12 +91,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		ActionBar actionBar=getSupportActionBar();
 
 		//初始化设置界面具体内容
-		switch_clock_status=findViewById(R.id.switch_if_tomato_clock_on);
-		switch_music_status=findViewById(R.id.switch_if_music_on);
-		spinner_choose_time=findViewById(R.id.spinner_choose_time);
-		text_clock_on=findViewById(R.id.text_clock_on);
-		text_chosen_time=findViewById(R.id.text_chosen_time);
-		text_time=findViewById(R.id.text_time);
+		switch_clock_status = findViewById(R.id.switch_if_tomato_clock_on);
+		switch_music_status = findViewById(R.id.switch_if_music_on);
+		spinner_choose_time = findViewById(R.id.spinner_choose_time);
+		text_clock_on = findViewById(R.id.text_clock_on);
+		text_chosen_time = findViewById(R.id.text_chosen_time);
+		timeLeft = findViewById(R.id.time_left);
 		switch_clock_status.setChecked(GeneralSetting.getTomatoClockEnable(this));
 		switch_music_status.setChecked(GeneralSetting.getMusicOn(this));
 		switch_clock_status.setOnCheckedChangeListener(this);
@@ -97,7 +106,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//计时动画
 		TextView tv=(TextView)findViewById(R.id.time_action);
 		AnimationDrawable ad=(AnimationDrawable)tv.getBackground();
-		ad.start();
+//		ad.start(); //TODO:BUG!!若动画启动会报错
 
 		if(actionBar!=null){
 			actionBar.setDisplayHomeAsUpEnabled(true);  //显示导航按钮
@@ -106,7 +115,18 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 		initMainFindView();              //初始那些计时控制部分控件对象
 		onClickListenerMainSetter();     //设置计时控制部分所有涉及到的有关的监听器
-		initView();                      //初始化整个布局的其余部分，将包括显示的Task各项信息
+//		initView();                      //初始化整个布局的其余部分，将包括显示的Task各项信息
+
+		//取得开始任务时传来的任务详细信息
+//		Intent intentTaskInfo = getIntent();
+//		taskId = intentTaskInfo.getIntExtra("intent_task_id", 0);
+//		if (taskId == 0) finish();                                            //若未收到任务ID，退出
+//		taskName = intentTaskInfo.getStringExtra("intent_task_name");
+//		int taskHoursRequired = intentTaskInfo.getIntExtra("intent_task_hours_required", 0);
+//		int taskMintersRequired = intentTaskInfo.getIntExtra("intent_task_minutes_required", 0);
+//		taskComments = intentTaskInfo.getStringExtra("intent_task_comments");
+//		taskMillisRequired = hourMinSec2Millis(taskHoursRequired, taskMintersRequired, 0);
+
 
 		//设置音乐开启
 		if(GeneralSetting.getMusicOn(this)) {
@@ -142,7 +162,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		remarkLayout=(LinearLayout)findViewById(R.id.layout_remark);
 		remarkLayout.setOnClickListener(this);
 		remarkLayoutLayoutParams=(LinearLayout.LayoutParams)remarkLayout.getLayoutParams();
-		remareText=(TextView)findViewById(R.id.edit_remark);
+		remarkText =(TextView)findViewById(R.id.edit_remark);
 
 		//开启番茄钟设置
 		//数据源
@@ -278,6 +298,31 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 //        pause();
 	}
 
+	@Override
+	public void onBackPressed() {
+		final AlertDialog.Builder onBackAskQuitDialog =
+				new AlertDialog.Builder(this);
+		onBackAskQuitDialog.setTitle("放弃任务");
+		onBackAskQuitDialog.setMessage("是否放弃当前任务退出");
+		onBackAskQuitDialog.setPositiveButton("放弃任务", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				//TODO:放弃完成任务
+				//    changeTask();
+				musicController.stop();
+				showDropActivity();
+				havingTaskOngoing = false;
+			}
+		});
+		onBackAskQuitDialog.setNegativeButton("继续任务", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+			}
+		});
+		onBackAskQuitDialog.show();
+	}
+
 	@Override //保存实体状态，在内存被回收时也可恢复
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -296,7 +341,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	//TODO:初始化整个布局，包括显示的Task各项信息
 	private void initView(){
-
+		remarkText.setText(taskComments);                                  //设置备注显示
 	}
 
 	//所有setOnClickListener具体内容放这里
@@ -328,10 +373,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				if(!taskStatuePaused) {
 					pause();
 					taskStatuePaused = true;
+					btnPause.setBackgroundResource(R.drawable.doing_watercolor);
 				}
 				else {
 					resume();
 					taskStatuePaused = false;
+					btnPause.setBackgroundResource(R.drawable.stop_watercolor);
 				}
 			}
 		});
@@ -341,7 +388,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	//从数据库删除当前任务
 	private void removeTaskFromDB(){
-		//TODO:移除当前任务
+		MyDatabaseOperation.deleteTask(this, taskId);
 	}
 
 	//显示完成界面
@@ -407,6 +454,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			@Override
 			public void onTick(long millisGoneThrough) {
 				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
+//				timeLeft.setText("距离完成还有" + millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough), 0), 2));
 			}
 		};
 	}
@@ -481,13 +529,26 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		return String.format("%02d:%02d:%02d", hour, minute, second);
 	}
 
+	public String millis2HourMinSecString(long millis, int itemNums){
+		long second = millis / 1000;
+		long minute = second / 60;
+		long hour = minute / 60;
+		minute = minute % 60;
+		second = second % 60;
+		if(itemNums == 2){
+			return String.format("%02d:%02d", hour, minute);
+		}else {
+			return String.format("%02d:%02d:%02d", hour, minute, second);
+		}
+	}
+
 	//从时分秒计转换到秒
 	public int hourMinSec2Seconds(int hour, int minute, int second){
 		return hour * 3600 + minute * 60 + second;
 	}
 
 	//从时分秒计转换到毫秒，注意：返回类型为long
-	public long hourMinSec2Miillis(int hour, int minute, int second){
+	public long hourMinSec2Millis(int hour, int minute, int second){
 		return (long) hourMinSec2Seconds(hour, minute, second) * 1000;
 	}
 
@@ -497,11 +558,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			case R.id.layout_remark:
 				if(remarkLayoutLayoutParams.height==90){
 					remarkLayoutLayoutParams.height=100;
-					remareText.setMaxLines(8);
+					remarkText.setMaxLines(8);
 				}else if(remarkLayoutLayoutParams.height==100){
 					remarkLayoutLayoutParams.height=90;
-					remareText.setMaxLines(2);
-					remareText.setEllipsize(TextUtils.TruncateAt.END);
+					remarkText.setMaxLines(2);
+					remarkText.setEllipsize(TextUtils.TruncateAt.END);
 				}
 		}
 	}
