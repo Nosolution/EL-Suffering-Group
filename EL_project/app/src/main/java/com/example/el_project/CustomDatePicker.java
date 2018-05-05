@@ -364,6 +364,7 @@ public class CustomDatePicker {
         day.clear();
         int selectedYear = selectedCalender.get(Calendar.YEAR);
         int selectedMonth = selectedCalender.get(Calendar.MONTH) + 1;
+        //TODO:
         if (selectedYear == startYear && selectedMonth == startMonth) {
             for (int i = startDay; i <= selectedCalender.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
                 day.add(formatTimeUnit(i));

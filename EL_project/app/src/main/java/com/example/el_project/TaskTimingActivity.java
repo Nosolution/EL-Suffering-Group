@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 	private DrawerLayout mDrawerLayout;
 	private Switch switch_clock_status;
 	private Switch switch_music_status;
@@ -170,12 +170,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			initStartTomatoClock();
 		}
 		*/
-
-		//TODO:不太懂现有的点击事件，自己写了单独一个 cz
-		remarkLayout=(LinearLayout)findViewById(R.id.layout_remark);
-		remarkLayout.setOnClickListener(this);
-		remarkLayoutLayoutParams=(LinearLayout.LayoutParams)remarkLayout.getLayoutParams();
-		remarkText =(TextView)findViewById(R.id.edit_remark);
 
 		//开启番茄钟设置
 		//数据源
@@ -576,18 +570,4 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		return (long) hourMinSec2Seconds(hour, minute, second) * 1000;
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()){
-			case R.id.layout_remark:
-				if(remarkLayoutLayoutParams.height==90){
-					remarkLayoutLayoutParams.height=100;
-					remarkText.setMaxLines(8);
-				}else if(remarkLayoutLayoutParams.height==100){
-					remarkLayoutLayoutParams.height=90;
-					remarkText.setMaxLines(2);
-					remarkText.setEllipsize(TextUtils.TruncateAt.END);
-				}
-		}
-	}
 }
