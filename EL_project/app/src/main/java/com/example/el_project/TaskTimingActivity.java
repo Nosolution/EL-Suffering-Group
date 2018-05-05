@@ -41,6 +41,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.tauth.Tencent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,10 +81,16 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private Spinner spinner_choose_time;
 	private List<Map<String,Object>> data_time;
 
+	private Tencent mTencent;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_timing);
+
+
+		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
+
 
 		//初始化Toolbar
 		Toolbar toolbar=findViewById(R.id.setting_toolbar);
@@ -455,7 +463,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			@Override
 			public void onTick(long millisGoneThrough) {
 				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
-				timeLeft.setText("距离完成还有" + millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough), 0), 2));
+//				timeLeft.setText("距离完成还有" + millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough), 0), 2));
 			}
 		};
 	}
