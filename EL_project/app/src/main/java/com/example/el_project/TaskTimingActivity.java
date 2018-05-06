@@ -125,7 +125,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//计时动画
 		RelativeLayout rl=(RelativeLayout) findViewById(R.id.time_act);
 		AnimationDrawable ad=(AnimationDrawable)rl.getBackground();
-		ad.start(); //TODO:BUG!!若动画启动会报错
+		ad.start();
 
 		//番茄钟动画
 		ImageView iv=(ImageView)findViewById(R.id.tomato_act);

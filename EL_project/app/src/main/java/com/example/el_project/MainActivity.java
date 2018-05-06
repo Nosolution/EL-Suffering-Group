@@ -1,26 +1,40 @@
 package com.example.el_project;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
@@ -30,6 +44,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFabOpened = false;
     private Animation in_from_fab;
     private Animation out_to_fab;
+	private DrawerLayout mDrawerLayout;
+	private Switch switchClockStatus;
+	private Switch switchMusicStatus;
+	private TextView textClockOn;
+	private TextView textChosenTime;
+	private TextView textTime;
+	private Spinner spinnerChooseTime;
+	private List<Map<String,Object>> dataTime;
 
     private int[] colors = {R.drawable.task_pink, R.drawable.task_red, R.drawable.task_purple, R.drawable.task_gray, R.drawable.task_green};
     private int[] checkedColors={R.drawable.task_pink_chosen,R.drawable.task_red_chosen,R.drawable.task_purple_chosen,R.drawable.task_grey_chosen,R.drawable.task_green_chosen};
@@ -49,8 +71,22 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.title_toolbar);
         setSupportActionBar(toolbar);
+	    mDrawerLayout=findViewById(R.id.drawer_layout);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);  //如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
+
+	    spinnerChooseTime=findViewById(R.id.spinner_choose_time);
+	    textClockOn=findViewById(R.id.text_clock_on);
+	    textChosenTime=findViewById(R.id.text_chosen_time);
+	    textTime=findViewById(R.id.text_time);
+	    textChosenTime.setText("20分钟");
+
+	    switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
+	    switchMusicStatus=findViewById(R.id.switch_if_music_on);
+	    switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
+	    switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
+	    switchClockStatus.setOnCheckedChangeListener(this);
+	    switchMusicStatus.setOnCheckedChangeListener(this);
 
         //创建默认的线性LayoutManager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -162,7 +198,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //数据源
+        dataTime=new ArrayList<>();
+        //创建一个SimpleAdapter适配器
+        //第一个参数：上下文，第二个参数：数据源，第三个参数：item子布局，第四、五个参数：键值对，获取item布局中的控件id
+        final SimpleAdapter s_adapter=new SimpleAdapter(this,getData(),R.layout.spinner_choose_time,
+                new String[]{"text"}, new int[]{R.id.text_time});
+        //控件与适配器绑定
+        spinnerChooseTime.setAdapter(s_adapter);
+        //点击事件
+        spinnerChooseTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //为TextView控件赋值，在适配器中获取一个值赋给tv_time_length
+                textChosenTime.setText(""+s_adapter.getItem(position));
+                String chosenTimeText = textChosenTime.getText().toString();
+                int chosenTime = Integer.parseInt(chosenTimeText.substring(6, chosenTimeText.length() - 3));
+                Log.d("Chosen Time", "onItemSelected: " + chosenTime);
+                GeneralSetting.setTomatoClockTime(MainActivity.this, chosenTime);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //初始化设置番茄钟时长
+        if (GeneralSetting.getTomatoClockEnable(this)){
+            textClockOn.setVisibility(View.VISIBLE);
+            textChosenTime.setVisibility(View.VISIBLE);
+            spinnerChooseTime.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -360,6 +427,72 @@ public class MainActivity extends AppCompatActivity {
         return finalString;
     }
 
+    //Spinner数据源
+    private List<Map<String,Object>> getData(){
+        Map<String,Object> map_20min = new HashMap<>();
+        map_20min.put("text","20分钟");
+        dataTime.add(map_20min);
+
+        Map<String,Object> map_30min = new HashMap<>();
+        map_30min.put("text","30分钟");
+        dataTime.add(map_30min);
+
+        Map<String,Object> map_40min = new HashMap<>();
+        map_40min.put("text","40分钟");
+        dataTime.add(map_40min);
+
+        return dataTime;
+    }
+
+
+    //	绑定Menu布局
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.toolbar,menu);
+        return true;
+    }
+
+    //对HomeAsUp按钮点击事件进行处理
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.setting:
+                mDrawerLayout.openDrawer(GravityCompat.END);
+            default:
+        }
+        return true;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        switch (compoundButton.getId()){
+            case R.id.switch_if_music_on:
+                if(compoundButton.isChecked()) {
+                    GeneralSetting.setMusicOn(MainActivity.this, true);
+                    Toast.makeText(this,"音乐已打开",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    GeneralSetting.setMusicOn(MainActivity.this, false);
+                    Toast.makeText(this,"音乐已关闭",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.switch_if_tomato_clock_on:
+                if(compoundButton.isChecked()) {
+                    GeneralSetting.setTomatoClockEnable(MainActivity.this, true);
+                    Toast.makeText(this,"番茄钟已打开",Toast.LENGTH_SHORT).show();
+                    textClockOn.setVisibility(View.VISIBLE);
+                    textChosenTime.setVisibility(View.VISIBLE);
+                    spinnerChooseTime.setVisibility(View.VISIBLE);
+                }
+                else {
+                    GeneralSetting.setTomatoClockEnable(MainActivity.this, false);
+                    Toast.makeText(this,"番茄钟已关闭",Toast.LENGTH_SHORT).show();
+                    textClockOn.setVisibility(View.GONE);
+                    textChosenTime.setVisibility(View.GONE);
+                    spinnerChooseTime.setVisibility(View.GONE);
+                }
+                break;
+        }
+    }
 }
 
 
