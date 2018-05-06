@@ -51,8 +51,8 @@ import java.util.Map;
 
 public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 	private DrawerLayout mDrawerLayout;
-	private Switch switch_clock_status;
-	private Switch switch_music_status;
+	private Switch switchClockStatus;
+	private Switch switchMusicStatus;
 
 	private CountTimer timer;
 	private Activity thisActivity = this;
@@ -64,8 +64,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private TextView taskInfo;                     //显示一些关于任务的信息
 	private TextView taskTimeCount;                //显示任务已经过时间
 	private TextView tomatoClockTime;              //显示番茄钟倒计时
-	private TextView text_clock_on;
-	private TextView text_chosen_time;
+	private TextView textClockOn;
 	private TextView timeLeft;
 	private MusicController musicController;
 	private CountDownTimer tomatoClockCountDown;   //番茄钟倒计时
@@ -75,12 +74,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private long taskMillisRequired;                 //任务预计用时，毫秒
 	private String taskName;                         //任务名
 	private String taskComments;                      //任务备注
+	private String tomatoClockTimeLength;             //用于获取番茄钟设置时长
 
 	private LinearLayout remarkLayout;             //备注所在的布局
 	private LinearLayout.LayoutParams remarkLayoutLayoutParams; //布局大小
 	private TextView remarkText;                   //备注
-	private Spinner spinner_choose_time;
-	private List<Map<String,String>> data_time;
+	private Spinner spinnerChooseTime;
 	private Toolbar toolbar;
 
 	private Tencent mTencent;
@@ -102,25 +101,24 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		ActionBar actionBar=getSupportActionBar();
 
 		//初始化设置界面具体内容
-		switch_clock_status = findViewById(R.id.switch_if_tomato_clock_on);
-		switch_music_status = findViewById(R.id.switch_if_music_on);
-		spinner_choose_time = findViewById(R.id.spinner_choose_time);
-		text_clock_on = findViewById(R.id.text_clock_on);
-		text_chosen_time = findViewById(R.id.text_chosen_time);
+		switchClockStatus = findViewById(R.id.switch_if_tomato_clock_on);
+		switchMusicStatus = findViewById(R.id.switch_if_music_on);
+		spinnerChooseTime = findViewById(R.id.spinner_choose_time);
+		textClockOn = findViewById(R.id.text_clock_on);
 		timeLeft = findViewById(R.id.time_left);
 		remarkText = findViewById(R.id.edit_remark);
-		switch_clock_status.setChecked(GeneralSetting.getTomatoClockEnable(this));
-		switch_music_status.setChecked(GeneralSetting.getMusicOn(this));
-		switch_clock_status.setOnCheckedChangeListener(this);
-		switch_music_status.setOnCheckedChangeListener(this);
-		text_chosen_time.setText(GeneralSetting.getTomatoClockTime(this) +  "分钟");
+//		switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
+		switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
+		switchClockStatus.setOnCheckedChangeListener(this);
+		switchMusicStatus.setOnCheckedChangeListener(this);
+//		textChosenTime.setText(GeneralSetting.getTomatoClockTime(this) +  "分钟");
 
 		//初始化设置番茄钟时长
-		if (GeneralSetting.getTomatoClockEnable(this)){
-			text_clock_on.setVisibility(View.VISIBLE);
-			text_chosen_time.setVisibility(View.VISIBLE);
-			spinner_choose_time.setVisibility(View.VISIBLE);
-		}
+//		if (GeneralSetting.getTomatoClockEnable(this)){
+//			textClockOn.setVisibility(View.VISIBLE);
+//			textChosenTime.setVisibility(View.VISIBLE);
+//			spinnerChooseTime.setVisibility(View.VISIBLE);
+//		}
 
 		//计时动画
 		RelativeLayout rl=(RelativeLayout) findViewById(R.id.time_act);
@@ -178,54 +176,22 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 
 		//初始化并启动番茄钟
-		if(GeneralSetting.getTomatoClockEnable(this)){
-			initStartTomatoClock();
-		}
+//		if(GeneralSetting.getTomatoClockEnable(this)){
+//			initStartTomatoClock();
+//		}
 
 		//开启番茄钟设置
-		//数据源
-		data_time=new ArrayList<>();
-		//创建一个SimpleAdapter适配器
-		//第一个参数：上下文，第二个参数：数据源，第三个参数：item子布局，第四、五个参数：键值对，获取item布局中的控件id
-		final SimpleAdapter s_adapter=new SimpleAdapter(this,getData(),R.layout.spinner_choose_time,
-				new String[]{"text"}, new int[]{R.id.text_time});
-		//控件与适配器绑定
-		spinner_choose_time.setAdapter(s_adapter);
-		//点击事件
-		spinner_choose_time.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		spinnerChooseTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				//为TextView控件赋值，在适配器中获取一个值赋给tv_time_length
-				text_chosen_time.setText("" + s_adapter.getItem(position));
-				String chosenTimeText = text_chosen_time.getText().toString();
-				int chosenTime = Integer.parseInt(chosenTimeText.substring(6, chosenTimeText.length() - 3));
-				Log.d("Chosen Time", "onItemSelected: " + chosenTime);
-				GeneralSetting.setTomatoClockTime(TaskTimingActivity.this, chosenTime);
+			    tomatoClockTimeLength = (String)spinnerChooseTime.getSelectedItem();
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
-
 			}
 		});
 
-	}
-
-	//Spinner数据源
-	private List<Map<String,String>> getData(){
-		Map<String,String> map_20min = new HashMap<>();
-		map_20min.put("text","20分钟");
-		data_time.add(map_20min);
-
-		Map<String,String> map_30min = new HashMap<>();
-		map_30min.put("text","30分钟");
-		data_time.add(map_30min);
-
-		Map<String,String> map_40min = new HashMap<>();
-		map_40min.put("text","40分钟");
-		data_time.add(map_40min);
-
-		return data_time;
 	}
 
 
@@ -272,16 +238,14 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				if(compoundButton.isChecked()) {
 				    GeneralSetting.setTomatoClockEnable(TaskTimingActivity.this, true);
 				    Toast.makeText(this,"番茄钟已打开",Toast.LENGTH_SHORT).show();
-					text_clock_on.setVisibility(View.VISIBLE);
-					text_chosen_time.setVisibility(View.VISIBLE);
-					spinner_choose_time.setVisibility(View.VISIBLE);
+					textClockOn.setVisibility(View.VISIBLE);
+					spinnerChooseTime.setVisibility(View.VISIBLE);
 				}
 				else {
 				    GeneralSetting.setTomatoClockEnable(TaskTimingActivity.this, false);
 				    Toast.makeText(this,"番茄钟已关闭",Toast.LENGTH_SHORT).show();
-					text_clock_on.setVisibility(View.GONE);
-					text_chosen_time.setVisibility(View.GONE);
-					spinner_choose_time.setVisibility(View.GONE);
+					textClockOn.setVisibility(View.GONE);
+					spinnerChooseTime.setVisibility(View.GONE);
 				}
 				break;
 		}

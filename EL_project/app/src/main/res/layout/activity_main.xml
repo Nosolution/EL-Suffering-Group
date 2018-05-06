@@ -199,18 +199,13 @@
 						android:textSize="18sp"
 						android:visibility="gone"/>
 
-					<TextView
-						android:id="@+id/text_chosen_time"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:layout_centerHorizontal="true"
-						android:visibility="gone"/>
 
 					<Spinner
 						android:id="@+id/spinner_choose_time"
-						android:layout_width="match_parent"
+						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
+						android:entries="@array/times"
 						android:visibility="gone"></Spinner>
 
 

@@ -48,10 +48,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	private Switch switchClockStatus;
 	private Switch switchMusicStatus;
 	private TextView textClockOn;
-	private TextView textChosenTime;
-	private TextView textTime;
 	private Spinner spinnerChooseTime;
-	private List<Map<String,Object>> dataTime;
+	private String tomatoClockTimeLength;    //用于获取番茄钟设置时长
 
     private int[] colors = {R.drawable.task_pink, R.drawable.task_red, R.drawable.task_purple, R.drawable.task_gray, R.drawable.task_green};
     private int[] checkedColors={R.drawable.task_pink_chosen,R.drawable.task_red_chosen,R.drawable.task_purple_chosen,R.drawable.task_grey_chosen,R.drawable.task_green_chosen};
@@ -77,9 +75,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 	    spinnerChooseTime=findViewById(R.id.spinner_choose_time);
 	    textClockOn=findViewById(R.id.text_clock_on);
-	    textChosenTime=findViewById(R.id.text_chosen_time);
-	    textTime=findViewById(R.id.text_time);
-	    textChosenTime.setText("20分钟");
 
 	    switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
 	    switchMusicStatus=findViewById(R.id.switch_if_music_on);
@@ -198,38 +193,23 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
-        //数据源
-        dataTime=new ArrayList<>();
-        //创建一个SimpleAdapter适配器
-        //第一个参数：上下文，第二个参数：数据源，第三个参数：item子布局，第四、五个参数：键值对，获取item布局中的控件id
-        final SimpleAdapter s_adapter=new SimpleAdapter(this,getData(),R.layout.spinner_choose_time,
-                new String[]{"text"}, new int[]{R.id.text_time});
-        //控件与适配器绑定
-        spinnerChooseTime.setAdapter(s_adapter);
-        //点击事件
-        spinnerChooseTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //为TextView控件赋值，在适配器中获取一个值赋给tv_time_length
-                textChosenTime.setText(""+s_adapter.getItem(position));
-                String chosenTimeText = textChosenTime.getText().toString();
-                int chosenTime = Integer.parseInt(chosenTimeText.substring(6, chosenTimeText.length() - 3));
-                Log.d("Chosen Time", "onItemSelected: " + chosenTime);
-                GeneralSetting.setTomatoClockTime(MainActivity.this, chosenTime);
-            }
+//
+	    spinnerChooseTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		    @Override
+		    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+			    tomatoClockTimeLength = (String)spinnerChooseTime.getSelectedItem();
+		    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+		    @Override
+		    public void onNothingSelected(AdapterView<?> parent) {
+		    }
+	    });
 
-            }
-        });
-
-        //初始化设置番茄钟时长
-        if (GeneralSetting.getTomatoClockEnable(this)){
-            textClockOn.setVisibility(View.VISIBLE);
-            textChosenTime.setVisibility(View.VISIBLE);
-            spinnerChooseTime.setVisibility(View.VISIBLE);
-        }
+//        //初始化设置番茄钟时长
+//        if (GeneralSetting.getTomatoClockEnable(this)){
+//            textClockOn.setVisibility(View.VISIBLE);
+//            spinnerChooseTime.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override
@@ -427,24 +407,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         return finalString;
     }
 
-    //Spinner数据源
-    private List<Map<String,Object>> getData(){
-        Map<String,Object> map_20min = new HashMap<>();
-        map_20min.put("text","20分钟");
-        dataTime.add(map_20min);
-
-        Map<String,Object> map_30min = new HashMap<>();
-        map_30min.put("text","30分钟");
-        dataTime.add(map_30min);
-
-        Map<String,Object> map_40min = new HashMap<>();
-        map_40min.put("text","40分钟");
-        dataTime.add(map_40min);
-
-        return dataTime;
-    }
-
-
     //	绑定Menu布局
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar,menu);
@@ -480,14 +442,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     GeneralSetting.setTomatoClockEnable(MainActivity.this, true);
                     Toast.makeText(this,"番茄钟已打开",Toast.LENGTH_SHORT).show();
                     textClockOn.setVisibility(View.VISIBLE);
-                    textChosenTime.setVisibility(View.VISIBLE);
                     spinnerChooseTime.setVisibility(View.VISIBLE);
                 }
                 else {
                     GeneralSetting.setTomatoClockEnable(MainActivity.this, false);
                     Toast.makeText(this,"番茄钟已关闭",Toast.LENGTH_SHORT).show();
                     textClockOn.setVisibility(View.GONE);
-                    textChosenTime.setVisibility(View.GONE);
                     spinnerChooseTime.setVisibility(View.GONE);
                 }
                 break;

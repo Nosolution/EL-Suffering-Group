@@ -45,8 +45,8 @@ public class DrawerSettingActivity extends AppCompatActivity implements Compound
 
 		spinnerChooseTime=findViewById(R.id.spinner_choose_time);
 		textClockOn=findViewById(R.id.text_clock_on);
-		textChosenTime=findViewById(R.id.text_chosen_time);
-		textTime=findViewById(R.id.text_time);
+//		textChosenTime=findViewById(R.id.text_chosen_time);
+//		textTime=findViewById(R.id.text_time);
 		textChosenTime.setText("20分钟");
 
 		switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
