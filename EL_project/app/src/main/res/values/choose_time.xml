@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="times">
+		<item>20分钟</item>
+		<item>30分钟</item>
+		<item>40分钟</item>
+	</string-array>
+</resources>
