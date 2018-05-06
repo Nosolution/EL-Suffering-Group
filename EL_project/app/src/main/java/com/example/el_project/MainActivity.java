@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -211,6 +212,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //为TextView控件赋值，在适配器中获取一个值赋给tv_time_length
                 textChosenTime.setText(""+s_adapter.getItem(position));
+                String chosenTimeText = textChosenTime.getText().toString();
+                int chosenTime = Integer.parseInt(chosenTimeText.substring(6, chosenTimeText.length() - 3));
+                Log.d("Chosen Time", "onItemSelected: " + chosenTime);
+                GeneralSetting.setTomatoClockTime(MainActivity.this, chosenTime);
             }
 
             @Override
@@ -219,6 +224,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
+        //初始化设置番茄钟时长
+        if (GeneralSetting.getTomatoClockEnable(this)){
+            textClockOn.setVisibility(View.VISIBLE);
+            textChosenTime.setVisibility(View.VISIBLE);
+            spinnerChooseTime.setVisibility(View.VISIBLE);
+        }
     }
 
     // 点击task后，悬浮按钮产生的动画
