@@ -56,6 +56,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private TextView taskInfo;                     //显示一些关于任务的信息
 	private TextView taskTimeCount;                //显示任务已经过时间
 	private TextView tomatoClockCountDownTime;              //显示番茄钟倒计时
+	private ImageView ivTomatoClockAnim;
 	private TextView textClockOn;
 	private TextView timeLeft;
 	private MusicController musicController;
@@ -117,8 +118,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		ad.start();
 
 		//番茄钟动画
-		ImageView iv=(ImageView)findViewById(R.id.tomato_act);
-		AnimationDrawable ad2=(AnimationDrawable)iv.getBackground();
+		ivTomatoClockAnim=(ImageView)findViewById(R.id.tomato_act);
+		AnimationDrawable ad2=(AnimationDrawable)ivTomatoClockAnim.getBackground();
 		ad2.start();
 
 		if(actionBar!=null){
@@ -147,6 +148,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if(GeneralSetting.getMusicOn(this)) {
 			musicController.start();
 		}
+
+		//更新是否启用番茄钟动画
+		refreshTomatoClockVisible();
 
 		initCountTimer();
 		//从被回收内存恢复，但感觉问题还是挺大
@@ -216,14 +220,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			case R.id.switch_if_music_on:
 				if(compoundButton.isChecked()) {
 				    GeneralSetting.setMusicOn(TaskTimingActivity.this, true);
-					Toast.makeText(this,"音乐已打开",Toast.LENGTH_SHORT).show();
 					if(!musicController.isPlaying() && havingTaskOngoing){
 						musicController.restart();
 					}
 				}
 				else {
 				    GeneralSetting.setMusicOn(TaskTimingActivity.this, false);
-				    Toast.makeText(this,"音乐已关闭",Toast.LENGTH_SHORT).show();
 				    if(musicController.isPlaying()){
 				    	musicController.stop();
 					}
@@ -232,7 +234,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			case R.id.switch_if_tomato_clock_on:
 				if(compoundButton.isChecked()) {
 				    GeneralSetting.setTomatoClockEnable(TaskTimingActivity.this, true);
-				    Toast.makeText(this,"番茄钟已打开",Toast.LENGTH_SHORT).show();
 					textClockOn.setVisibility(View.VISIBLE);
 					spinnerChooseTime.setVisibility(View.VISIBLE);
 
@@ -241,7 +242,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				}
 				else {
 				    GeneralSetting.setTomatoClockEnable(TaskTimingActivity.this, false);
-				    Toast.makeText(this,"番茄钟已关闭",Toast.LENGTH_SHORT).show();
 					textClockOn.setVisibility(View.GONE);
 					spinnerChooseTime.setVisibility(View.GONE);
 
@@ -255,6 +255,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 						tomatoClockBreakCountDown = null;
 					}
 				}
+				refreshTomatoClockVisible();
 				break;
 		}
 	}
@@ -526,6 +527,16 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			Log.d("TaskTimingActivity", "onFinish: TomatoClockStop");
 		}catch (NullPointerException e){
 			Log.e("TaskTimeActivity", "onFinish: " + e.toString());
+		}
+	}
+
+	private void refreshTomatoClockVisible(){
+		if(GeneralSetting.getTomatoClockEnable(this)){
+			tomatoClockCountDownTime.setVisibility(View.VISIBLE);
+			ivTomatoClockAnim.setVisibility(View.VISIBLE);
+		}else {
+			tomatoClockCountDownTime.setVisibility(View.GONE);
+			ivTomatoClockAnim.setVisibility(View.GONE);
 		}
 	}
 

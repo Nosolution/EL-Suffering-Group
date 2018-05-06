@@ -78,17 +78,17 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 	    switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
 	    switchMusicStatus=findViewById(R.id.switch_if_music_on);
-	    switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
-	    switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
+//	    switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
+//	    switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
 	    switchClockStatus.setOnCheckedChangeListener(this);
 	    switchMusicStatus.setOnCheckedChangeListener(this);
 
 	    //修改设置内显示番茄钟时长
-	    if(GeneralSetting.getTomatoClockEnable(this)){
-            textClockOn.setVisibility(View.VISIBLE);
-            spinnerChooseTime.setVisibility(View.VISIBLE);
-        }
-        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
+//	    if(GeneralSetting.getTomatoClockEnable(this)){
+//            textClockOn.setVisibility(View.VISIBLE);
+//            spinnerChooseTime.setVisibility(View.VISIBLE);
+//        }
+//        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
 
         //创建默认的线性LayoutManager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -229,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     protected void onResume() {
         refreshTask();
         adapter.refreshItemView();
+        refreshSetting();
         super.onResume();
     }
 
@@ -450,28 +451,36 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.switch_if_music_on:
                 if(compoundButton.isChecked()) {
                     GeneralSetting.setMusicOn(MainActivity.this, true);
-                    Toast.makeText(this,"音乐已打开",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     GeneralSetting.setMusicOn(MainActivity.this, false);
-                    Toast.makeText(this,"音乐已关闭",Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.switch_if_tomato_clock_on:
                 if(compoundButton.isChecked()) {
                     GeneralSetting.setTomatoClockEnable(MainActivity.this, true);
-                    Toast.makeText(this,"番茄钟已打开",Toast.LENGTH_SHORT).show();
                     textClockOn.setVisibility(View.VISIBLE);
                     spinnerChooseTime.setVisibility(View.VISIBLE);
                 }
                 else {
                     GeneralSetting.setTomatoClockEnable(MainActivity.this, false);
-                    Toast.makeText(this,"番茄钟已关闭",Toast.LENGTH_SHORT).show();
                     textClockOn.setVisibility(View.GONE);
                     spinnerChooseTime.setVisibility(View.GONE);
                 }
                 break;
         }
+    }
+
+    private void refreshSetting(){
+        switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
+        switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
+
+        //修改设置内显示番茄钟时长
+        if(GeneralSetting.getTomatoClockEnable(this)){
+            textClockOn.setVisibility(View.VISIBLE);
+            spinnerChooseTime.setVisibility(View.VISIBLE);
+        }
+        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
     }
 
 
