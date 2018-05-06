@@ -5,8 +5,6 @@ package com.example.el_project;
  * @author NA
 * 任务计时界面，即任务进行中的界面，右侧划出可进行设置
 * 我把layout几项有改过名，Activity名字我也改了
-* 番茄钟功能暂未实现
-* 番茄钟到时通知功能暂未实现
 * */
 
 import android.app.Activity;
@@ -82,7 +80,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private LinearLayout.LayoutParams remarkLayoutLayoutParams; //布局大小
 	private TextView remarkText;                   //备注
 	private Spinner spinner_choose_time;
-	private List<Map<String,Object>> data_time;
+	private List<Map<String,String>> data_time;
 	private Toolbar toolbar;
 
 	private Tencent mTencent;
@@ -115,7 +113,14 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		switch_music_status.setChecked(GeneralSetting.getMusicOn(this));
 		switch_clock_status.setOnCheckedChangeListener(this);
 		switch_music_status.setOnCheckedChangeListener(this);
-		text_chosen_time.setText("20分钟");
+		text_chosen_time.setText(GeneralSetting.getTomatoClockTime(this) +  "分钟");
+
+		//初始化设置番茄钟时长
+		if (GeneralSetting.getTomatoClockEnable(this)){
+			text_clock_on.setVisibility(View.VISIBLE);
+			text_chosen_time.setVisibility(View.VISIBLE);
+			spinner_choose_time.setVisibility(View.VISIBLE);
+		}
 
 		//计时动画
 		RelativeLayout rl=(RelativeLayout) findViewById(R.id.time_act);
@@ -136,7 +141,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		onClickListenerMainSetter();     //设置计时控制部分所有涉及到的有关的监听器
 
 		//取得开始任务时传来的任务详细信息
-		Intent intentTaskInfo = getIntent();
+		final Intent intentTaskInfo = getIntent();
 		taskId = intentTaskInfo.getIntExtra("intent_task_id", 0);
 		if (taskId == 0) finish();                                            //若未收到任务ID，退出
 		taskName = intentTaskInfo.getStringExtra("intent_task_name");
@@ -149,8 +154,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		initView();                      //初始化整个布局的其余部分，将包括显示的Task各项信息
 
 		//设置音乐开启
+		musicController = new MusicController(this);
 		if(GeneralSetting.getMusicOn(this)) {
-			musicController = new MusicController(this);
 			musicController.start();
 		}
 
@@ -191,7 +196,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				//为TextView控件赋值，在适配器中获取一个值赋给tv_time_length
-				text_chosen_time.setText(""+s_adapter.getItem(position));
+				text_chosen_time.setText("" + s_adapter.getItem(position));
+				String chosenTimeText = text_chosen_time.getText().toString();
+				int chosenTime = Integer.parseInt(chosenTimeText.substring(6, chosenTimeText.length() - 3));
+				Log.d("Chosen Time", "onItemSelected: " + chosenTime);
+				GeneralSetting.setTomatoClockTime(TaskTimingActivity.this, chosenTime);
 			}
 
 			@Override
@@ -203,16 +212,16 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	}
 
 	//Spinner数据源
-	private List<Map<String,Object>> getData(){
-		Map<String,Object> map_20min = new HashMap<>();
+	private List<Map<String,String>> getData(){
+		Map<String,String> map_20min = new HashMap<>();
 		map_20min.put("text","20分钟");
 		data_time.add(map_20min);
 
-		Map<String,Object> map_30min = new HashMap<>();
+		Map<String,String> map_30min = new HashMap<>();
 		map_30min.put("text","30分钟");
 		data_time.add(map_30min);
 
-		Map<String,Object> map_40min = new HashMap<>();
+		Map<String,String> map_40min = new HashMap<>();
 		map_40min.put("text","40分钟");
 		data_time.add(map_40min);
 

@@ -165,6 +165,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+//        initTasks();
+//        adapter = new RecyclerViewAdapter(mTaskList);
+//        recyclerView.setAdapter(adapter);
+        super.onStart();
+    }
+
     // 点击task后，悬浮按钮产生的动画
     public void openMenu(View view) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotation", 0, -155, -135 );
@@ -208,8 +216,8 @@ public class MainActivity extends AppCompatActivity {
 
     //初始化任务列表
     private void initTasks() {
-        mTaskList.clear();
-        taskList.clear();
+//        mTaskList.clear();
+//        taskList.clear();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
