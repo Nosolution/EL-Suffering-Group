@@ -50,7 +50,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private String hour, minute;//Spinner的显示文本
     private String[]hourPosition={"00","01","02","03","04","05"};
     private String[]minutePosition={"00","10","20","30","40","50",};
-    private ArrayList<Integer>ivId=new ArrayList<>();
+    private ArrayList<Integer>ivId=new ArrayList<>();//储存紧急程度ImageViewId的ArrayList
 
 //    private SparseBooleanArray emergencyDegree;
     private boolean updateFlag;
@@ -117,15 +117,8 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         ddlTime=(TextView)findViewById(R.id.ddlTime);
         initTimePicker();
 
-        //建立字典
-        ivMap= new HashMap();
-        ivMap.put(R.id.circle_one,1);
-        ivMap.put(R.id.circle_two,2);
-        ivMap.put(R.id.circle_three,3);
-        ivMap.put(R.id.circle_four,4);
-        ivMap.put(R.id.circle_five,5);
         selectedImageViewPosition=0;//被选择位置默认为0
-
+        //添加ImageViewId
         ivId.add(R.id.circle_one);
         ivId.add(R.id.circle_two);
         ivId.add(R.id.circle_three);
@@ -214,14 +207,9 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         minute =tempString[1];
 
 
-//        for(int id :ivId){
-//            if(taskDetails[4].equals(String.valueOf(id))){
-//                setIVSelected(id);
-//            }
-//        }
         for(int index=4;index>=0;index--){
             if(taskDetails[4].equals(String.valueOf(index+1))){
-                setIVSelected(ivId.get(index));
+                setImageViewSelected(ivId.get(index));
                 selectedImageViewPosition=index+1;
             }
         }
@@ -237,18 +225,9 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         //开始处理点击事件
         int id=v.getId();
-//        if(ivMap.containsKey(id)) {//判断是否是紧急程度的ImageView
-//            if (isSelected(id)) {
-//                setNotSelected(id);
-//            }
-//            else{
-//                setDefaultImageView();
-//                setSelected(id);
-//            }
-//        }
         if(ivId.contains(id)){
             if(selectedImageViewPosition!=ivId.indexOf(id)+1){
-                setIVSelected(id);
+                setImageViewSelected(id);
                 selectedImageViewPosition=ivId.indexOf(id)+1;
             }
         }
@@ -340,34 +319,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         return selectedImageViewPosition == (int) ivMap.get(id);
     }
 
-    //设置ImageView为被选中
-//    private void setSelected(int id){
-//        selectedImageViewPosition=(int)ivMap.get(id);
-//        ImageView iv =findViewById(id);
-//        AnimationDrawable ad =(AnimationDrawable) iv.getDrawable();
-//        ad.start();
-//    }
-
-    //设置ImageView不被选中
-//    private void setNotSelected(int id){
-//        selectedImageViewPosition=0;
-//        ImageView iv =  findViewById(id);
-//        AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
-//        ad.selectDrawable(0);//回到第一帧并暂停
-//        ad.stop();
-//    }
-
-    //将点亮的ImageView设为未点亮状态
-//    private void setDefaultImageView(){
-//        for(Object key:ivMap.keySet()){
-//            if((int)ivMap.get(key)==selectedImageViewPosition){
-//                setNotSelected((int)key);
-//                break;
-//            }
-//        }
-//    }
-
-    private void setIVSelected(int id){
+    private void setImageViewSelected(int id){
         int diff=0;
         ImageView iv;
         AnimationDrawable ad;
