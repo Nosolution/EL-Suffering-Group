@@ -25,6 +25,7 @@ public class MyDatabaseOperation {
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if(cursor.moveToPosition(cursor.getCount()-1)){
             int id=Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            cursor.close();
             return id;
         }
         else return 0;
