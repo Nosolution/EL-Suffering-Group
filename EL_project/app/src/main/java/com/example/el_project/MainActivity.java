@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                     task.switchBackground();
                     adapter.changeItemBackGround(position);
                 }
-
             }
         });
 
@@ -143,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                startTask();
+                closeMenu(baseButton);
+                selectedPosition=-1;
             }
         });
 
@@ -158,19 +159,21 @@ public class MainActivity extends AppCompatActivity {
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:删除任务
+                deleteTask(selectedPosition);
+                closeMenu(baseButton);
+                selectedPosition=-1;
             }
         });
-
 
     }
 
     @Override
-    protected void onStart() {
+    protected void onResume() {
         refreshTask();
         adapter.refreshItemView();
-        super.onStart();
+        super.onResume();
     }
+
 
     // 点击task后，悬浮按钮产生的动画
     public void openMenu(View view) {
@@ -358,6 +361,12 @@ public class MainActivity extends AppCompatActivity {
         finalString+="是否是每日任务："+(taskList.get(position)[5].equals( "1" )? "是":"不是")+"\n";
         finalString+="备注:"+taskList.get(position)[6]+"\n";
         return finalString;
+    }
+
+    private void deleteTask(int position){
+        MyDatabaseOperation.deleteTask(MainActivity.this,Integer.parseInt(taskList.get(position)[0]));
+        refreshTask();
+        adapter.refreshItemView();
     }
 
 }
