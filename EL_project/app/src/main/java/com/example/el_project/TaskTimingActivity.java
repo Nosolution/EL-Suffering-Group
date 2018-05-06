@@ -50,10 +50,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private Activity thisActivity = this;
 	private boolean havingTaskOngoing = false;     //是否有任务正在进行中
 	private boolean taskStatuePaused = false;        //任务暂停或进行中Flag
+
 	private ImageButton btnTaskFinished;                //任务完成，按钮
 	private ImageButton btnThrowTask;                   //放弃任务，按钮
 	private ImageButton btnPause;                       //暂停
-	private TextView taskInfo;                     //显示一些关于任务的信息
+
 	private TextView taskTimeCount;                //显示任务已经过时间
 	private TextView tomatoClockCountDownTime;              //显示番茄钟倒计时
 	private ImageView ivTomatoClockAnim;
@@ -75,17 +76,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private Spinner spinnerChooseTime;
 	private Toolbar toolbar;
 
-	private Tencent mTencent;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_timing);
-
-
-		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
-
-
 
 		//初始化Toolbar
 		toolbar=findViewById(R.id.setting_toolbar);
