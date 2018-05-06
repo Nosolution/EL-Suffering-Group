@@ -35,7 +35,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -115,10 +117,15 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		switch_music_status.setOnCheckedChangeListener(this);
 		text_chosen_time.setText("20分钟");
 
-		//计时动画
-		TextView tv=(TextView)findViewById(R.id.time_action);
-		AnimationDrawable ad=(AnimationDrawable)tv.getBackground();
+//		//计时动画
+//		RelativeLayout rl=(RelativeLayout) findViewById(R.id.time_act);
+//		AnimationDrawable ad=(AnimationDrawable)rl.getBackground();
 //		ad.start(); //TODO:BUG!!若动画启动会报错
+//
+//		//番茄钟动画
+//		ImageView iv=(ImageView)findViewById(R.id.tomato_act);
+//		AnimationDrawable ad2=(AnimationDrawable)iv.getBackground();
+//		ad2.start();
 
 		if(actionBar!=null){
 			actionBar.setDisplayHomeAsUpEnabled(true);  //显示导航按钮
