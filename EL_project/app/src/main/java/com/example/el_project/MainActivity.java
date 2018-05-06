@@ -83,6 +83,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	    switchClockStatus.setOnCheckedChangeListener(this);
 	    switchMusicStatus.setOnCheckedChangeListener(this);
 
+	    //修改设置内显示番茄钟时长
+	    if(GeneralSetting.getTomatoClockEnable(this)){
+            textClockOn.setVisibility(View.VISIBLE);
+            spinnerChooseTime.setVisibility(View.VISIBLE);
+        }
+        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
+
         //创建默认的线性LayoutManager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -198,6 +205,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		    @Override
 		    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 			    tomatoClockTimeLength = (String)spinnerChooseTime.getSelectedItem();
+                int chosenTime = Integer.parseInt(tomatoClockTimeLength.substring(0, tomatoClockTimeLength.length() - 2));
+                Log.d("Chosen Time", "onItemSelected: " + chosenTime);
+                GeneralSetting.setTomatoClockTime(MainActivity.this, chosenTime);
 		    }
 
 		    @Override

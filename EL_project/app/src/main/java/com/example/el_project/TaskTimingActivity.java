@@ -24,9 +24,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,18 +34,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tencent.tauth.Tencent;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 	private DrawerLayout mDrawerLayout;
@@ -63,7 +55,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private ImageButton btnPause;                       //暂停
 	private TextView taskInfo;                     //显示一些关于任务的信息
 	private TextView taskTimeCount;                //显示任务已经过时间
-	private TextView tomatoClockTime;              //显示番茄钟倒计时
+	private TextView tomatoClockCountDownTime;              //显示番茄钟倒计时
 	private TextView textClockOn;
 	private TextView timeLeft;
 	private MusicController musicController;
@@ -107,18 +99,17 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		textClockOn = findViewById(R.id.text_clock_on);
 		timeLeft = findViewById(R.id.time_left);
 		remarkText = findViewById(R.id.edit_remark);
-//		switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
+		switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
 		switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
 		switchClockStatus.setOnCheckedChangeListener(this);
 		switchMusicStatus.setOnCheckedChangeListener(this);
-//		textChosenTime.setText(GeneralSetting.getTomatoClockTime(this) +  "分钟");
+		spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
 
 		//初始化设置番茄钟时长
-//		if (GeneralSetting.getTomatoClockEnable(this)){
-//			textClockOn.setVisibility(View.VISIBLE);
-//			textChosenTime.setVisibility(View.VISIBLE);
-//			spinnerChooseTime.setVisibility(View.VISIBLE);
-//		}
+		if (GeneralSetting.getTomatoClockEnable(this)){
+			textClockOn.setVisibility(View.VISIBLE);
+			spinnerChooseTime.setVisibility(View.VISIBLE);
+		}
 
 		//计时动画
 		RelativeLayout rl=(RelativeLayout) findViewById(R.id.time_act);
@@ -176,15 +167,19 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 
 		//初始化并启动番茄钟
-//		if(GeneralSetting.getTomatoClockEnable(this)){
-//			initStartTomatoClock();
-//		}
+		if(GeneralSetting.getTomatoClockEnable(this)){
+			initStartTomatoClock();
+		}
 
 		//开启番茄钟设置
 		spinnerChooseTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 			    tomatoClockTimeLength = (String)spinnerChooseTime.getSelectedItem();
+				int chosenTime = Integer.parseInt(tomatoClockTimeLength.substring(0, tomatoClockTimeLength.length() - 2));
+				Log.d("Chosen Time", "onItemSelected: " + chosenTime);
+				GeneralSetting.setTomatoClockTime(TaskTimingActivity.this, chosenTime);
+				initStartTomatoClock();
 			}
 
 			@Override
@@ -240,12 +235,25 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				    Toast.makeText(this,"番茄钟已打开",Toast.LENGTH_SHORT).show();
 					textClockOn.setVisibility(View.VISIBLE);
 					spinnerChooseTime.setVisibility(View.VISIBLE);
+
+					//打开番茄钟
+					initStartTomatoClock();
 				}
 				else {
 				    GeneralSetting.setTomatoClockEnable(TaskTimingActivity.this, false);
 				    Toast.makeText(this,"番茄钟已关闭",Toast.LENGTH_SHORT).show();
 					textClockOn.setVisibility(View.GONE);
 					spinnerChooseTime.setVisibility(View.GONE);
+
+					//关闭番茄钟
+					if (tomatoClockCountDown != null) {
+						tomatoClockCountDown.cancel();
+						tomatoClockCountDown = null;
+					}
+					if(tomatoClockBreakCountDown != null){
+						tomatoClockBreakCountDown.cancel();
+						tomatoClockBreakCountDown = null;
+					}
 				}
 				break;
 		}
@@ -325,7 +333,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	//初始化所有要FindViewById的都在这里初始化
 	private void initMainFindView(){
 		taskTimeCount = findViewById(R.id.time_action);
-		tomatoClockTime = findViewById(R.id.tomato_text);
+		tomatoClockCountDownTime = findViewById(R.id.tomato_text);
 		btnTaskFinished = (ImageButton)findViewById(R.id.finish_button);
 		btnThrowTask = (ImageButton)findViewById(R.id.give_up_button);
 		btnPause = (ImageButton) findViewById(R.id.pause_button);
@@ -459,7 +467,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockCountDown = new CountDownTimer(GeneralSetting.getTomatoClockTime(this) * 60000, 1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-				tomatoClockTime.setText("据下次休息还有" + millis2HourMinSecString(millisUntilFinished));
+				tomatoClockCountDownTime.setText("据下次休息还有" + millis2HourMinSecString(millisUntilFinished));
 			}
 
 			@Override
@@ -477,7 +485,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-				tomatoClockTime.setText("据休息结束还有" + millis2HourMinSecString(millisUntilFinished));
+				tomatoClockCountDownTime.setText("据休息结束还有" + millis2HourMinSecString(millisUntilFinished));
 			}
 
 			@Override
