@@ -277,7 +277,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         values.put("task",taskNameEditText.getText().toString() );
         values.put("assumedtime", hour +":"+ minute);
         values.put("deadline",ddlTime.getText().toString());//对应每一列传值
-        values.put("emergencydegree",selectedImageViewPosition>=0? selectedImageViewPosition : 1);//默认值为1
+        values.put("emergencydegree",selectedImageViewPosition>0? selectedImageViewPosition : 1);//默认值为1
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
         db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
@@ -290,7 +290,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         values.put("task",taskNameEditText.getText().toString() );
         values.put("assumedtime", hour +":"+ minute);
         values.put("deadline",ddlTime.getText().toString());
-        values.put("emergencydegree",selectedImageViewPosition>=0? selectedImageViewPosition : 1);
+        values.put("emergencydegree",selectedImageViewPosition>0? selectedImageViewPosition : 1);
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
         db.update("Tasklist",values,"id=?",new String[]{taskId});

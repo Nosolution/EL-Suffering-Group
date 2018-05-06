@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     task.switchBackground();
                     adapter.changeItemBackGround(position);
                 }
-
             }
         });
 
@@ -174,6 +173,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             @Override
             public void onClick(View v) {
                startTask();
+                closeMenu(baseButton);
+                selectedPosition=-1;
             }
         });
 
@@ -189,7 +190,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         fabDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO:删除任务
+                deleteTask(selectedPosition);
+                closeMenu(baseButton);
+                selectedPosition=-1;
             }
         });
 
@@ -213,11 +216,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     @Override
-    protected void onStart() {
+    protected void onResume() {
         refreshTask();
         adapter.refreshItemView();
-        super.onStart();
+        super.onResume();
     }
+
 
     // 点击task后，悬浮按钮产生的动画
     public void openMenu(View view) {
@@ -407,6 +411,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         return finalString;
     }
 
+    private void deleteTask(int position){
+        MyDatabaseOperation.deleteTask(MainActivity.this,Integer.parseInt(taskList.get(position)[0]));
+        refreshTask();
+        adapter.refreshItemView();
+    }
+
     //	绑定Menu布局
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar,menu);
@@ -453,6 +463,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 break;
         }
     }
+
+
 }
 
 
