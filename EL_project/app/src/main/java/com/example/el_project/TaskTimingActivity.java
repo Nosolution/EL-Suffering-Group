@@ -113,7 +113,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		switch_music_status.setChecked(GeneralSetting.getMusicOn(this));
 		switch_clock_status.setOnCheckedChangeListener(this);
 		switch_music_status.setOnCheckedChangeListener(this);
-		text_chosen_time.setText("20分钟");
+		text_chosen_time.setText(GeneralSetting.getTomatoClockTime(this) +  "分钟");
 
 		//初始化设置番茄钟时长
 		if (GeneralSetting.getTomatoClockEnable(this)){
@@ -141,7 +141,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		onClickListenerMainSetter();     //设置计时控制部分所有涉及到的有关的监听器
 
 		//取得开始任务时传来的任务详细信息
-		Intent intentTaskInfo = getIntent();
+		final Intent intentTaskInfo = getIntent();
 		taskId = intentTaskInfo.getIntExtra("intent_task_id", 0);
 		if (taskId == 0) finish();                                            //若未收到任务ID，退出
 		taskName = intentTaskInfo.getStringExtra("intent_task_name");
@@ -197,6 +197,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				//为TextView控件赋值，在适配器中获取一个值赋给tv_time_length
 				text_chosen_time.setText("" + s_adapter.getItem(position));
+				String chosenTimeText = text_chosen_time.getText().toString();
+				int chosenTime = Integer.parseInt(chosenTimeText.substring(6, chosenTimeText.length() - 3));
+				Log.d("Chosen Time", "onItemSelected: " + chosenTime);
+				GeneralSetting.setTomatoClockTime(TaskTimingActivity.this, chosenTime);
 			}
 
 			@Override
