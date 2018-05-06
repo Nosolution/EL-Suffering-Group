@@ -7,18 +7,19 @@ package com.example.el_project;
 * 我把layout几项有改过名，Activity名字我也改了
 * 番茄钟功能暂未实现
 * 番茄钟到时通知功能暂未实现
-* 项目名等显示也暂未实现
 * */
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -34,7 +35,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -48,7 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 	private DrawerLayout mDrawerLayout;
 	private Switch switch_clock_status;
 	private Switch switch_music_status;
@@ -93,6 +96,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
 
 
+
 		//初始化Toolbar
 		toolbar=findViewById(R.id.setting_toolbar);
 		setSupportActionBar(toolbar);
@@ -114,9 +118,14 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		text_chosen_time.setText("20分钟");
 
 		//计时动画
-		TextView tv=(TextView)findViewById(R.id.time_action);
-		AnimationDrawable ad=(AnimationDrawable)tv.getBackground();
-//		ad.start(); //TODO:BUG!!若动画启动会报错
+		RelativeLayout rl=(RelativeLayout) findViewById(R.id.time_act);
+		AnimationDrawable ad=(AnimationDrawable)rl.getBackground();
+		ad.start(); //TODO:BUG!!若动画启动会报错
+
+		//番茄钟动画
+		ImageView iv=(ImageView)findViewById(R.id.tomato_act);
+		AnimationDrawable ad2=(AnimationDrawable)iv.getBackground();
+		ad2.start();
 
 		if(actionBar!=null){
 			actionBar.setDisplayHomeAsUpEnabled(true);  //显示导航按钮
@@ -162,18 +171,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//设置有任务正在进行的Flag，可能会有用
 		havingTaskOngoing = true;
 
-		/*TODO:初始化的启动番茄钟部分
+
 		//初始化并启动番茄钟
 		if(GeneralSetting.getTomatoClockEnable(this)){
 			initStartTomatoClock();
 		}
-		*/
-
-		//TODO:不太懂现有的点击事件，自己写了单独一个 cz
-		remarkLayout=(LinearLayout)findViewById(R.id.layout_remark);
-		remarkLayout.setOnClickListener(this);
-		remarkLayoutLayoutParams=(LinearLayout.LayoutParams)remarkLayout.getLayoutParams();
-		remarkText =(TextView)findViewById(R.id.edit_remark);
 
 		//开启番茄钟设置
 		//数据源
@@ -245,10 +247,16 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				if(compoundButton.isChecked()) {
 				    GeneralSetting.setMusicOn(TaskTimingActivity.this, true);
 					Toast.makeText(this,"音乐已打开",Toast.LENGTH_SHORT).show();
+					if(!musicController.isPlaying() && havingTaskOngoing){
+						musicController.restart();
+					}
 				}
 				else {
 				    GeneralSetting.setMusicOn(TaskTimingActivity.this, false);
 				    Toast.makeText(this,"音乐已关闭",Toast.LENGTH_SHORT).show();
+				    if(musicController.isPlaying()){
+				    	musicController.stop();
+					}
 				}
 				break;
 			case R.id.switch_if_tomato_clock_on:
@@ -344,13 +352,13 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	//初始化所有要FindViewById的都在这里初始化
 	private void initMainFindView(){
 		taskTimeCount = findViewById(R.id.time_action);
-//		tomatoClockTime = findViewById(R.id.text_tomatoClock);
+		tomatoClockTime = findViewById(R.id.tomato_text);
 		btnTaskFinished = (ImageButton)findViewById(R.id.finish_button);
 		btnThrowTask = (ImageButton)findViewById(R.id.give_up_button);
 		btnPause = (ImageButton) findViewById(R.id.pause_button);
 	}
 
-	//TODO:初始化整个布局，包括显示的Task各项信息
+
 	private void initView(){
 		toolbar.setTitle(taskName);                                        //设置toolbar标题显示任务名
 		remarkText.setText(taskComments);                                  //设置备注显示
@@ -384,13 +392,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			public void onClick(View v) {
 				if(!taskStatuePaused) {
 					pause();
-					taskStatuePaused = true;
-					btnPause.setBackgroundResource(R.drawable.doing_watercolor);
 				}
 				else {
 					resume();
-					taskStatuePaused = false;
-					btnPause.setBackgroundResource(R.drawable.stop_watercolor);
 				}
 			}
 		});
@@ -425,7 +429,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		musicController.pause();
 		timer.pause();
 
-		/*TODO:暂停的番茄钟部分
+		taskStatuePaused = true;
+		btnPause.setBackgroundResource(R.drawable.doing_watercolor);
+
+
 		//若开启番茄钟，开始番茄钟任务进行时间计时
 		if (tomatoClockCountDown != null) {
 			tomatoClockCountDown.cancel();
@@ -434,7 +441,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if(GeneralSetting.getTomatoClockEnable(this) && GeneralSetting.getTomatoClockEnable(this)) {
 			initStartTomatoClockBreak();
 		}
-		*/
 	}
 
 	private void resume(){
@@ -443,7 +449,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		}
 		timer.resume();
 
-		/*TODO:恢复计时的番茄钟部分
+		taskStatuePaused = false;
+		btnPause.setBackgroundResource(R.drawable.stop_watercolor);
+
 		//若开启番茄钟，开始番茄钟任务休息时间计时
 		if(tomatoClockBreakCountDown != null){
 			tomatoClockBreakCountDown.cancel();
@@ -452,7 +460,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if (GeneralSetting.getTomatoClockEnable(this) && GeneralSetting.getTomatoClockEnable(this)) {
 			initStartTomatoClock();
 		}
-		*/
 	}
 
 	//显示暂停时活动
@@ -479,7 +486,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockCountDown = new CountDownTimer(GeneralSetting.getTomatoClockTime(this) * 60000, 1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-				tomatoClockTime.setText(millis2HourMinSecString(millisUntilFinished));
+				tomatoClockTime.setText("据下次休息还有" + millis2HourMinSecString(millisUntilFinished));
 			}
 
 			@Override
@@ -497,7 +504,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-				millis2HourMinSecString(millisUntilFinished);
+				tomatoClockTime.setText("据休息结束还有" + millis2HourMinSecString(millisUntilFinished));
 			}
 
 			@Override
@@ -508,13 +515,23 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockBreakCountDown.start();
 	}
 
+	//发送通知，暂只用于番茄钟提醒
+	//@param:提醒的标题，提醒的正文内容
 	private void sendNotification(String title, String text){
 
-		//TODO:通知发不出去
 		Intent intent = new Intent(this, TaskTimingActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 		NotificationManager notificationManager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		Notification notification= new Notification.Builder(this)
+
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+			NotificationChannel channel = new NotificationChannel("channel_tomato_clock", "ChannelTomatoClock", NotificationManager.IMPORTANCE_DEFAULT);
+			channel.enableLights(false); //是否在桌面icon右上角展示小红点
+			channel.setShowBadge(false); //是否在久按桌面图标时显示此渠道的通知
+			channel.enableVibration(false);
+			channel.setSound(null, null);
+			notificationManager.createNotificationChannel(channel);
+		}
+		Notification notification= new NotificationCompat.Builder(this, "channel_tomato_clock")
 				.setAutoCancel(true)
 				.setContentText(text)
 				.setContentTitle(title)
@@ -541,13 +558,13 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		return String.format("%02d:%02d:%02d", hour, minute, second);
 	}
 
-	public String millis2HourMinSecString(long millis, int itemNums){
+	public String millis2HourMinSecString(long millis, int itemNum){
 		long second = millis / 1000;
 		long minute = second / 60;
 		long hour = minute / 60;
 		minute = minute % 60;
 		second = second % 60;
-		if(itemNums == 2){
+		if(itemNum == 2){
 			return String.format("%02d:%02d", hour, minute);
 		}else {
 			return String.format("%02d:%02d:%02d", hour, minute, second);
@@ -564,18 +581,4 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		return (long) hourMinSec2Seconds(hour, minute, second) * 1000;
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()){
-			case R.id.layout_remark:
-				if(remarkLayoutLayoutParams.height==90){
-					remarkLayoutLayoutParams.height=100;
-					remarkText.setMaxLines(8);
-				}else if(remarkLayoutLayoutParams.height==100){
-					remarkLayoutLayoutParams.height=90;
-					remarkText.setMaxLines(2);
-					remarkText.setEllipsize(TextUtils.TruncateAt.END);
-				}
-		}
-	}
 }
