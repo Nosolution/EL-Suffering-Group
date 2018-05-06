@@ -239,18 +239,31 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                     cdp.show(ddlTime.getText().toString());
                     break;
                 case R.id.finish_editing:
-                    if(!editMode) addTask();
-                    else modifyTask();
+                    if(!editMode) {
+                        addTask();
+                        resetAllComponent();
+                        Toast toast = Toast.makeText(EditTaskActivity.this,"成功添加任务",Toast.LENGTH_SHORT);
+                        showMyToast(toast,1000);//提示成功添加任务
+                    }
+                    else {
+                        modifyTask();
+                        Toast toast = Toast.makeText(EditTaskActivity.this,"成功修改任务",Toast.LENGTH_SHORT);
+                        showMyToast(toast,1000);//提示成功修改任务
+                    }
                     updateFlag = true;
                     break;
                 case R.id.start_now:
-                    Intent intent=new Intent(EditTaskActivity.this,TaskTimingActivity.class);
-                    intent.putExtra("intent_task_id",Integer.parseInt(taskId));
-                    intent.putExtra("intent_task_name",taskNameEditText.getText().toString());
-                    intent.putExtra("intent_task_hours_required", Integer.parseInt(hour));
-                    intent.putExtra("intent_task_minutes_required", Integer.parseInt(minute));
-                    intent.putExtra("intent_task_comments",commentEditText.getText().toString());
-                    startActivity(intent);
+                    //如果不是编辑模式，开始新建的任务，否则开始编辑任务
+                    if(!editMode) {
+                        addTask();
+                        startTask(MyDatabaseOperation.queryLatestTaskId(EditTaskActivity.this));
+                        resetAllComponent();
+                    }
+                    else {
+                        modifyTask();
+                        startTask(Integer.parseInt(taskId));
+                    }
+
                     break;
             }
         }
@@ -268,13 +281,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
         db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
-        Toast toast = Toast.makeText(EditTaskActivity.this,"成功添加任务",Toast.LENGTH_SHORT);
-        showMyToast(toast,1000);//提示成功添加任务
-        taskNameEditText.setText("");
-        hourSpinner.setSelection(0);
-        minuteSpinner.setSelection(0);
-        swc.setChecked(false);
-        commentEditText.setText("");
     }
 
     //修改任务
@@ -282,16 +288,15 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("task",taskNameEditText.getText().toString() );
-//        values.put("assumedtime",assumedTimeEditText1.getText().toString()+":"+assumedTimeEditText2.getText().toString());
         values.put("assumedtime", hour +":"+ minute);
         values.put("deadline",ddlTime.getText().toString());
         values.put("emergencydegree",selectedImageViewPosition>=0? selectedImageViewPosition : 1);
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
         db.update("Tasklist",values,"id=?",new String[]{taskId});
-        Toast toast = Toast.makeText(EditTaskActivity.this,"成功修改任务",Toast.LENGTH_SHORT);
-        showMyToast(toast,1000);
     }
+
+
 
     //自定义Toast显示时间，cnt为所需显示时间
     public void showMyToast(final Toast toast, final int cnt){
@@ -341,6 +346,24 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                 break;
             }
         }
+    }
+
+    private void resetAllComponent(){
+        taskNameEditText.setText("");
+        hourSpinner.setSelection(0);
+        minuteSpinner.setSelection(0);
+        swc.setChecked(false);
+        commentEditText.setText("");
+    }
+
+    private void startTask(int id){
+        Intent intent=new Intent(EditTaskActivity.this,TaskTimingActivity.class);
+        intent.putExtra("intent_task_id",id);
+        intent.putExtra("intent_task_name",taskNameEditText.getText().toString());
+        intent.putExtra("intent_task_hours_required", Integer.parseInt(hour));
+        intent.putExtra("intent_task_minutes_required", Integer.parseInt(minute));
+        intent.putExtra("intent_task_comments",commentEditText.getText().toString());
+        startActivity(intent);
     }
 
     private int isDailyTask(){

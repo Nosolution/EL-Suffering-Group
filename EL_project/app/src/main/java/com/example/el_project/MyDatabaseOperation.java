@@ -1,6 +1,7 @@
 package com.example.el_project;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
@@ -16,5 +17,16 @@ public class MyDatabaseOperation {
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,1);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         db.delete("Tasklist","id=?",new String[]{String.valueOf(id)});
+    }
+
+    public static int queryLatestTaskId(Context context){
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,1);
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
+        if(cursor.moveToPosition(cursor.getCount()-1)){
+            int id=Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")));
+            return id;
+        }
+        else return 0;
     }
 }
