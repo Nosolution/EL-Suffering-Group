@@ -99,6 +99,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //		setItemSelected(position,!isItemSelected(position));
 	}
 
+	public void refreshItemView(){
+		notifyDataSetChanged();
+	}
+
 	//更新adpter的数据和选择状态
 	public void updateDataSet(ArrayList<Task> list) {
 		this.mTaskList = list;

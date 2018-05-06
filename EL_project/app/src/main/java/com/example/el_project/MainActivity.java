@@ -208,6 +208,8 @@ public class MainActivity extends AppCompatActivity {
 
     //初始化任务列表
     private void initTasks() {
+        mTaskList.clear();
+        taskList.clear();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
