@@ -119,6 +119,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 //			textChosenTime.setVisibility(View.VISIBLE);
 //			spinnerChooseTime.setVisibility(View.VISIBLE);
 //		}
+		//
 
 		//计时动画
 		RelativeLayout rl=(RelativeLayout) findViewById(R.id.time_act);
