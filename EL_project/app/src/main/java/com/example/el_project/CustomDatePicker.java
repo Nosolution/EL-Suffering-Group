@@ -15,7 +15,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by CZ on 2018/4/13.
@@ -53,12 +55,14 @@ public class CustomDatePicker {
     private static final int MIN_MINUTE = 0;
     private static final int MIN_HOUR = 0;
     private static final int MAX_MONTH = 12;
+    private static final int[] dayOfMonth={31,28,31,30,31,30,31,31,30,31,30,31};
 
     private ArrayList<String> year, month, day, hour, minute;
     private int startYear, startMonth, startDay, startHour, startMinute, endYear, endMonth, endDay, endHour, endMinute;
     private boolean spanYear, spanMon, spanDay, spanHour, spanMin;
     private Calendar selectedCalender, startCalendar, endCalendar;
     private TextView tv_cancle, tv_select, hour_text, minute_text;
+
 
     public CustomDatePicker(Context context, ResultHandler resultHandler, String startDate, String endDate) {
         if (isValidDate(startDate, "yyyy-MM-dd HH:mm") && isValidDate(endDate, "yyyy-MM-dd HH:mm")) {
@@ -133,7 +137,7 @@ public class CustomDatePicker {
         startMinute = startCalendar.get(Calendar.MINUTE);
         endYear = endCalendar.get(Calendar.YEAR);
         endMonth = endCalendar.get(Calendar.MONTH) + 1;
-        endDay = endCalendar.get(Calendar.DAY_OF_MONTH);
+        endDay = dayOfMonth[endMonth-1];
         endHour = endCalendar.get(Calendar.HOUR_OF_DAY);
         endMinute = endCalendar.get(Calendar.MINUTE);
         spanYear = startYear != endYear;
@@ -153,7 +157,7 @@ public class CustomDatePicker {
             for (int i = startMonth; i <= MAX_MONTH; i++) {
                 month.add(formatTimeUnit(i));
             }
-            for (int i = startDay; i <= startCalendar.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+            for (int i = startDay; i <= endDay; i++) {
                 day.add(formatTimeUnit(i));
             }
 
@@ -177,7 +181,7 @@ public class CustomDatePicker {
             for (int i = startMonth; i <= endMonth; i++) {
                 month.add(formatTimeUnit(i));
             }
-            for (int i = startDay; i <= startCalendar.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+            for (int i = startDay; i <= endDay; i++) {
                 day.add(formatTimeUnit(i));
             }
 
@@ -364,17 +368,16 @@ public class CustomDatePicker {
         day.clear();
         int selectedYear = selectedCalender.get(Calendar.YEAR);
         int selectedMonth = selectedCalender.get(Calendar.MONTH) + 1;
-        //TODO:
         if (selectedYear == startYear && selectedMonth == startMonth) {
-            for (int i = startDay; i <= selectedCalender.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+            for (int i = startDay; i <= dayOfMonth[selectedMonth-1]; i++) {
                 day.add(formatTimeUnit(i));
             }
         } else if (selectedYear == endYear && selectedMonth == endMonth) {
-            for (int i = 1; i <= endDay; i++) {
+            for (int i = 1; i <= dayOfMonth[selectedMonth-1]; i++) {
                 day.add(formatTimeUnit(i));
             }
         } else {
-            for (int i = 1; i <= selectedCalender.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+            for (int i = 1; i <= dayOfMonth[selectedMonth-1]; i++) {
                 day.add(formatTimeUnit(i));
             }
         }
