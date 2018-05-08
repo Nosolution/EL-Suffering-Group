@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.CancellationSignal;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -87,7 +89,7 @@ public class CustomDatePicker {
     private void initDialog() {
         if (datePickerDialog == null) {
             datePickerDialog = new Dialog(context, R.style.time_dialog);
-            datePickerDialog.setCancelable(false);
+            datePickerDialog.setCanceledOnTouchOutside(false);//将setCancelable替换为此方法，点击其他区域Dialog不消失，点击返回键消失
             datePickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             datePickerDialog.setContentView(R.layout.time_picker);
             Window window = datePickerDialog.getWindow();
@@ -652,4 +654,13 @@ public class CustomDatePicker {
         }
         return convertSuccess;
     }
+
+    public boolean isDialogShowing(){
+        return datePickerDialog.isShowing();
+    }
+
+    public void dismissDialog(){
+        datePickerDialog.dismiss();
+    }
+
 }

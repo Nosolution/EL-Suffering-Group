@@ -42,7 +42,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private EditText commentEditText;
     private Button finishEditing;//加入待办按钮
     private Button startNow;//立即开始按钮
-    private Map ivMap;//iv字典，Id到位置的映射
     private int selectedImageViewPosition;//被选择的ImageView的位置
     private boolean editMode;//是否是编辑任务
     private String taskId;//数据库中task的ID，作为唯一标识符
@@ -52,8 +51,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private String[]minutePosition={"00","10","20","30","40","50",};
     private ArrayList<Integer>ivId=new ArrayList<>();//储存紧急程度ImageViewId的ArrayList
 
-//    private SparseBooleanArray emergencyDegree;
-    private boolean updateFlag;
     private Drawable draw1;
 
 //TODO:定义变量
@@ -109,7 +106,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         draw1=getDrawable(R.drawable.circle_animation);//点亮动画
         //打开数据库
         dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
-        updateFlag=false;
 
         //DDL选择
         selectTime=(RelativeLayout)findViewById(R.id.selectTime);
@@ -118,7 +114,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         initTimePicker();
 
         selectedImageViewPosition=0;//被选择位置默认为0
-        //添加ImageViewId
         ivId.add(R.id.circle_one);
         ivId.add(R.id.circle_two);
         ivId.add(R.id.circle_three);
@@ -206,7 +201,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         hour =tempString[0];
         minute =tempString[1];
 
-
         for(int index=4;index>=0;index--){
             if(taskDetails[4].equals(String.valueOf(index+1))){
                 setImageViewSelected(ivId.get(index));
@@ -248,7 +242,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                         Toast toast = Toast.makeText(EditTaskActivity.this,"成功修改任务",Toast.LENGTH_SHORT);
                         showMyToast(toast,1000);//提示成功修改任务
                     }
-                    updateFlag = true;
                     break;
                 case R.id.start_now:
                     //如果不是编辑模式，开始新建的任务，否则开始编辑任务
@@ -313,12 +306,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             }
         },cnt);
     }
-
-    //判断该id对应的ImageView是否已被选择
-    private boolean isSelected(int id){
-        return selectedImageViewPosition == (int) ivMap.get(id);
-    }
-
+    
     private void setImageViewSelected(int id){
         int diff=0;
         ImageView iv;
@@ -354,6 +342,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         intent.putExtra("intent_task_name",taskNameEditText.getText().toString());
         intent.putExtra("intent_task_hours_required", Integer.parseInt(hour));
         intent.putExtra("intent_task_minutes_required", Integer.parseInt(minute));
+        intent.putExtra("intent_is_daily_task",isDailyTask());
         intent.putExtra("intent_task_comments",commentEditText.getText().toString());
         startActivity(intent);
     }
@@ -363,20 +352,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             return 1;
         else
             return 0;
-    }
-
-    //若已添加任务，返回时更新主界面
-    @Override
-    public void onBackPressed() {
-        if (updateFlag) {
-            Intent intent = new Intent();
-            intent.putExtra("task_ID",taskId);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
-        else{
-            super.onBackPressed();
-        }
     }
 
     private void initButton(boolean editMode){

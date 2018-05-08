@@ -372,6 +372,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         String[] tempString=taskList.get(selectedPosition)[2].split(":");
         intent.putExtra("intent_task_hours_required", Integer.parseInt(tempString[0]));
         intent.putExtra("intent_task_minutes_required", Integer.parseInt(tempString[1]));
+        intent.putExtra("intent_is_daily_task",Integer.parseInt(taskList.get(selectedPosition)[5]));
         intent.putExtra("intent_task_comments",taskList.get(selectedPosition)[6]);
         startActivity(intent);
     }
