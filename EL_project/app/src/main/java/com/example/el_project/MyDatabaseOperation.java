@@ -1,5 +1,6 @@
 package com.example.el_project;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
  */
 
 public class MyDatabaseOperation {
-//    private MyDatabaseHelper dbHelper= new MyDatabaseHelper("TaskStore.db", null, 1);
     /*
     传入上下文context与任务id
      */
@@ -29,5 +29,14 @@ public class MyDatabaseOperation {
             return id;
         }
         else return 0;
+    }
+
+    //完成每日任务，传入上下文context和id
+    public static void finishDailyTask(Context context,int id){
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,1);
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("isdailytask","2");
+        db.update("Tasklist",values,"id=?",new String[]{String.valueOf(id)});
     }
 }

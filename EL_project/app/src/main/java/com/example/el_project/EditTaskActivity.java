@@ -42,7 +42,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private EditText commentEditText;
     private Button finishEditing;//加入待办按钮
     private Button startNow;//立即开始按钮
-    private Map ivMap;//iv字典，Id到位置的映射
     private int selectedImageViewPosition;//被选择的ImageView的位置
     private boolean editMode;//是否是编辑任务
     private String taskId;//数据库中task的ID，作为唯一标识符
@@ -52,8 +51,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private String[]minutePosition={"00","10","20","30","40","50",};
     private ArrayList<Integer>ivId=new ArrayList<>();
 
-//    private SparseBooleanArray emergencyDegree;
-    private boolean updateFlag;
     private Drawable draw1;
 
 //TODO:定义变量
@@ -109,7 +106,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         draw1=getDrawable(R.drawable.circle_animation);//点亮动画
         //打开数据库
         dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
-        updateFlag=false;
 
         //DDL选择
         selectTime=(RelativeLayout)findViewById(R.id.selectTime);
@@ -117,15 +113,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         ddlTime=(TextView)findViewById(R.id.ddlTime);
         initTimePicker();
 
-        //建立字典
-        ivMap= new HashMap();
-        ivMap.put(R.id.circle_one,1);
-        ivMap.put(R.id.circle_two,2);
-        ivMap.put(R.id.circle_three,3);
-        ivMap.put(R.id.circle_four,4);
-        ivMap.put(R.id.circle_five,5);
         selectedImageViewPosition=0;//被选择位置默认为0
-
         ivId.add(R.id.circle_one);
         ivId.add(R.id.circle_two);
         ivId.add(R.id.circle_three);
@@ -213,12 +201,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         hour =tempString[0];
         minute =tempString[1];
 
-
-//        for(int id :ivId){
-//            if(taskDetails[4].equals(String.valueOf(id))){
-//                setIVSelected(id);
-//            }
-//        }
         for(int index=4;index>=0;index--){
             if(taskDetails[4].equals(String.valueOf(index+1))){
                 setIVSelected(ivId.get(index));
@@ -237,15 +219,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         //开始处理点击事件
         int id=v.getId();
-//        if(ivMap.containsKey(id)) {//判断是否是紧急程度的ImageView
-//            if (isSelected(id)) {
-//                setNotSelected(id);
-//            }
-//            else{
-//                setDefaultImageView();
-//                setSelected(id);
-//            }
-//        }
         if(ivId.contains(id)){
             if(selectedImageViewPosition!=ivId.indexOf(id)+1){
                 setIVSelected(id);
@@ -269,7 +242,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                         Toast toast = Toast.makeText(EditTaskActivity.this,"成功修改任务",Toast.LENGTH_SHORT);
                         showMyToast(toast,1000);//提示成功修改任务
                     }
-                    updateFlag = true;
                     break;
                 case R.id.start_now:
                     //如果不是编辑模式，开始新建的任务，否则开始编辑任务
@@ -335,38 +307,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         },cnt);
     }
 
-    //判断该id对应的ImageView是否已被选择
-    private boolean isSelected(int id){
-        return selectedImageViewPosition == (int) ivMap.get(id);
-    }
-
-    //设置ImageView为被选中
-//    private void setSelected(int id){
-//        selectedImageViewPosition=(int)ivMap.get(id);
-//        ImageView iv =findViewById(id);
-//        AnimationDrawable ad =(AnimationDrawable) iv.getDrawable();
-//        ad.start();
-//    }
-
-    //设置ImageView不被选中
-//    private void setNotSelected(int id){
-//        selectedImageViewPosition=0;
-//        ImageView iv =  findViewById(id);
-//        AnimationDrawable ad = (AnimationDrawable) iv.getDrawable();
-//        ad.selectDrawable(0);//回到第一帧并暂停
-//        ad.stop();
-//    }
-
-    //将点亮的ImageView设为未点亮状态
-//    private void setDefaultImageView(){
-//        for(Object key:ivMap.keySet()){
-//            if((int)ivMap.get(key)==selectedImageViewPosition){
-//                setNotSelected((int)key);
-//                break;
-//            }
-//        }
-//    }
-
     private void setIVSelected(int id){
         int diff=0;
         ImageView iv;
@@ -402,6 +342,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         intent.putExtra("intent_task_name",taskNameEditText.getText().toString());
         intent.putExtra("intent_task_hours_required", Integer.parseInt(hour));
         intent.putExtra("intent_task_minutes_required", Integer.parseInt(minute));
+        intent.putExtra("intent_is_daily_task",isDailyTask());
         intent.putExtra("intent_task_comments",commentEditText.getText().toString());
         startActivity(intent);
     }
@@ -411,20 +352,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             return 1;
         else
             return 0;
-    }
-
-    //若已添加任务，返回时更新主界面
-    @Override
-    public void onBackPressed() {
-        if (updateFlag) {
-            Intent intent = new Intent();
-            intent.putExtra("task_ID",taskId);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
-        else{
-            super.onBackPressed();
-        }
     }
 
     private void initButton(boolean editMode){
