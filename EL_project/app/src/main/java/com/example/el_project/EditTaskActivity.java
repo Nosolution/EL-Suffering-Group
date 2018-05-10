@@ -108,7 +108,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         draw1=getDrawable(R.drawable.circle_animation);//点亮动画
         //打开数据库
-        dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,1);
+        dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,2);
         updateFlag=false;
 
         //DDL选择

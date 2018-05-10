@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 1);
+        dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 2);
 //        initTasks();  //初始化数据
         selectedPosition=-1;
 
