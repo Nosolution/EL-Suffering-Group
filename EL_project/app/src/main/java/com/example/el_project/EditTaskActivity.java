@@ -306,7 +306,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             }
         },cnt);
     }
-    
+
     private void setImageViewSelected(int id){
         int diff=0;
         ImageView iv;
