@@ -29,6 +29,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             +"statue integer,"                           //任务完成状态
             +"break_count integer" + ")";                //任务打断次数
 
+    public static final String ADD_COLUMN_LAST_FINISHED_TIME="alter table Tasklist add column last_finished_date integer";
+
     private Context mContext;
 
     public MyDatabaseHelper(Context context, String name,
@@ -49,7 +51,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion == 1){
             db.execSQL(CREATE_FINISHTASKTABLE);
+            db.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
             Toast.makeText(mContext,"Create succeeded",Toast.LENGTH_SHORT).show();
+        }
+        else if(oldVersion==2){
+            db.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
+            Toast.makeText(mContext,"succeeded upgrade to version 3",Toast.LENGTH_SHORT).show();
         }
     }
 }

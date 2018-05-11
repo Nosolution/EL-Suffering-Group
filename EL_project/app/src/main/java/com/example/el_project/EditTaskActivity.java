@@ -106,7 +106,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         draw1=getDrawable(R.drawable.circle_animation);//点亮动画
         //打开数据库
 
-        dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,2);
+        dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,3);
 
         //DDL选择
         selectTime=(RelativeLayout)findViewById(R.id.selectTime);
@@ -160,7 +160,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         if(intent.hasExtra("details")){
             editMode=true;
             String[] taskDetails=intent.getStringArrayExtra("details");
-            taskId=taskDetails[0];
             setTaskDetails(taskDetails);
             finishEditing.setText("修改完成");
         }
@@ -272,6 +271,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         values.put("emergencydegree",selectedImageViewPosition>0? selectedImageViewPosition : 1);//默认值为1
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
+        values.put("last_finished_time",0);
         db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
     }
 
