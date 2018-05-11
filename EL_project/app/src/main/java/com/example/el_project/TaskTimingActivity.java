@@ -305,7 +305,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	public void onClick(View v) {
 		switch (v.getId()){
 			case R.id.finish_button:
-				removeTaskFromDB();     //从数据库中移除相应Task
+				if (MyDatabaseOperation.isDailyTask(this, taskId)){
+					MyDatabaseOperation.setDailyTaskFinished(this,taskId);
+				}else {
+					removeTaskFromDB();     //从数据库中移除相应Task
+				}
 				musicController.stop(); //音乐停止播放
 				showFinishingActivity();//显示完成界面
 				havingTaskOngoing = false;

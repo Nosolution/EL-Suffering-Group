@@ -188,6 +188,7 @@ public class MyDatabaseOperation {
     public static int getTotalSomeDayTimeUsed(Context context, int date){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
+        int totalTime = 0;
 
         Cursor cursor = db.query("FinishTaskTable", null, "date = ?",
                 new String[]{Integer.toString(date)}, null, null, null);
@@ -195,9 +196,18 @@ public class MyDatabaseOperation {
             do{
                 int timeUsed = cursor.getInt(cursor.getColumnIndex("task_time_used"));
                 Log.d("TEST", "getTotalSomeDayTimeUsed: " + timeUsed);
+                totalTime += timeUsed;
             }while (cursor.moveToNext());
-            cursor.close();
         }
-        return 0;
+        cursor.close();
+        return totalTime;
+    }
+
+    public static int[] getWeekPerdayTimeUsed(Context context, int weekCount){
+        int[] timesWeek = new int[7];
+        for (int time: timesWeek) {
+            time = 0;
+        }
+        return timesWeek;
     }
 }
