@@ -36,8 +36,8 @@
             android:name=".MainActivity"
             android:label="赶快来创建你的任务表吧"
             android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
 				<!--<category android:name="android.intent.category.LAUNCHER" />-->
 			<!--</intent-filter>-->
@@ -73,7 +73,8 @@
 			</intent-filter>
 		</activity>
 
-        <activity android:name=".ShareTestActivity" />
+        <!--<activity android:name=".ShareTestActivity" />-->
+
     </application>
 
 </manifest>
