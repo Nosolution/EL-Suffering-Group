@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	private Spinner spinnerChooseTime;
 	private String tomatoClockTimeLength;    //用于获取番茄钟设置时长
 
-    private int[] colors = {R.drawable.task_pink, R.drawable.task_red, R.drawable.task_purple, R.drawable.task_gray, R.drawable.task_green};
-    private int[] checkedColors={R.drawable.task_pink_chosen,R.drawable.task_red_chosen,R.drawable.task_purple_chosen,R.drawable.task_grey_chosen,R.drawable.task_green_chosen};
+    private int[] colors = {R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar};
+    private int[] checkedColors={R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen};
     //颜色ID数组，用于循环改变任务背景颜色
 
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
-//
+
 	    spinnerChooseTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 		    @Override
 		    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

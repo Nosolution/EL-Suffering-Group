@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -93,11 +95,52 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		QUIT,
 		FINISH
 	}
+	//TODO:___________________________________________
+//	private Tencent mTencent;
+	//TODO:计时装置设置示例 1 cz
+	private CircleProgress circleProgress,circleProgress2;
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			if (msg.what == 1) {
+				circleProgress.setProgress(msg.arg1);
+			}
+
+			super.handleMessage(msg);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_timing);
+
+		circleProgress2=(CircleProgress)findViewById(R.id.cp2);
+		circleProgress2.setmTotalProgress(100);
+		circleProgress2.setProgress(100);
+		//TODO:示例 2 cz
+		circleProgress=(CircleProgress)findViewById(R.id.cp1);
+		circleProgress.setmTotalProgress(300);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				for (int i=1;i<=300;i++){
+					try {
+						Thread.sleep(50);
+						Message message=handler.obtainMessage();
+						message.what=1;
+						message.arg1=i;
+						handler.sendMessage(message);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+//TODO:________________________________
+//		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
+
+
 
 		//初始化Toolbar
 		toolbar=findViewById(R.id.setting_toolbar);
@@ -115,7 +158,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		switchMusicStatus = findViewById(R.id.switch_if_music_on);
 		spinnerChooseTime = findViewById(R.id.spinner_choose_time);
 		textClockOn = findViewById(R.id.text_clock_on);
-		timeLeft = findViewById(R.id.time_left);
+		timeLeft = findViewById(R.id.text2);
 		remarkText = findViewById(R.id.edit_remark);
 
 		//初始化计时主要界面的内容
@@ -168,6 +211,23 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		}
 		spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
 
+//		//计时动画
+//		RelativeLayout rl=(RelativeLayout) findViewById(R.id.time_act);
+//		AnimationDrawable ad=(AnimationDrawable)rl.getBackground();
+//		ad.start();
+
+//		//番茄钟动画
+//		ivTomatoClockAnim=(ImageView)findViewById(R.id.tomato_act);
+//		AnimationDrawable add=(AnimationDrawable)ivTomatoClockAnim.getBackground();
+//		add.start();
+
+		if(actionBar!=null){
+			actionBar.setDisplayHomeAsUpEnabled(true);  //显示导航按钮
+//			actionBar.setHomeAsUpIndicator(R.drawable.category_white_31);  //设置导航按钮图标
+		}
+//TODO:____________________________
+//		initMainFindView();              //初始那些计时控制部分控件对象
+//		onClickListenerMainSetter();     //设置计时控制部分所有涉及到的有关的监听器
 
 		//取得开始任务时传来的任务详细信息
 		final Intent intentTaskInfo = getIntent();
@@ -461,7 +521,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		timer.pause();
 
 		taskStatuePaused = true;
-		btnPause.setBackgroundResource(R.drawable.doing_watercolor);
+		btnPause.setBackgroundResource(R.drawable.doing);
 
 
 		//若开启番茄钟，开始番茄钟任务进行时间计时
@@ -481,7 +541,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		timer.resume();
 
 		taskStatuePaused = false;
-		btnPause.setBackgroundResource(R.drawable.stop_watercolor);
+		btnPause.setBackgroundResource(R.drawable.stop);
 
 		//若开启番茄钟，开始番茄钟任务休息时间计时
 		if(tomatoClockBreakCountDown != null){
@@ -505,7 +565,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			public void onTick(long millisGoneThrough) {
 				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
 				taskMillisGone = (int) (millisGoneThrough/1000);
-				timeLeft.setText("距离完成还有" + millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough + 60000), 0), 2));
+				timeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough + 60000), 0), 2));
 			}
 		};
 	}

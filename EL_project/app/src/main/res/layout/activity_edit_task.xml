@@ -12,7 +12,7 @@
     <Toolbar
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/text"
+        android:background="@drawable/background1"
         android:title="@string/bar"
         android:titleTextColor="@color/colorWhite"></Toolbar>
 
@@ -156,14 +156,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/importance2"
                 style="@style/main2text"/>
-
-            <!--<ImageView-->
-            <!--android:id="@+id/circle_back"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:scaleType="center"-->
-            <!--android:src="@drawable/circle_animation"-->
-            <!--android:layout_gravity="center_vertical"/>-->
 
             <ImageView
                 android:id="@+id/circle_one"
