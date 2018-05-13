@@ -23,8 +23,10 @@
         android:layout_marginBottom="50dp">
 
         <LinearLayout
+            android:id="@+id/edit_task_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:orientation="vertical">
 
             <LinearLayout
@@ -40,14 +42,14 @@
                 android:text="@string/task2"
                 style="@style/main2text" />
 
-            <EditText
-                android:id="@+id/task_name_et"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:lines="1"
-                android:inputType="text"
-                android:imeOptions="actionDone"/>
+                <EditText
+                    android:id="@+id/task_name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:lines="1" />
 
         </LinearLayout>
 

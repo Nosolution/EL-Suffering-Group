@@ -1,6 +1,7 @@
 package com.example.el_project;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.AnimationDrawable;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -50,6 +52,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private String[]hourPosition={"00","01","02","03","04","05"};
     private String[]minutePosition={"00","10","20","30","40","50",};
     private ArrayList<Integer>ivId=new ArrayList<>();//储存紧急程度ImageViewId的ArrayList
+    private InputMethodManager mInputMethodManager;
 
     private Drawable draw1;
 
@@ -60,7 +63,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
 
-
+        findViewById(R.id.edit_task_layout).setOnClickListener(this);//整个页面都监听点击事件
         editMode=false;
         taskId=null;
         finishEditing = (Button)findViewById(R.id.finish_editing);
@@ -70,6 +73,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         textChange tc = new textChange();//文本改变监视器
         hour ="00";
         minute ="00";
+        mInputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         taskNameEditText = findViewById(R.id.task_name_et);
         taskNameEditText.addTextChangedListener(tc);
@@ -77,29 +81,32 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         minuteSpinner=findViewById(R.id.minute_spinner);
         commentEditText = findViewById(R.id.comment_et);
 
-        //两个Spinner的点击事件
+
+            //两个Spinner的点击事件
         hourSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                resetKeyBoard();
                 hour =getResources().getStringArray(R.array.hour_list)[position];
                 decideButtonEnable();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                resetKeyBoard();
             }
         });
         minuteSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                resetKeyBoard();
                 minute =getResources().getStringArray(R.array.minute_list)[position];
                 decideButtonEnable();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                resetKeyBoard();
             }
         });
 
@@ -219,6 +226,9 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         //开始处理点击事件
         int id=v.getId();
+        if(id!=R.id.task_name_et) {
+            resetKeyBoard();
+        }
         if(ivId.contains(id)){
             if(selectedImageViewPosition!=ivId.indexOf(id)+1){
                 setImageViewSelected(id);
@@ -333,6 +343,14 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         taskNameEditText.setText("");
         hourSpinner.setSelection(0);
         minuteSpinner.setSelection(0);
+        ImageView iv;
+        AnimationDrawable ad;
+        for(int i=selectedImageViewPosition;i>0;i--){
+            iv=findViewById(ivId.get(i-1));
+            ad=(AnimationDrawable) iv.getDrawable();
+            ad.selectDrawable(0);//回到第一帧并暂停
+            ad.stop();
+        }
         swc.setChecked(false);
         commentEditText.setText("");
     }
@@ -370,6 +388,12 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         else{
             finishEditing.setEnabled(false);
             startNow.setEnabled(false);
+        }
+    }
+
+    private void resetKeyBoard(){
+        if (mInputMethodManager.isActive()) {
+            mInputMethodManager.hideSoftInputFromWindow(taskNameEditText.getWindowToken(), 0);
         }
     }
 

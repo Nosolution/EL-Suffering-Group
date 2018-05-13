@@ -166,7 +166,7 @@ public class MyDatabaseOperation {
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat formatDate = new SimpleDateFormat("yyMMdd", Locale.getDefault());
         SimpleDateFormat formatWeekCount = new SimpleDateFormat("yyw", Locale.getDefault());
-        SimpleDateFormat formatWeek = new SimpleDateFormat("u", Locale.getDefault());
+        SimpleDateFormat formatWeek = new SimpleDateFormat("EEE", Locale.getDefault());
         ContentValues values = new ContentValues();
         values.put("date", Integer.parseInt(formatDate.format(calendar.getTime())));
         values.put("week_count", Integer.parseInt(formatWeekCount.format(calendar.getTime())));
