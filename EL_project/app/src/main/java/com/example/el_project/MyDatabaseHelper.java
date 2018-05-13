@@ -23,7 +23,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             +"detail_time_start text primary key,"   //开始任务的具体时间，精确到秒
             +"date integer,"                            //完成任务的日期，用于筛选
             +"week_count integer,"                       //完成任务的周数，用于筛选
-            +"week text,"                            //完成任务时的周几，用于筛选
+            +"week integer,"                            //完成任务时的周几，用于筛选
             +"task_name text,"
             +"task_time_used integer,"                     //任务耗时
             +"statue integer,"                           //任务完成状态

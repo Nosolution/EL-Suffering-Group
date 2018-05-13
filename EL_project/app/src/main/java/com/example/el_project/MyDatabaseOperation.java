@@ -149,7 +149,7 @@ public class MyDatabaseOperation {
         values.put("detail_time_start",startTime);
         values.put("date", 0);
         values.put("week_count", 0);
-        values.put("week", "0");
+        values.put("week", 0);
         values.put("task_name", taskName);
         values.put("task_time_used", 0);
         values.put("statue", 0);
@@ -166,7 +166,7 @@ public class MyDatabaseOperation {
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat formatDate = new SimpleDateFormat("yyMMdd", Locale.getDefault());
         SimpleDateFormat formatWeekCount = new SimpleDateFormat("yyw", Locale.getDefault());
-        SimpleDateFormat formatWeek = new SimpleDateFormat("EEE", Locale.getDefault());
+        SimpleDateFormat formatWeek = new SimpleDateFormat("u", Locale.getDefault());
         ContentValues values = new ContentValues();
         values.put("date", Integer.parseInt(formatDate.format(calendar.getTime())));
         values.put("week_count", Integer.parseInt(formatWeekCount.format(calendar.getTime())));
@@ -201,6 +201,12 @@ public class MyDatabaseOperation {
         }
         cursor.close();
         return totalTime;
+    }
+
+    public static int getTotalTimeUsedToday(Context context){
+        Calendar calendar = new GregorianCalendar();
+        SimpleDateFormat format = new SimpleDateFormat("yyMMdd", Locale.getDefault());
+        return getTotalSomeDayTimeUsed(context, Integer.parseInt(format.format(calendar.getTime())));
     }
 
     public static int[] getWeekPerdayTimeUsed(Context context, int weekCount){
