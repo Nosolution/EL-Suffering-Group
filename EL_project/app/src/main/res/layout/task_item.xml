@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/layout_item"
 	android:layout_width="match_parent"
-	android:layout_height="80dp">
+	android:layout_height="80dp"
+	android:background="?android:attr/selectableItemBackground">
 
 
 	<TextView
@@ -10,8 +11,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical"
-		android:layout_marginStart="30dp"
-		android:layout_marginLeft="10dp"/>
+		android:layout_marginStart="30dp" />
 
 
 </LinearLayout>

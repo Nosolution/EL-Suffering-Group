@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".FinishActivity"
+	android:orientation="vertical"
+	android:background="@drawable/finish_activity_background">
+
+
+	<TextView
+		android:id="@+id/tv_goal"
+		android:layout_width="130dp"
+		android:layout_height="130dp"
+		android:layout_gravity="center"
+		android:gravity="center"
+		android:layout_marginTop="40dp"
+		android:background="@mipmap/circle_white_250"
+		android:text="96"
+		android:textSize="70sp"
+		android:textColor="@color/background"/>
+
+	<TextView
+		android:id="@+id/tv_single_task_consume_time"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:layout_marginTop="20dp"
+		android:text="本次任务共耗时 120 分钟"
+		android:textSize="18sp"
+		android:textColor="@color/background"/>
+
+	<TextView
+		android:id="@+id/tv_single_task_concentrate_time"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:layout_marginTop="10dp"
+		android:text="专注 80 分钟"
+		android:textSize="18sp"
+		android:textColor="@color/background"/>
+
+	<TextView
+		android:id="@+id/tv_week_concentrate_time"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:layout_marginTop="10dp"
+		android:text="本周已专注 400 分钟"
+		android:textSize="16sp"
+		android:textColor="@color/background"/>
+
+
+
+	<!--假装有图表-->
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="120dp"
+			android:gravity="center"
+			android:text="假装这里有图表"
+			android:textSize="50dp"
+			android:textColor="@color/background"/>
+	</LinearLayout>
+
+
+
+
+	<Button
+		android:id="@+id/button_return_main"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="15dp"
+		android:gravity="center_vertical"
+		android:paddingStart="20dp"
+		android:drawablePadding="10dp"
+		android:text="返回主界面"
+		android:textSize="18sp"
+		android:background="@drawable/finish_activity_button_shape"
+		android:textColor="@color/background"
+		android:drawableStart="@mipmap/arrow_left_white"/>
+
+	<Button
+		android:id="@+id/button_next_task"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingStart="20dp"
+		android:drawablePadding="10dp"
+		android:text="开始下一项"
+		android:textSize="18sp"
+		android:background="@drawable/finish_activity_button_shape"
+		android:textColor="@color/background"
+		android:drawableStart="@mipmap/arrow_down_white"/>
+
+	<!--<Button-->
+		<!--android:layout_width="match_parent"-->
+		<!--android:layout_height="wrap_content"-->
+		<!--android:text="sdjfk"-->
+		<!--android:textColor="@color/background"-->
+		<!--android:textSize="20sp"-->
+		<!--android:background="@drawable/finish_activity_background"/>-->
+
+</LinearLayout>
