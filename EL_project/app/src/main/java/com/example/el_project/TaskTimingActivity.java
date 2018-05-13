@@ -44,6 +44,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.tauth.Tencent;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -66,7 +68,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private TextView taskTimeCount;                //显示任务已经过时间
 	private int taskMillisGone;                       //任务已过时间
 	private TextView tomatoClockCountDownTime;              //显示番茄钟倒计时
-	private ImageView ivTomatoClockAnim;
+//	private ImageView ivTomatoClockAnim;
 	private TextView textClockOn;
 	private TextView timeLeft;
 	private MusicController musicController;
@@ -95,20 +97,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		QUIT,
 		FINISH
 	}
-	//TODO:___________________________________________
-//	private Tencent mTencent;
+
+	private Tencent mTencent;
 	//TODO:计时装置设置示例 1 cz
 	private CircleProgress circleProgress,circleProgress2;
-	private Handler handler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			if (msg.what == 1) {
-				circleProgress.setProgress(msg.arg1);
-			}
-
-			super.handleMessage(msg);
-		}
-	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,24 +113,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//TODO:示例 2 cz
 		circleProgress=(CircleProgress)findViewById(R.id.cp1);
 		circleProgress.setmTotalProgress(300);
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				for (int i=1;i<=300;i++){
-					try {
-						Thread.sleep(50);
-						Message message=handler.obtainMessage();
-						message.what=1;
-						message.arg1=i;
-						handler.sendMessage(message);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
-//TODO:________________________________
-//		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
+
+		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
 
 
 
@@ -169,15 +145,15 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		btnPause = findViewById(R.id.pause_button);
 
 
-		//计时动画
-		RelativeLayout rl = findViewById(R.id.time_act);
-		AnimationDrawable ad = (AnimationDrawable)rl.getBackground();
-		ad.start();
+//		//计时动画
+//		RelativeLayout rl = findViewById(R.id.time_act);
+//		AnimationDrawable ad = (AnimationDrawable)rl.getBackground();
+//		ad.start();
 
-		//番茄钟动画
-		ivTomatoClockAnim = findViewById(R.id.tomato_act);
-		AnimationDrawable ad2 = (AnimationDrawable)ivTomatoClockAnim.getBackground();
-		ad2.start();
+//		//番茄钟动画
+//		ivTomatoClockAnim = findViewById(R.id.tomato_act);
+//		AnimationDrawable ad2 = (AnimationDrawable)ivTomatoClockAnim.getBackground();
+//		ad2.start();
 
 		//设置设置界面相关监听器
 		switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
@@ -225,9 +201,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			actionBar.setDisplayHomeAsUpEnabled(true);  //显示导航按钮
 //			actionBar.setHomeAsUpIndicator(R.drawable.category_white_31);  //设置导航按钮图标
 		}
-//TODO:____________________________
-//		initMainFindView();              //初始那些计时控制部分控件对象
-//		onClickListenerMainSetter();     //设置计时控制部分所有涉及到的有关的监听器
+
 
 		//取得开始任务时传来的任务详细信息
 		final Intent intentTaskInfo = getIntent();
@@ -257,8 +231,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			}
 		};
 		registerReceiver(screenOffReceiver, filter);
-
-
 
 		//初始化然后启动正向计时
 		initCountTimer();
@@ -370,11 +342,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				}else {
 					removeTaskFromDB();     //从数据库中移除相应Task
 				}
-				musicController.stop(); //音乐停止播放
-				showFinishingActivity();//显示完成界面
+				musicController.stop();     //音乐停止播放
+				showFinishingActivity();    //显示完成界面
 				havingTaskOngoing = false;
 				saveFinishStatue = SaveStatue.FINISH;
 				breakCount--;
+				break;
 
 			case R.id.give_up_button:
 				//TODO:放弃完成任务
@@ -384,6 +357,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				havingTaskOngoing = false;
 				saveFinishStatue = SaveStatue.QUIT;
 				breakCount--;
+				break;
 
 			case R.id.pause_button:
 				if(!taskStatuePaused) {
@@ -392,6 +366,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				else {
 					resume();
 				}
+				break;
 		}
 	}
 
@@ -428,7 +403,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		SimpleDateFormat format = new SimpleDateFormat("yyMMdd", Locale.getDefault());
 		MyDatabaseOperation.getTotalSomeDayTimeUsed(this, Integer.parseInt(format.format(calendar.getTime())));
 		Log.d("TEST", "onDestroy: " + Integer.parseInt(format.format(calendar.getTime())));
-		Toast.makeText(TaskTimingActivity.this,"TEST",Toast.LENGTH_SHORT).show();
 
 		super.onDestroy();
 	}
@@ -500,8 +474,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	//显示完成界面
 	private void showFinishingActivity(){
-		//TODO:完成界面，目前暂时回到主界面
-		Intent intent = new Intent(this, MainActivity.class);
+		Log.d("TEST", "showFinishingActivity: ");
+		Intent intent = new Intent(this, FinishActivity.class);
 		startActivity(intent);
 	}
 
@@ -645,10 +619,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private void refreshTomatoClockVisible(){
 		if(GeneralSetting.getTomatoClockEnable(this)){
 			tomatoClockCountDownTime.setVisibility(View.VISIBLE);
-			ivTomatoClockAnim.setVisibility(View.VISIBLE);
+//			ivTomatoClockAnim.setVisibility(View.VISIBLE);
 		}else {
 			tomatoClockCountDownTime.setVisibility(View.GONE);
-			ivTomatoClockAnim.setVisibility(View.GONE);
+//			ivTomatoClockAnim.setVisibility(View.GONE);
 		}
 	}
 
