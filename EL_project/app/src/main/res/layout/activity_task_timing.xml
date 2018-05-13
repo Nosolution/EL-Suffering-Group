@@ -14,7 +14,8 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="vertical">
+		android:orientation="vertical"
+		android:background="@drawable/background1">
 
 		<android.support.v7.widget.Toolbar
 			android:id="@+id/setting_toolbar"
@@ -32,27 +33,71 @@
 			android:id="@+id/time_act"
 			android:layout_width="400dp"
 			android:layout_height="400dp"
-			android:background="@drawable/doing_task"
 			android:layout_gravity="center">
+
+			<com.example.el_project.CircleProgress
+				android:id="@+id/cp1"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				app:bigCircleColor="@android:color/transparent"
+				app:circleColor="@android:color/transparent"
+				app:ringColor="@color/orange"
+				app:radius="120dp"
+				app:strokeWidth="4dp"/>
+
+			<com.example.el_project.CircleProgress
+				android:id="@+id/cp2"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				app:bigCircleColor="@android:color/transparent"
+				app:circleColor="@android:color/transparent"
+				app:ringColor="@color/half_white"
+				app:radius="115dp"
+				app:strokeWidth="4dp"/>
+
 
 			<TextView
 				android:id="@+id/time_action"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="00:00"
+				android:text="00:00:00"
 				style="@style/doingtask"
 				android:layout_marginTop="150dp"
 				android:layout_centerHorizontal="true"/>
 
-			<TextView
-				android:id="@+id/time_left"
+			<RelativeLayout
+				android:id="@+id/left"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="@string/time3"
-				android:textSize="20dp"
-				android:textColor="@color/color4"
 				android:layout_below="@id/time_action"
-				android:layout_centerHorizontal="true" />
+				android:layout_centerHorizontal="true">
+				<TextView
+					android:id="@+id/text1"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/time31"
+					android:textColor="@color/white"
+					android:textSize="25dp"/>
+
+				<TextView
+					android:id="@+id/text2"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/time32"
+					android:textSize="15dp"
+					android:textColor="@color/white"
+					android:layout_toRightOf="@id/text1" />
+
+				<TextView
+					android:id="@+id/text3"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/time33"
+					android:textColor="@color/white"
+					android:textSize="10dp"
+					android:layout_below="@id/text2"
+					android:layout_toRightOf="@id/text1"/>
+			</RelativeLayout>
 
 			<TextView
 				android:id="@+id/tomato_text"
@@ -60,15 +105,16 @@
 				android:layout_height="wrap_content"
 				android:text="@string/tomato3"
 				android:layout_marginTop="20dp"
-				android:layout_below="@id/time_left"
-				android:layout_marginLeft="95dp"/>
+				android:layout_below="@id/left"
+				android:layout_marginLeft="95dp"
+				android:textColor="@color/white"/>
 
 			<ImageView
 				android:id="@+id/tomato_act"
 				android:layout_width="50dp"
 				android:layout_height="50dp"
 				android:background="@drawable/doing_task"
-				android:layout_below="@id/time_left"
+				android:layout_below="@id/left"
 				android:layout_toRightOf="@id/tomato_text"/>
 		</RelativeLayout>
 <!--三个按钮-->
@@ -80,20 +126,20 @@
 			<ImageButton
 				android:id="@+id/give_up_button"
 				style="@style/imagebutton"
-				android:background="@drawable/giveup_watercolor"
+				android:background="@drawable/giveup"
 				android:layout_alignParentLeft="true"
 				android:layout_marginLeft="30dp"/>
 
 			<ImageButton
 				android:id="@+id/pause_button"
 				style="@style/imagebutton"
-				android:background="@drawable/stop_watercolor"
+				android:background="@drawable/stop"
 				android:layout_centerHorizontal="true"/>
 
 			<ImageButton
 				android:id="@+id/finish_button"
 				style="@style/imagebutton"
-				android:background="@drawable/end_watercolor"
+				android:background="@drawable/end"
 				android:layout_alignParentRight="true"
 				android:layout_marginRight="30dp"/>
 		</RelativeLayout>
@@ -114,16 +160,19 @@
 				<View
 					android:layout_width="match_parent"
 					android:layout_height="0.5dp"
-					android:background="@color/split_line">
+					android:background="@color/half_white"
+					android:layout_marginLeft="20dp"
+					android:layout_marginRight="20dp">
 				</View>
 
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="@string/edit2"
-					android:textSize="20dp"
-					android:textColor="@color/pink"
-					android:layout_marginLeft="30dp"/>
+					android:textSize="15dp"
+					android:textColor="@color/white"
+					android:layout_marginLeft="30dp"
+					android:layout_marginTop="5dp"/>
 
 				<TextView
 					android:id="@+id/edit_remark"
