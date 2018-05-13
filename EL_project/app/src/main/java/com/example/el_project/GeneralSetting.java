@@ -21,6 +21,8 @@ public class GeneralSetting {
     private static int tomatoClockTime = 25;              //番茄钟设置时长(分钟计)
     private static int tomatoBreakTime = 5;               //番茄钟间隔休息时间（分钟计）
 
+    private static int totalTaskTime = 0;                 //总共使用此软件工作学习的时长，这个不是设置的
+
     private static void initializeSetting(Context context){
         SharedPreferences pref = context.getSharedPreferences("general_setting", Context.MODE_PRIVATE);
         musicOn = pref.getBoolean("music_on", false);
@@ -28,6 +30,8 @@ public class GeneralSetting {
         callWhenTimeUpEnable = pref.getBoolean("call_when_time_up_enable", false);
         tomatoClockTime = pref.getInt("tomato_clock_time", 25);
         tomatoBreakTime = pref.getInt("tomato_break_time", 5);
+
+        totalTaskTime = pref.getInt("total_task_time", 0);
 
         settingInitialized = true;
     }
@@ -39,6 +43,7 @@ public class GeneralSetting {
         editor.putBoolean("call_when_time_up_enable", callWhenTimeUpEnable);
         editor.putInt("tomato_clock_time", tomatoClockTime);
         editor.putInt("tomato_break_time", tomatoBreakTime);
+        editor.putInt("total_task_time", totalTaskTime);
         editor.apply();
     }
 
@@ -116,5 +121,19 @@ public class GeneralSetting {
         syncSetting(context);
     }
 
+    public static int getTotalTaskTime(Context context){
+        if (!settingInitialized){
+            initializeSetting(context);
+        }
+        return totalTaskTime;
+    }
+
+    public static void increaseTotalTaskTime(Context context, int increasement){
+        if(!settingInitialized){
+            initializeSetting(context);
+        }
+        totalTaskTime += increasement;
+        syncSetting(context);
+    }
 
 }

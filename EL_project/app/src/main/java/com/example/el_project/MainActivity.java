@@ -63,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 1);
-//        initTasks();  //初始化数据
+        dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 3);
         selectedPosition=-1;
 
         Toolbar toolbar = findViewById(R.id.title_toolbar);
@@ -346,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private void refreshTask(){
         mTaskList.clear();
         taskList.clear();
+        MyDatabaseOperation.refreshAllDailyTask(MainActivity.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
@@ -358,7 +358,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                         cursor.getString(cursor.getColumnIndex("deadline")),
                         String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
                         String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-                        cursor.getString(cursor.getColumnIndex("comments"))};
+                        cursor.getString(cursor.getColumnIndex("comments")),
+                        String.valueOf(cursor.getInt(cursor.getColumnIndex("last_finished_date")))};
                 taskList.add(tempstring);
             } while (cursor.moveToNext());
         }
@@ -372,6 +373,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         String[] tempString=taskList.get(selectedPosition)[2].split(":");
         intent.putExtra("intent_task_hours_required", Integer.parseInt(tempString[0]));
         intent.putExtra("intent_task_minutes_required", Integer.parseInt(tempString[1]));
+        intent.putExtra("intent_is_daily_task",Integer.parseInt(taskList.get(selectedPosition)[5]));
         intent.putExtra("intent_task_comments",taskList.get(selectedPosition)[6]);
         startActivity(intent);
     }
