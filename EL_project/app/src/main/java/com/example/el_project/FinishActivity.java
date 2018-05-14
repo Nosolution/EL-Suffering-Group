@@ -76,9 +76,8 @@ public class FinishActivity extends AppCompatActivity {
 		strSingleTaskConcentrateTime = "专注 " + intSingleTaskConcentrateTime + " 分钟";
 		strWeekConcentrateTime = "本周已专注 " +intWeekConcentrateTime + " 分钟";
 
-
 		// 设置各个TextView显示的值
-		SpannableStringBuilder ssbGoal = new SpannableStringBuilder(strGoal);
+		ssbGoal = new SpannableStringBuilder(strGoal);
 		intStart = strGoal.indexOf(String.valueOf(intGoal));
 		intEnd = intStart + String.valueOf(intGoal).length();
 		ssbGoal.setSpan(new RelativeSizeSpan(2.8f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
