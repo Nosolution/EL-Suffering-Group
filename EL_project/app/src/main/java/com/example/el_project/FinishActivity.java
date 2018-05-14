@@ -17,6 +17,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 我不确定完成界面的专注度的得分下面要显示什么，就把它们都放上去了
  */
@@ -49,6 +54,8 @@ public class FinishActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_finish);
 
+		BarChart barChart=findViewById(R.id.data_bar_chart);
+		MyBarChartManager myBarChartManager=new MyBarChartManager(barChart);
 		tvGoal = findViewById(R.id.tv_goal);
 		tvSingleTaskConsumeTime = findViewById(R.id.tv_single_task_consume_time);
 		tvSingleTaskConcentrateTime = findViewById(R.id.tv_single_task_concentrate_time);
@@ -92,6 +99,31 @@ public class FinishActivity extends AppCompatActivity {
 		tvWeekConcentrateTime.setText(ssbWeekConcentrateTime);
 
 		Log.d("TEST", "onCreate: FinishActivity");
+
+		//设置x轴的数据
+		ArrayList<Float> xValues = new ArrayList<>();
+		for (int i = 0; i <= 6; i++) {
+			xValues.add((float) i);
+		}
+
+		//设置y轴的数据()
+		List<List<Float>> yValues = new ArrayList<>();
+		for (int i = 0; i < 4; i++) {
+			List<Float> yValue = new ArrayList<>();
+			for (int j = 0; j <= 6; j++) {
+				yValue.add((float) (Math.random() * 240));
+			}
+			yValues.add(yValue);
+		}
+
+		//颜色集合
+		List<Integer> colors = new ArrayList<>();
+		colors.add(Color.GREEN);
+		colors.add(Color.BLUE);
+		colors.add(Color.RED);
+		colors.add(Color.CYAN);
+
+		myBarChartManager.showBarChart(xValues,yValues.get(0),"数据一",colors.get(3));
 
 
 
