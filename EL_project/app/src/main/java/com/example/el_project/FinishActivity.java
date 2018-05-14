@@ -97,11 +97,8 @@ public class FinishActivity extends AppCompatActivity {
 		ssbWeekConcentrateTime.setSpan(new StyleSpan(Typeface.BOLD), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
 		tvWeekConcentrateTime.setText(ssbWeekConcentrateTime);
 
-		Log.d("TEST", "onCreate: FinishActivity");
-
 		//得到任务完成信息和本周每日工作学习时长（有效，总未记录）
 		getTaskFinishInfo();
-		Log.d("TEST", "onCreate: " + taskTotalTimeUsed + " " + taskTimeUsed + " " + breakCount);
 
 		buttonReturnMain.setOnClickListener(new View.OnClickListener() {
 			@Override

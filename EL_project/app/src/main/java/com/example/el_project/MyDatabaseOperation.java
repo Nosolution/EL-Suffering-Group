@@ -231,11 +231,6 @@ public class MyDatabaseOperation {
                 timesWeek[week - 1] += cursor.getInt(cursor.getColumnIndex("task_time_used"));
             }while (cursor.moveToNext());
         }
-
-        for(int time: timesWeek){
-            Log.d("TEST", "getWeekPerDayTimeUsed: " + time);
-        }
-
         return timesWeek;
     }
 

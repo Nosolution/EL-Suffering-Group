@@ -152,7 +152,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				tomatoClockTimeLength = (String)spinnerChooseTime.getSelectedItem();
 				int chosenTime = Integer.parseInt(tomatoClockTimeLength.substring(0, tomatoClockTimeLength.length() - 2));
-				Log.d("Chosen Time", "onItemSelected: " + chosenTime);
 				GeneralSetting.setTomatoClockTime(TaskTimingActivity.this, chosenTime);
 				initStartTomatoClock();
 			}
@@ -183,7 +182,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		int taskHoursRequired = intentTaskInfo.getIntExtra("intent_task_hours_required", 0);
 		int taskMintersRequired = intentTaskInfo.getIntExtra("intent_task_minutes_required", 0);
 		taskComments = intentTaskInfo.getStringExtra("intent_task_comments");
-		Log.d("ReceiveTaskInfo", "onCreate: " + taskComments);
 		taskMillisRequired = hourMinSec2Millis(taskHoursRequired, taskMintersRequired, 0);
 
 		//初始化显示的Task各项信息
@@ -382,7 +380,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		unregisterReceiver(screenOffReceiver);
 
 		saveTaskFinishToDB(saveFinishStatue.ordinal());
-		Log.d("TEST", "onDestroy: Saved");
 		MyDatabaseOperation.refreshFinishTaskTable(this);
 
 		Calendar calendar = new GregorianCalendar();
@@ -390,7 +387,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		MyDatabaseOperation.getTotalSomeDayTimeUsed(this, Integer.parseInt(format.format(calendar.getTime())));
 		format = new SimpleDateFormat("yyw", Locale.getDefault());
 		MyDatabaseOperation.getWeekPerDayTimeUsed(this, Integer.parseInt(format.format(calendar.getTime())));
-		Log.d("TEST", "onDestroy: " + Integer.parseInt(format.format(calendar.getTime())));
 
 		super.onDestroy();
 	}
@@ -417,7 +413,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				withinOneSecondAfterPause = false;
 			}
 		}.start();
-		Log.d("TEST", "onPause: " + breakCount);
 	}
 
 	@Override
@@ -516,7 +511,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	//显示完成界面
 	private void showFinishingActivity(){
-		Log.d("TEST", "showFinishingActivity: ");
 		Intent intent = new Intent(this, FinishActivity.class);
 
 		intent.putExtra("task_total_time_used", taskTotalSecUsed);
@@ -634,7 +628,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	private void saveTaskFinishToDB(int statue){
 		MyDatabaseOperation.editFinishTaskWhenFinishing(this, startTime, taskSecGone, statue, breakCount);
-		Log.d("TEST", "saveTaskFinishToDB: Saved");
 	}
 
 	//从毫秒转换到一个字符串的时间，显示时间时可调用
