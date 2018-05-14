@@ -168,11 +168,22 @@ public class MyDatabaseOperation {
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat formatDate = new SimpleDateFormat("yyMMdd", Locale.getDefault());
         SimpleDateFormat formatWeekCount = new SimpleDateFormat("yyw", Locale.getDefault());
-        SimpleDateFormat formatWeek = new SimpleDateFormat("u", Locale.getDefault());
+        SimpleDateFormat formatWeek = new SimpleDateFormat("EEE", Locale.getDefault());
+        String week = formatWeek.format(calendar.getTime());
+        int weeknum = 1;
+        switch (week){
+            case "Mon": weeknum = 1; break;
+            case "Tue": weeknum = 2; break;
+            case "Wed": weeknum = 3; break;
+            case "The": weeknum = 4; break;
+            case "Fri": weeknum = 5; break;
+            case "Sat": weeknum = 6; break;
+            case "Sun": weeknum = 7; break;
+        }
         ContentValues values = new ContentValues();
         values.put("date", Integer.parseInt(formatDate.format(calendar.getTime())));
         values.put("week_count", Integer.parseInt(formatWeekCount.format(calendar.getTime())));
-        values.put("week", formatWeek.format(calendar.getTime()));
+        values.put("week", weeknum);
         values.put("task_time_used", taskTimeUsed);
         values.put("statue", statue);
         values.put("break_count", breakCount);
