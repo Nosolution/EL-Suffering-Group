@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -62,8 +64,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private ImageButton btnPause;                       //暂停
 
 	private TextView taskTimeCount;                //显示任务已经过时间
-	private int taskSecGone;                       //任务已过时间
-	private int taskTotalSecUsed;                    //任务共用时间
+	private int taskSecGone = 0;                       //任务已过时间
+	private int taskTotalSecUsed = 0;                    //任务共用时间
+	private Handler taskTimeRefreshHandler;
+	private Handler taskTotalTimeRefreshHandler;
 //	private TextView tomatoClockCountDownTime;              //显示番茄钟倒计时
 //	private ImageView ivTomatoClockAnim;
 	private TextView textClockOn;
@@ -202,6 +206,21 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		};
 		registerReceiver(screenOffReceiver, filter);
 
+		taskTimeRefreshHandler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				taskSecGone = msg.what;
+			}
+		};
+		taskTotalTimeRefreshHandler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				taskTotalSecUsed = msg.what;
+			}
+		};
+
 		//初始化然后启动正向计时
 		initCountTimer();
 		//从被回收内存恢复，但感觉问题还是挺大
@@ -220,7 +239,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		totalTimer = new CountTimer(1000) {
 			@Override
 			public void onTick(long millisGoneThrough) {
-				taskTotalSecUsed = (int)(millisGoneThrough / 1000);
+				taskTotalTimeRefreshHandler.sendEmptyMessage((int)(millisGoneThrough/1000));
 			}
 		};
 		totalTimer.start();
@@ -531,7 +550,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			@Override
 			public void onTick(long millisGoneThrough) {
 				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
-				taskSecGone = (int) (millisGoneThrough/1000);
+				taskTimeRefreshHandler.sendEmptyMessage((int)(millisGoneThrough/1000));
 				timeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough + 60000), 0), 2));
 			}
 		};
@@ -628,6 +647,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	private void saveTaskFinishToDB(int statue){
 		MyDatabaseOperation.editFinishTaskWhenFinishing(this, startTime, taskSecGone, statue, breakCount);
+		Log.d("TEST", "saveTaskFinishToDB: " + taskSecGone);
 	}
 
 	//从毫秒转换到一个字符串的时间，显示时间时可调用
