@@ -25,7 +25,9 @@ import android.widget.Toast;
 
 public class MusicController {
     private MediaPlayer mediaPlayer = new MediaPlayer();
+    private MusicCollection collection = new MusicCollection();
     private Context context;
+    private int musicPlaying;
 
     MusicController(Context context){
         this.context = context;
@@ -33,15 +35,27 @@ public class MusicController {
     }
 
     private void initMusicPlayer(){
-        mediaPlayer = MediaPlayer.create(context, R.raw.stronger_than_you_frisk_parody);
-        mediaPlayer.setLooping(true);
-
+        musicPlaying = collection.getRandomMusic();
+        mediaPlayer = MediaPlayer.create(context, musicPlaying);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                randomSwitch();
+            }
+        });
     }
 
     public boolean isPlaying(){
         return mediaPlayer.isPlaying();
     }
 
+    //随机切歌
+    public void randomSwitch(){
+        musicPlaying = collection.getRandomMusicEx(musicPlaying);
+        release();
+        mediaPlayer = MediaPlayer.create(context, musicPlaying);
+        mediaPlayer.start();
+    }
 
     //音乐播放开始，也是恢复暂停
     public void start(){
