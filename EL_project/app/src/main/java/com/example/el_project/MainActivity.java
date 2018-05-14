@@ -226,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     protected void onResume() {
+        MyDatabaseOperation.refreshAllDailyTask(MainActivity.this);
         refreshTask();
         adapter.refreshItemView();
         refreshSetting();
@@ -350,6 +351,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
+                if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==2)
+                    continue;
                 Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
                 mTaskList.add(task);
                 String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),

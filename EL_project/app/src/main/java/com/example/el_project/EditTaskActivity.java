@@ -52,7 +52,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private String[]hourPosition={"00","01","02","03","04","05"};
     private String[]minutePosition={"00","10","20","30","40","50",};
     private ArrayList<Integer>ivId=new ArrayList<>();//储存紧急程度ImageViewId的ArrayList
-    private InputMethodManager mInputMethodManager;
+    private InputMethodManager mInputMethodManager;//软键盘
 
     private Drawable draw1;
 
