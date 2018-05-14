@@ -1,6 +1,5 @@
 package com.example.el_project;
 
-import android.animation.Animator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -8,14 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import com.github.mikephil.charting.charts.BarChart;
 
@@ -47,6 +49,11 @@ public class FinishActivity extends AppCompatActivity {
 	int intWeekConcentrateTime = 400;
 	int intStart;  // 字符串索引
 	int intEnd;
+
+	int taskTotalTimeUsed;         //任务总计完成时间
+	int taskTimeUsed;              //任务有效完成时间
+	int breakCount;                //任务执行时切出次数
+	int[] taskTimeUsedWeek;        //本周任务每日总计的有效时间
 
 
 	@Override
@@ -126,6 +133,8 @@ public class FinishActivity extends AppCompatActivity {
 		myBarChartManager.showBarChart(xValues,yValues.get(0),"数据一",colors.get(3));
 
 
+		//得到任务完成信息和本周每日工作学习时长（有效，总未记录）
+		getTaskFinishInfo();
 
 		buttonReturnMain.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -136,4 +145,14 @@ public class FinishActivity extends AppCompatActivity {
 		});
 
 	}
+
+	//获得任务完成信息
+	private void getTaskFinishInfo(){
+		Intent intent = getIntent();
+		taskTotalTimeUsed = intent.getIntExtra("task_total_time_used", 0);
+		taskTimeUsed = intent.getIntExtra("task_time_used", 0);
+		breakCount = intent.getIntExtra("break_count", 0);
+		taskTimeUsedWeek = MyDatabaseOperation.getThisWeekPerDayTimeUsed(this);
+	}
+
 }
