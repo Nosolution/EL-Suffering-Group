@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -16,12 +17,14 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +57,8 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private ArrayList<Integer>ivId=new ArrayList<>();//储存紧急程度ImageViewId的ArrayList
     private InputMethodManager mInputMethodManager;//软键盘
 
+    private Toolbar toolbar;
+
     private Drawable draw1;
 
 //TODO:定义变量
@@ -80,6 +85,10 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         hourSpinner=findViewById(R.id.hour_spinner);
         minuteSpinner=findViewById(R.id.minute_spinner);
         commentEditText = findViewById(R.id.comment_et);
+        toolbar = findViewById(R.id.activity_edit_task_toolbar);
+
+        BackgroundCollection backgroundCollection = new BackgroundCollection();
+        toolbar.setBackgroundResource(backgroundCollection.getTodayBackground());
 
 
             //两个Spinner的点击事件
@@ -264,7 +273,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                         modifyTask();
                         startTask(Integer.parseInt(taskId));
                     }
-
                     break;
             }
         }

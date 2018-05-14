@@ -37,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -108,6 +109,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_timing);
 
+		BackgroundCollection backgroundCollection = new BackgroundCollection();
 		circleProgress2=(CircleProgress)findViewById(R.id.cp2);
 		circleProgress2.setmTotalProgress(100);
 		circleProgress2.setProgress(100);
@@ -115,6 +117,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockProgress =(CircleProgress)findViewById(R.id.cp1);
 		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoClockTime(this) * 60);
 		tomatoClockProgress.setProgress(GeneralSetting.getTomatoClockTime(this) * 60);
+		tomatoClockProgress.setDrawingCacheBackgroundColor(backgroundCollection.getTodayColor());
 
 		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
 
@@ -122,7 +125,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//初始化Toolbar
 		toolbar=findViewById(R.id.setting_toolbar);
 		setSupportActionBar(toolbar);
-		mDrawerLayout=findViewById(R.id.drawer_layout);
+		mDrawerLayout=findViewById(R.id.activity_main_drawer_layout);
 		ActionBar actionBar=getSupportActionBar();
 
 		if(actionBar!=null){
@@ -144,7 +147,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		btnTaskFinished = findViewById(R.id.finish_button);
 		btnThrowTask = findViewById(R.id.give_up_button);
 		btnPause = findViewById(R.id.pause_button);
-
+		LinearLayout layoutMain = findViewById(R.id.activity_task_timing_linearLayout);
+		RelativeLayout layoutSetting = findViewById(R.id.activity_task_timing_setting_upper);
+		layoutMain.setBackgroundResource(backgroundCollection.getTodayBackground());
+		layoutSetting.setBackgroundColor(backgroundCollection.getTodayColor());
 
 		//设置设置界面相关监听器
 		switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
@@ -494,7 +500,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		timer.pause();
 
 		taskStatuePaused = true;
-		btnPause.setBackgroundResource(R.drawable.doing);
+		btnPause.setBackgroundResource(R.drawable.stop);
 		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoBreakTime(this) * 60);
 
 
@@ -515,7 +521,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		timer.resume();
 
 		taskStatuePaused = false;
-		btnPause.setBackgroundResource(R.drawable.stop);
+		btnPause.setBackgroundResource(R.drawable.doing);
 		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoClockTime(this) * 60);
 
 		//若开启番茄钟，开始番茄钟任务休息时间计时
@@ -582,7 +588,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if (tomatoClockBreakCountDown != null){
 			tomatoClockBreakCountDown.cancel();
 		}
-		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoBreakTime(this));
+		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoBreakTime(this) * 60);
 		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
@@ -645,9 +651,15 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		}
 	}
 
-	private void saveTaskFinishToDB(int statue){
-		MyDatabaseOperation.editFinishTaskWhenFinishing(this, startTime, taskSecGone, statue, breakCount);
-		Log.d("TEST", "saveTaskFinishToDB: " + taskSecGone);
+	private void saveTaskFinishToDB(final int statue){
+		new Thread(){
+			@Override
+			public void run() {
+				super.run();
+				MyDatabaseOperation.editFinishTaskWhenFinishing(TaskTimingActivity.this, startTime, taskSecGone, statue, breakCount);
+				Log.d("TEST", "saveTaskFinishToDB: " + taskSecGone);
+			}
+		}.start();
 	}
 
 	//从毫秒转换到一个字符串的时间，显示时间时可调用

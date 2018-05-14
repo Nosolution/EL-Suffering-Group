@@ -1,7 +1,6 @@
 package com.example.el_project;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,16 +22,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
-import android.widget.SimpleAdapter;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
@@ -58,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
     private int selectedPosition;//被选中的Item位置
 
+    private DrawerLayout drawerLayoutMain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,12 +66,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         Toolbar toolbar = findViewById(R.id.title_toolbar);
         setSupportActionBar(toolbar);
-	    mDrawerLayout=findViewById(R.id.drawer_layout);
+	    mDrawerLayout=findViewById(R.id.activity_main_drawer_layout);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);  //如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
 
 	    spinnerChooseTime=findViewById(R.id.spinner_choose_time);
 	    textClockOn=findViewById(R.id.text_clock_on);
+
+	    //设置背景
+        BackgroundCollection backgroundCollection = new BackgroundCollection();
+        mDrawerLayout.setBackgroundResource(backgroundCollection.getTodayBackground());
+        RelativeLayout layoutSetting = findViewById(R.id.activity_main_setting_upper);
+        layoutSetting.setBackgroundColor(backgroundCollection.getTodayColor());
 
 	    switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
 	    switchMusicStatus=findViewById(R.id.switch_if_music_on);
@@ -238,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     public void openMenu(View view) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotation", 0, -155, -135 );
         animator.setDuration(500);
+        animator.setAutoCancel(true);
         animator.start();
         isFabOpened = true;
         in_from_fab = AnimationUtils.loadAnimation(MainActivity.this, R.anim.in_from_fab);

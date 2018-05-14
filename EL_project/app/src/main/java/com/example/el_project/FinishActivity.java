@@ -12,6 +12,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -69,6 +70,10 @@ public class FinishActivity extends AppCompatActivity {
 		tvWeekConcentrateTime = findViewById(R.id.tv_week_concentrate_time);
 		buttonReturnMain = findViewById(R.id.button_return_main);
 		buttonNextTask = findViewById(R.id.button_next_task);
+		LinearLayout layoutMain = findViewById(R.id.activity_finish_layout);
+
+		BackgroundCollection backgroundCollection = new BackgroundCollection();
+		layoutMain.setBackgroundResource(backgroundCollection.getTodayBackground());
 
 		// 设置TextView的显示格式
 		strGoal = intGoal + "分";
