@@ -139,6 +139,7 @@ public class MyDatabaseOperation {
 //
 
 
+    //任务开始时向数据库插入一条完成信息，此信息只保存具体开始时间，任务名，其他置为默认
     public static String addFinishTaskWithStartTime(Context context, String taskName){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -159,6 +160,7 @@ public class MyDatabaseOperation {
         return startTime;
     }
 
+    //当任务完成或放弃后修改对应的完成信息，保存完成时日期，总任务耗时，完成状态，切换次数等
     public static void editFinishTaskWhenFinishing(Context context, String startTime, int taskTimeUsed, int statue, int breakCount){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -185,6 +187,7 @@ public class MyDatabaseOperation {
         db.delete("FinishTaskTable", "week = ?", new String[]{"0"});
     }
 
+    //得到某日总计学习工作时间
     public static int getTotalSomeDayTimeUsed(Context context, int date){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -203,17 +206,42 @@ public class MyDatabaseOperation {
         return totalTime;
     }
 
+    //得到今日总计学习工作时间
     public static int getTotalTimeUsedToday(Context context){
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat format = new SimpleDateFormat("yyMMdd", Locale.getDefault());
         return getTotalSomeDayTimeUsed(context, Integer.parseInt(format.format(calendar.getTime())));
     }
 
-    public static int[] getWeekPerdayTimeUsed(Context context, int weekCount){
+    //得到一周内每日学习工作时间，从周一开始
+    public static int[] getWeekPerDayTimeUsed(Context context, int weekCount){
         int[] timesWeek = new int[7];
         for (int time: timesWeek) {
             time = 0;
         }
+
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query("FinishTaskTable", null, "week_count = ?",
+                new String[]{Integer.toString(weekCount)}, null, null, null);
+        if(cursor.moveToFirst()){
+            do {
+                int week = cursor.getInt(cursor.getColumnIndex("week"));
+                timesWeek[week - 1] += cursor.getInt(cursor.getColumnIndex("task_time_used"));
+            }while (cursor.moveToNext());
+        }
+
+        for(int time: timesWeek){
+            Log.d("TEST", "getWeekPerDayTimeUsed: " + time);
+        }
+
         return timesWeek;
+    }
+
+    public static int[] getThisWeekPerDayTimeUsed(Context context){
+        Calendar calendar = new GregorianCalendar();
+        SimpleDateFormat format = new SimpleDateFormat("yyw", Locale.getDefault());
+        return getWeekPerDayTimeUsed(context, Integer.parseInt(format.format(calendar.getTime())));
     }
 }
