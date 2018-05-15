@@ -198,7 +198,9 @@ public class FinishActivity extends AppCompatActivity {
 		SimpleDateFormat format = new SimpleDateFormat("yyMMddHHmmss", Locale.getDefault());
 		String fileName = format.format(calendar.getTime());
 
-		String dirPath = getFilePath(context, "tempPicToShare");
+		TempPicStorageManager storageManager = new TempPicStorageManager(context, "tempPicToShare");
+		String dirPath = storageManager.getDirPath();
+
 		BackgroundCollection backgroundCollection = new BackgroundCollection();
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		Bitmap bitmapToShare = BitmapFactory.decodeResource(getResources(), backgroundCollection.getTodayBackground(), options);
@@ -262,19 +264,6 @@ public class FinishActivity extends AppCompatActivity {
 		shareImgToQQ(filePicStoredPath);
 	}
 
-	private String getFilePath(Context context, String dirName){
-		String dirPath = "";
-		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
-			dirPath = context.getExternalFilesDir(dirName).getAbsolutePath();
-		}else {
-			dirPath = context.getFilesDir()+ File.separator+dirName;
-		}
-		File file = new File(dirPath);
-		if (!file.exists()){
-			file.mkdirs();
-		}
-		return dirPath;
-	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

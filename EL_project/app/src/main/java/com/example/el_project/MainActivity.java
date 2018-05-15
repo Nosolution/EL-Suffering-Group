@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -47,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	private TextView textClockOn;
 	private Spinner spinnerChooseTime;
 	private String tomatoClockTimeLength;    //用于获取番茄钟设置时长
-    private Button btChangeMusic;            //切换歌曲按钮，还未做监听
+    private Button btnCleanShareStorage;
+    private Button btChangeMusic;            //切换歌曲按钮
 
     private int[] colors = {R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar};
     private int[] checkedColors={R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen};
@@ -84,10 +87,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 	    switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
 	    switchMusicStatus=findViewById(R.id.switch_if_music_on);
+	    btnCleanShareStorage = findViewById(R.id.activity_main_clean_share_storage);
 //	    switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
 //	    switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
 	    switchClockStatus.setOnCheckedChangeListener(this);
 	    switchMusicStatus.setOnCheckedChangeListener(this);
+	    btnCleanShareStorage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TempPicStorageManager storageManager = new TempPicStorageManager(MainActivity.this, "tempPicToShare");
+                storageManager.clean();
+            }
+        });
 
 
 	    //修改设置内显示番茄钟时长
@@ -96,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 //            spinnerChooseTime.setVisibility(View.VISIBLE);
 //        }
 //        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
-
 
 
         //创建默认的线性LayoutManager

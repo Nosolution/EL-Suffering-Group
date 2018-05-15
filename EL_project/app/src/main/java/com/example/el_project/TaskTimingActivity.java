@@ -49,7 +49,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private DrawerLayout mDrawerLayout;
 	private Switch switchClockStatus;
 	private Switch switchMusicStatus;
-	private Button btChangeMusic;                     //切换歌曲按钮
+	private Button btnChangeMusic;                     //切换歌曲按钮
+	private Button btnCleanShareStorage;              //清理图片缓存
 
 	private CountTimer timer;
 	private CountTimer totalTimer;                    //总计耗时
@@ -140,7 +141,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		timeLeft = findViewById(R.id.time_left_to_finish);
 		remarkText = findViewById(R.id.edit_remark);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_task_timing_drawer_layout);
-		btChangeMusic = findViewById(R.id.bt_change_music);
+		btnChangeMusic = findViewById(R.id.bt_change_music);
+		btnCleanShareStorage = findViewById(R.id.activity_task_timing_clean_share_storage);
 
 		//初始化计时主要界面的内容
 		taskTimeCount = findViewById(R.id.time_action);
@@ -171,6 +173,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
 		});
+		btnChangeMusic.setOnClickListener(this);
+		btnCleanShareStorage.setOnClickListener(this);
 
 		//设置计时控制部分所有涉及到的有关的监听器
 		btnTaskFinished.setOnClickListener(this);
@@ -377,6 +381,13 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				else {
 					resume();
 				}
+				break;
+			case R.id.bt_change_music:
+				musicController.randomSwitch();
+				break;
+			case R.id.activity_task_timing_clean_share_storage:
+				TempPicStorageManager storageManager = new TempPicStorageManager(this, "tempPicToShare");
+				storageManager.clean();
 				break;
 		}
 	}

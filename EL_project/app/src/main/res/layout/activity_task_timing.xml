@@ -25,8 +25,7 @@
 			android:background="@android:color/transparent"
 			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-			app:title="@string/task2"
-			android:layout_marginTop="5dp"/>
+			app:title="@string/task2" />
 		<!--TODO:待改动显示内容-->
 
 		<!--在这里写界面-->
@@ -184,6 +183,7 @@
 		android:layout_width="230dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="end"
+		android:clickable="true"
 		android:background="#80FFFFFF">
 
 		<LinearLayout
@@ -337,6 +337,41 @@
 						android:visibility="gone"></Spinner>
 
 
+				</RelativeLayout>
+			</LinearLayout>
+
+			<!--插入分割线-->
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1.5dp"
+				android:background="@color/split_line">
+			</View>
+
+			<!--清理图片缓存-->
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="60dp"
+				android:orientation="horizontal">
+				<RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="30dp"
+						android:text="@string/text_clean_share_store"
+						android:textSize="18sp"
+						android:textColor="@color/background"/>
+
+					<Button
+						android:id="@+id/activity_task_timing_clean_share_storage"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_alignParentEnd="true"
+						android:text="@string/btn_text_clean_share_storage"
+						android:textSize="18sp"
+						android:textColor="@color/background"
+						android:background="@drawable/setting_button"/>
 				</RelativeLayout>
 			</LinearLayout>
 
