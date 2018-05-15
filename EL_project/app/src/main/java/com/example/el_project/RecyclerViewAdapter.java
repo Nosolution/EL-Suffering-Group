@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	//自定义的ViewHolder，持有每个Item的的所有界面元素
 	public static class ViewHolder extends RecyclerView.ViewHolder{
 		TextView taskName;
-		LinearLayout layoutBackground;
+		RelativeLayout layoutBackground;
 //		View taskView;
 
 		//构造函数

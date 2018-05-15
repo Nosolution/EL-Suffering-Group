@@ -19,13 +19,14 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="?actionBarSize"
 	        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-	        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+	        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+			app:title="任务表"/>
 
 	    <!--插入滚动-->
 
 	    <android.support.v7.widget.RecyclerView
 	        android:id="@+id/recycler_view"
-	        android:layout_marginTop="?attr/actionBarSize"
+	        android:layout_marginTop="70dp"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:dividerHeight="10dip"/>
@@ -104,7 +105,8 @@
 				android:id="@+id/activity_main_setting_upper"
 				android:layout_width="match_parent"
 				android:layout_height="150dp"
-				android:padding="10dp">
+				android:padding="10dp"
+				android:background="@android:color/transparent">
 
 				<de.hdodenhof.circleimageview.CircleImageView
 					android:id="@+id/icon_image"

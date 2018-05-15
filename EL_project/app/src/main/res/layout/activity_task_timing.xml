@@ -22,9 +22,11 @@
 			android:id="@+id/setting_toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="?attr/actionBarSize"
+			android:background="@android:color/transparent"
 			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-			app:title="@string/task2"/>
+			app:title="@string/task2"
+			android:layout_marginTop="5dp"/>
 		<!--TODO:待改动显示内容-->
 
 		<!--在这里写界面-->
@@ -117,7 +119,7 @@
 			<ImageButton
 				android:id="@+id/pause_button"
 				style="@style/imagebutton"
-				android:background="@drawable/doing"
+				android:background="@drawable/stop"
 				android:layout_centerHorizontal="true"/>
 
 			<ImageButton
@@ -146,7 +148,9 @@
 					android:layout_height="0.5dp"
 					android:background="@color/half_white"
 					android:layout_marginLeft="20dp"
-					android:layout_marginRight="20dp">
+					android:layout_marginRight="20dp"
+					android:layout_marginTop="5dp"
+					android:layout_marginBottom="5dp">
 				</View>
 
 				<TextView
