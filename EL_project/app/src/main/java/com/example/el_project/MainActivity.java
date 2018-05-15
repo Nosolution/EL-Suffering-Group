@@ -50,10 +50,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private Button btnCleanShareStorage;
     private Button btChangeMusic;            //切换歌曲按钮
 
-    private int[] colors = {R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar};
-    private int[] checkedColors={R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen};
-    //颜色ID数组，用于循环改变任务背景颜色
-
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
     private int selectedPosition;//被选中的Item位置
 
@@ -294,85 +290,19 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
-    //初始化任务列表
-//    private void initTasks() {
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
-//                mTaskList.add(task);
-//                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
-//                        cursor.getString(cursor.getColumnIndex("task")),
-//                        cursor.getString(cursor.getColumnIndex("assumedtime")),
-//                        cursor.getString(cursor.getColumnIndex("deadline")),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-//                        cursor.getString(cursor.getColumnIndex("comments"))};
-//                taskList.add(tempstring);
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//    }
-
-    //更新recyclerview
-//    private void updateTasks() {
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
-//        if (cursor.moveToPosition(mTaskList.size())) {
-//            do {
-//                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
-//                adapter.addItem(task);
-//                Toast.makeText(this, "Succeeded to update", Toast.LENGTH_SHORT).show();
-//                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
-//                        cursor.getString(cursor.getColumnIndex("task")),
-//                        cursor.getString(cursor.getColumnIndex("assumedtime")),
-//                        cursor.getString(cursor.getColumnIndex("deadline")),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-//                        cursor.getString(cursor.getColumnIndex("comments"))};
-//                taskList.add(tempstring);
-//            } while (cursor.moveToNext());
-//        } else {
-//            Toast.makeText(this, "Failed to update", Toast.LENGTH_SHORT).show();
-//        }
-//        cursor.close();
-//    }
-//
-//    private void modifyTask(String taskId){
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        Cursor cursor = db.query("Tasklist",null,"id="+taskId,null,null,null,null);
-//        if(cursor.moveToFirst()) {
-//            for (int i = 0; i < taskList.size(); i++) {
-//                if (taskId.equals(taskList.get(i)[0])) {
-//                    Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), mTaskList.get(i).getBackgroundId(), mTaskList.get(i).getSelectedBackgroundId());
-//                    adapter.modifyItem(i, task);
-//                    String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
-//                            cursor.getString(cursor.getColumnIndex("task")),
-//                            cursor.getString(cursor.getColumnIndex("assumedtime")),
-//                            cursor.getString(cursor.getColumnIndex("deadline")),
-//                            String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
-//                            String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-//                            cursor.getString(cursor.getColumnIndex("comments"))};
-//                    taskList.set(i, tempstring);
-//                    break;
-//                }
-//            }
-//        }
-//        cursor.close();
-//    }
-
     private void refreshTask(){
         mTaskList.clear();
         taskList.clear();
-        MyDatabaseOperation.refreshAllDailyTask(MainActivity.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
+            int id;
             do {
                 if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==2)
                     continue;
-                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
+                id=cursor.getInt(cursor.getColumnIndex("id"));
+                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")),
+                        MyDatabaseOperation.getTaskRestDays(MainActivity.this,id),R.drawable.task_bar,R.drawable.taskbar_chosen);
                 mTaskList.add(task);
                 String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
                         cursor.getString(cursor.getColumnIndex("task")),

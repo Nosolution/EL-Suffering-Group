@@ -29,6 +29,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	//自定义的ViewHolder，持有每个Item的的所有界面元素
 	public static class ViewHolder extends RecyclerView.ViewHolder{
 		TextView taskName;
+		TextView taskRemark;
 		RelativeLayout layoutBackground;
 //		View taskView;
 
@@ -36,6 +37,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		public ViewHolder(View view){
 			super(view);
 			taskName=view.findViewById(R.id.task_name);
+			taskRemark=view.findViewById(R.id.task_remark);
 //			taskImage=view.findViewById(R.id.task_image);
 			layoutBackground=view.findViewById(R.id.layout_item);
 //			taskView = view;
@@ -59,6 +61,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		Task task=mTaskList.get(position);  //得到当前项的实例
 //		holder.taskImage.setImageResource(task.getImageId());
 		holder.taskName.setText(task.getName());
+		holder.taskRemark.setText(task.getRemark());
 		holder.layoutBackground.setBackgroundResource(task.getBackgroundId());
 
 		if (onItemClickListener != null) {
@@ -110,53 +113,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //		mSelectedPositions = new SparseBooleanArray();
 	}
 
-//	//获得选中条目的动态数组
-//	public ArrayList<Task> getSelectedItem() {
-//		ArrayList<Task> selectedList = new ArrayList<>();
-//		for (int i = 0; i < mTaskList.size(); i++) {
-//			if (isItemSelected(i)) {
-//				selectedList.add(mTaskList.get(i));
-//			}
-//		}
-//		return selectedList;
-//	}
-
 	public void initSelectPositions(){
 
 	}
-
-//	//设置给定位置条目的选择状态
-//	public void setItemSelected(int position,boolean ischecked){
-//		mSelectedPositions.put(position,ischecked);
-//	}
-//
-//	//根据位置判断条目是否选中
-//	public boolean isItemSelected(int position){
-//		return mSelectedPositions.get(position);
-//	}
-//
-//	//根据位置判断条目是否可选
-//	public boolean isSelectable() {
-//		return mIsSelectable;
-//	}
-//
-//	//设置给定位置条目的可选与否的状态
-//	public void setSelectable(boolean selectable) {
-//		mIsSelectable = selectable;
-//	}
-//
-//	//清除选择状态
-//	public void cleanSelected(){
-//		for(int i=0;i<mTaskList.size();i++){
-//			if (isItemSelected(i)){
-//				Task task=mTaskList.get(i);
-//				task.switchBackground();
-//				notifyItemChanged(i);
-//			}
-//		}
-//		mSelectedPositions.clear();
-//	}
-
 
 	//自定义Item点击接口
 	public interface OnItemClickListener {
