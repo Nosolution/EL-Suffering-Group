@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	private TextView textClockOn;
 	private Spinner spinnerChooseTime;
 	private String tomatoClockTimeLength;    //用于获取番茄钟设置时长
-    private Button btChangeMusic;            //切换歌曲按钮
+    private Button btChangeMusic;            //切换歌曲按钮，还未做监听
 
     private int[] colors = {R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar};
     private int[] checkedColors={R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen};
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 //            spinnerChooseTime.setVisibility(View.VISIBLE);
 //        }
 //        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
+
 
 
         //创建默认的线性LayoutManager
@@ -466,9 +467,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.switch_if_music_on:
                 if(compoundButton.isChecked()) {
                     GeneralSetting.setMusicOn(MainActivity.this, true);
+                    btChangeMusic.setVisibility(View.VISIBLE);
                 }
                 else {
                     GeneralSetting.setMusicOn(MainActivity.this, false);
+                    btChangeMusic.setVisibility(View.GONE);
                 }
                 break;
             case R.id.switch_if_tomato_clock_on:
@@ -496,6 +499,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             spinnerChooseTime.setVisibility(View.VISIBLE);
         }
         spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
+
+
+	    if(GeneralSetting.getMusicOn(this)){
+		    btChangeMusic.setVisibility(View.VISIBLE);
+	    }
     }
 
 
