@@ -222,20 +222,29 @@ public class FinishActivity extends AppCompatActivity {
 		paint.setAlpha(128);
 		paint.setShadowLayer(1f, 0f, 1f, Color.DKGRAY);
 		int rad = 250;
-		RectF rectF = new RectF((int)(0.3f * width) - rad, (int)(0.475f * height) - rad,
-				(int)(0.3f * width) + rad, (int)(0.475f * height) + rad);
+		RectF rectF = new RectF((int)(0.3f * width) - rad, (int)(0.52f * height) - rad,
+				(int)(0.3f * width) + rad, (int)(0.52f * height) + rad);
 		canvas.drawArc(rectF, 270.0f, 360.0f * taskTimeUsed / taskTotalTimeUsed, true, paint);
 		paint.setColor(Color.WHITE);
 		paint.setAlpha(64);
 		int radL = 280;
-		rectF.set((int)(0.3f * width) - radL, (int)(0.475f * height) - radL,
-				(int)(0.3f * width) + radL, (int)(0.475f * height) + radL);
+		rectF.set((int)(0.3f * width) - radL, (int)(0.52f * height) - radL,
+				(int)(0.3f * width) + radL, (int)(0.52f * height) + radL);
 		canvas.drawArc(rectF, 0, 360, true, paint);
 
+		//绘制评分
 		paint.setTextSize(392);
 		paint.setTextAlign(Paint.Align.CENTER);
 		paint.setAlpha(255);
 		canvas.drawText(Integer.toString(intGoal), width / 2, height / 4, paint);
+
+		//绘制此次有效时长
+		paint.setTextSize(192);
+		canvas.drawText(secToHourMin(taskTimeUsed), (int)(0.3f * width), (int)(0.535 * height), paint);
+		//绘制此次总时长，今日有效时长
+		paint.setTextSize(144);
+		canvas.drawText(secToHourMin(taskTotalTimeUsed), (int)(0.65f * width), (int)(0.47 * height), paint);
+		canvas.drawText(secToHourMin(timeUsedToday), (int)(0.65f * width), (int)(0.58 * height), paint);
 
 		String filePicStoredPath = dirPath + File.separator + fileName + ".jpg";
 		File filePicStored = new File(filePicStoredPath);
@@ -290,7 +299,7 @@ public class FinishActivity extends AppCompatActivity {
 		int min = (sec + 1) / 60;
 		int hor = min / 60;
 		min = min - hor * 60;
-		return String.format(Locale.getDefault(), "%02d：%02d", hor, min);
+		return String.format(Locale.getDefault(), "%02d:%02d", hor, min);
 	}
 
 }

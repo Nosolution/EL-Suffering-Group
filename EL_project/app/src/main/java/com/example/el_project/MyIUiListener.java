@@ -26,6 +26,5 @@ public class MyIUiListener implements IUiListener {
 
     @Override
     public void onCancel() {
-
     }
 }

@@ -580,7 +580,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			tomatoClockBreakCountDown.cancel();
 		}
 		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoBreakTime(this) * 60);
-		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 1000) {
+		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 200) {
 			@Override
 			public void onTick(long millisUntilFinished) {
 //				tomatoClockCountDownTime.setText("据休息结束还有" + millis2HourMinSecString(millisUntilFinished));
@@ -606,19 +606,20 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 			NotificationChannel channel = new NotificationChannel("channel_tomato_clock", "ChannelTomatoClock", NotificationManager.IMPORTANCE_DEFAULT);
-			channel.enableLights(false); //是否在桌面icon右上角展示小红点
+			channel.enableLights(true);
+			channel.setLightColor(Color.GREEN);
 			channel.setShowBadge(false); //是否在久按桌面图标时显示此渠道的通知
-			channel.enableVibration(false);
-			channel.setSound(null, null);
+			channel.enableVibration(true);
+			channel.setVibrationPattern(new long[]{1000, 1000, 2000, 2000, 1000, 1000});
 			notificationManager.createNotificationChannel(channel);
 		}
 		Notification notification= new NotificationCompat.Builder(this, "channel_tomato_clock")
 				.setAutoCancel(true)
 				.setContentText(text)
 				.setContentTitle(title)
-				.setSmallIcon(R.drawable.clock)
+				.setSmallIcon(R.drawable.icon6)
 				.setContentIntent(pendingIntent)
-				.setVibrate(new long[]{1000, 1000, 1000, 1000})
+				.setDefaults(Notification.DEFAULT_SOUND)
 				.build();
 
 		try {

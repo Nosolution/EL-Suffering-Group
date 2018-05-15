@@ -44,17 +44,17 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_TASKLIST);
         sqLiteDatabase.execSQL(CREATE_FINISHTASKTABLE);
+        sqLiteDatabase.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
         Toast.makeText(mContext,"Create succeeded",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1){
+        if (oldVersion <= 1){
             db.execSQL(CREATE_FINISHTASKTABLE);
-            db.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
             Toast.makeText(mContext,"Create succeeded",Toast.LENGTH_SHORT).show();
         }
-        else if(oldVersion==2){
+        else if(oldVersion<=2){
             db.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
             Toast.makeText(mContext,"succeeded upgrade to version 3",Toast.LENGTH_SHORT).show();
         }

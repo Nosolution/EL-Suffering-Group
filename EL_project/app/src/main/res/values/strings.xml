@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">EL_project</string>
+	<string name="app_name">时晏</string>
 	<string name="add_task_activity_title">添加任务</string>
 	<string name="title_activity_main2">Main2Activity</string>
 	<string name="cancle">取消</string>
