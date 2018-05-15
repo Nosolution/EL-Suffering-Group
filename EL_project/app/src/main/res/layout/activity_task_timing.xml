@@ -25,8 +25,7 @@
 			android:background="@android:color/transparent"
 			android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
 			app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-			app:title="@string/task2"
-			android:layout_marginTop="5dp"/>
+			app:title="@string/task2" />
 		<!--TODO:待改动显示内容-->
 
 		<!--在这里写界面-->
@@ -184,6 +183,7 @@
 		android:layout_width="230dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="end"
+		android:clickable="true"
 		android:background="#80FFFFFF">
 
 		<LinearLayout
@@ -222,7 +222,7 @@
 						android:id="@+id/img_if_music_on"
 						android:layout_width="18dp"
 						android:layout_height="18dp"
-						android:layout_margin="4dp"
+						android:layout_margin="5dp"
 						android:scaleType="center"
 						android:background="@drawable/music_white" />
 
@@ -241,9 +241,8 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true" />
-
-
 				</RelativeLayout>
+
 			</LinearLayout>
 
 			<LinearLayout
@@ -263,7 +262,8 @@
 					android:text="切换歌曲"
 					android:textSize="14sp"
 					android:textColor="@color/background"
-					android:background="@drawable/setting_button"/>
+					android:background="@drawable/setting_button"
+					android:visibility="gone"/>
 			</LinearLayout>
 
 			<!--插入分割线-->
@@ -277,6 +277,7 @@
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="30dp"
+				android:layout_marginTop="5dp"
 				android:orientation="horizontal">
 
 				<RelativeLayout
@@ -286,7 +287,7 @@
 						android:id="@+id/img_if_tomato_clock_on"
 						android:layout_width="18dp"
 						android:layout_height="18dp"
-						android:layout_margin="4dp"
+						android:layout_margin="5dp"
 						android:scaleType="center"
 						android:background="@drawable/clock_white"/>
 

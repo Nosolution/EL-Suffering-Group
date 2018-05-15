@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -405,9 +407,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.switch_if_music_on:
                 if(compoundButton.isChecked()) {
                     GeneralSetting.setMusicOn(MainActivity.this, true);
+                    btChangeMusic.setVisibility(View.VISIBLE);
                 }
                 else {
                     GeneralSetting.setMusicOn(MainActivity.this, false);
+                    btChangeMusic.setVisibility(View.GONE);
                 }
                 break;
             case R.id.switch_if_tomato_clock_on:
@@ -435,6 +439,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             spinnerChooseTime.setVisibility(View.VISIBLE);
         }
         spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
+
+
+	    if(GeneralSetting.getMusicOn(this)){
+		    btChangeMusic.setVisibility(View.VISIBLE);
+	    }
     }
 
 

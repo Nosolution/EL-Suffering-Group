@@ -186,6 +186,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			textClockOn.setVisibility(View.VISIBLE);
 			spinnerChooseTime.setVisibility(View.VISIBLE);
 		}
+
+		if (GeneralSetting.getMusicOn(this)){
+			btChangeMusic.setVisibility(View.VISIBLE);
+		}
 		spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
 
 
@@ -301,12 +305,14 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			case R.id.switch_if_music_on:
 				if(compoundButton.isChecked()) {
 				    GeneralSetting.setMusicOn(TaskTimingActivity.this, true);
+				    btChangeMusic.setVisibility(View.VISIBLE);
 					if(!musicController.isPlaying() && havingTaskOngoing){
 						musicController.restart();
 					}
 				}
 				else {
 				    GeneralSetting.setMusicOn(TaskTimingActivity.this, false);
+				    btChangeMusic.setVisibility(View.GONE);
 				    if(musicController.isPlaying()){
 				    	musicController.stop();
 					}
