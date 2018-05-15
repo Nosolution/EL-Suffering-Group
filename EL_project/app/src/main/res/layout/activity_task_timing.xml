@@ -119,7 +119,7 @@
 			<ImageButton
 				android:id="@+id/pause_button"
 				style="@style/imagebutton"
-				android:background="@drawable/stop"
+				android:background="@drawable/doing"
 				android:layout_centerHorizontal="true"/>
 
 			<ImageButton

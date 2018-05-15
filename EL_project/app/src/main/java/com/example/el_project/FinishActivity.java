@@ -1,8 +1,15 @@
 package com.example.el_project;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -15,15 +22,23 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.tencent.connect.common.Constants;
+import com.tencent.connect.share.QQShare;
+import com.tencent.tauth.Tencent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * 我不确定完成界面的专注度的得分下面要显示什么，就把它们都放上去了
@@ -36,6 +51,7 @@ public class FinishActivity extends AppCompatActivity {
 	private TextView tvWeekConcentrateTime;  // 一周的专注时间，格式：“本周已专注 __ 分钟”
 	private Button buttonReturnMain;  // 返回主界面按钮
 	private Button buttonNextTask;  // 开始下一项任务的按钮
+	private Button buttonShare;     //分享按钮
 	private String strGoal;
 	private String strSingleTaskConsumeTime;
 	private String strSingleTaskConcentrateTime;
@@ -51,10 +67,15 @@ public class FinishActivity extends AppCompatActivity {
 	int intStart;  // 字符串索引
 	int intEnd;
 
-	int taskTotalTimeUsed;         //任务总计完成时间
-	int taskTimeUsed;              //任务有效完成时间
-	int breakCount;                //任务执行时切出次数
-	int[] taskTimeUsedWeek;        //本周任务每日总计的有效时间
+	private int taskTotalTimeUsed;         //任务总计完成时间
+	private int taskTimeUsed;              //任务有效完成时间
+	private int timeUsedToday;             //今日用于完成任务的时间
+	private int breakCount;                //任务执行时切出次数
+	private int[] taskTimeUsedWeek;        //本周任务每日总计的有效时间
+
+	private Tencent mTencent;
+	private MyIUiListener myIUiListener;
+	private Bundle params;
 
 
 	@Override
@@ -70,6 +91,7 @@ public class FinishActivity extends AppCompatActivity {
 		tvWeekConcentrateTime = findViewById(R.id.tv_week_concentrate_time);
 		buttonReturnMain = findViewById(R.id.button_return_main);
 		buttonNextTask = findViewById(R.id.button_next_task);
+		buttonShare = findViewById(R.id.button_share_to_qzone);
 		LinearLayout layoutMain = findViewById(R.id.activity_finish_layout);
 
 		BackgroundCollection backgroundCollection = new BackgroundCollection();
@@ -147,6 +169,17 @@ public class FinishActivity extends AppCompatActivity {
 				startActivity(intent);
 			}
 		});
+		buttonShare.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				shareToQQ(FinishActivity.this);
+			}
+		});
+
+
+		//设置分享用的QQ实例初始化
+		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
+		myIUiListener = new MyIUiListener();
 
 	}
 
@@ -155,8 +188,109 @@ public class FinishActivity extends AppCompatActivity {
 		Intent intent = getIntent();
 		taskTotalTimeUsed = intent.getIntExtra("task_total_time_used", 0);
 		taskTimeUsed = intent.getIntExtra("task_time_used", 0);
+		timeUsedToday = MyDatabaseOperation.getTotalTimeUsedToday(this);
 		breakCount = intent.getIntExtra("break_count", 0);
 		taskTimeUsedWeek = MyDatabaseOperation.getThisWeekPerDayTimeUsed(this);
+	}
+
+	private void shareToQQ(Context context){
+		Calendar calendar = new GregorianCalendar();
+		SimpleDateFormat format = new SimpleDateFormat("yyMMddHHmmss", Locale.getDefault());
+		String fileName = format.format(calendar.getTime());
+
+		String dirPath = getFilePath(context, "tempPicToShare");
+		BackgroundCollection backgroundCollection = new BackgroundCollection();
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		Bitmap bitmapToShare = BitmapFactory.decodeResource(getResources(), backgroundCollection.getTodayBackground(), options);
+		int height = bitmapToShare.getHeight();
+		int width = bitmapToShare.getWidth();
+		int density = bitmapToShare.getDensity();
+
+		Bitmap.Config config = bitmapToShare.getConfig();
+		if(config == null) config = Bitmap.Config.ARGB_8888;
+		bitmapToShare = bitmapToShare.copy(config, true);
+
+		Canvas canvas = new Canvas(bitmapToShare);
+		Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+		//绘制表层模板
+		Bitmap bitmapRefUpper = BitmapFactory.decodeResource(getResources(), R.drawable.share_ref_upper, options);
+		canvas.drawBitmap(bitmapRefUpper, 0.0f, 0.0f, paint);
+
+		//绘制弧形，时间占比
+		paint.setColor(backgroundCollection.getTodayColor());
+		paint.setAlpha(128);
+		paint.setShadowLayer(1f, 0f, 1f, Color.DKGRAY);
+		int rad = 250;
+		RectF rectF = new RectF((int)(0.3f * width) - rad, (int)(0.475f * height) - rad,
+				(int)(0.3f * width) + rad, (int)(0.475f * height) + rad);
+		canvas.drawArc(rectF, 270.0f, 360.0f * taskTimeUsed / taskTotalTimeUsed, true, paint);
+		paint.setColor(Color.WHITE);
+		paint.setAlpha(64);
+		int radL = 280;
+		rectF.set((int)(0.3f * width) - radL, (int)(0.475f * height) - radL,
+				(int)(0.3f * width) + radL, (int)(0.475f * height) + radL);
+		canvas.drawArc(rectF, 0, 360, true, paint);
+
+		paint.setTextSize(392);
+		paint.setTextAlign(Paint.Align.CENTER);
+		paint.setAlpha(255);
+		canvas.drawText(Integer.toString(intGoal), width / 2, height / 4, paint);
+
+		String filePicStoredPath = dirPath + File.separator + fileName + ".jpg";
+		File filePicStored = new File(filePicStoredPath);
+		try{
+			FileOutputStream fileOutputStream = new FileOutputStream(filePicStored);
+			bitmapToShare.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+			fileOutputStream.flush();
+			fileOutputStream.close();
+		}catch (FileNotFoundException e){
+			e.printStackTrace();
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+
+		shareImgToQQ(filePicStoredPath);
+	}
+
+	private String getFilePath(Context context, String dirName){
+		String dirPath = "";
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+			dirPath = context.getExternalFilesDir(dirName).getAbsolutePath();
+		}else {
+			dirPath = context.getFilesDir()+ File.separator+dirName;
+		}
+		File file = new File(dirPath);
+		if (!file.exists()){
+			file.mkdirs();
+		}
+		return dirPath;
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Tencent.onActivityResultData(requestCode, resultCode, data, myIUiListener);
+		if (requestCode == Constants.REQUEST_API) {
+			if (resultCode == Constants.REQUEST_QQ_SHARE || resultCode == Constants.REQUEST_QZONE_SHARE || resultCode == Constants.REQUEST_OLD_SHARE) {
+				Tencent.handleResultData(data, myIUiListener);
+			}
+		}
+	}
+
+	private void shareImgToQQ(String imgUrl){
+		params = new Bundle();
+		params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);// 设置分享类型为纯图片分享
+		params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, imgUrl);// 需要分享的本地图片URL
+		params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);//默认分享到空间
+		mTencent.shareToQQ(FinishActivity.this, params, myIUiListener);
+	}
+
+	private String secToHourMin(int sec){
+		int min = (sec + 1) / 60;
+		int hor = min / 60;
+		min = min - hor * 60;
+		return String.format(Locale.getDefault(), "%02d：%02d", hor, min);
 	}
 
 }

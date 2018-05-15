@@ -104,7 +104,7 @@ public class ShareTestActivity extends AppCompatActivity implements View.OnClick
         params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);// 设置分享类型为纯图片分享
         params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, imgUrl);// 需要分享的本地图片URL
         params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);//默认分享到空间
-        mTencent.shareToQQ(ShareTestActivity.this, params, myIUiListener);
+        mTencent.shareToQQ(     ShareTestActivity.this, params, myIUiListener);
     }
 
     public static String getFilePath(Context context, String dir) {
