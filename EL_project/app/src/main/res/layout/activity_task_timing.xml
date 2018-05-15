@@ -184,7 +184,7 @@
 		android:layout_width="230dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="end"
-		android:background="#FFF">
+		android:background="#80FFFFFF">
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -196,7 +196,8 @@
 				android:id="@+id/activity_task_timing_setting_upper"
 				android:layout_width="match_parent"
 				android:layout_height="150dp"
-				android:padding="10dp">
+				android:padding="10dp"
+				android:background="@drawable/setting_background">
 
 				<de.hdodenhof.circleimageview.CircleImageView
 					android:id="@+id/icon_image"
@@ -206,9 +207,11 @@
 					android:layout_centerInParent="true"/>
 			</RelativeLayout>
 
+			<!--音乐-->
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="30dp"
+				android:layout_marginTop="5dp"
 				android:orientation="horizontal">
 
 				<RelativeLayout
@@ -221,32 +224,56 @@
 						android:layout_height="18dp"
 						android:layout_margin="4dp"
 						android:scaleType="center"
-						android:background="@drawable/music_slight_big" />
+						android:background="@drawable/music_white" />
 
 					<TextView
 						android:id="@+id/text_if_music_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginLeft="30dp"
+						android:layout_marginStart="30dp"
 						android:scaleType="center"
 						android:text="@string/string_if_music_on"
-						android:textSize="18sp"/>
+						android:textSize="18sp"
+						android:textColor="@color/background"/>
 
 					<Switch
 						android:id="@+id/switch_if_music_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true" />
+
+
 				</RelativeLayout>
-
-				<View
-					android:layout_width="match_parent"
-					android:layout_height="0.5dp"
-					android:background="@color/split_line">
-				</View>
-
 			</LinearLayout>
 
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+				<!--随机切歌按钮-->
+
+				<Button
+					android:id="@+id/bt_change_music"
+					android:layout_width="wrap_content"
+					android:layout_height="30dp"
+					android:layout_gravity="end"
+					android:layout_marginEnd="5dp"
+					android:layout_marginBottom="4dp"
+					android:text="切换歌曲"
+					android:textSize="14sp"
+					android:textColor="@color/background"
+					android:background="@drawable/setting_button"/>
+			</LinearLayout>
+
+			<!--插入分割线-->
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1.5dp"
+				android:background="@color/split_line">
+			</View>
+
+			<!--番茄钟-->
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="30dp"
@@ -261,7 +288,7 @@
 						android:layout_height="18dp"
 						android:layout_margin="4dp"
 						android:scaleType="center"
-						android:background="@drawable/clock"/>
+						android:background="@drawable/clock_white"/>
 
 					<TextView
 						android:id="@+id/text_if_tomato_clock_on"
@@ -269,7 +296,8 @@
 						android:layout_height="wrap_content"
 						android:layout_marginStart="30dp"
 						android:text="@string/string_if_tomato_clock_on"
-						android:textSize="18sp"/>
+						android:textSize="18sp"
+						android:textColor="@color/background"/>
 
 					<Switch
 						android:id="@+id/switch_if_tomato_clock_on"
@@ -277,13 +305,6 @@
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true" />
 				</RelativeLayout>
-
-				<View
-					android:layout_width="match_parent"
-					android:layout_height="0.5dp"
-					android:background="@color/split_line">
-				</View>
-
 			</LinearLayout>
 
 			<LinearLayout
@@ -302,6 +323,7 @@
 						android:layout_marginLeft="30dp"
 						android:text="@string/string_tomato_clock_on"
 						android:textSize="18sp"
+						android:textColor="@color/background"
 						android:visibility="gone"/>
 
 
@@ -311,9 +333,7 @@
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
 						android:entries="@array/times"
-						android:visibility="gone">
-
-					</Spinner>
+						android:visibility="gone"></Spinner>
 
 
 				</RelativeLayout>

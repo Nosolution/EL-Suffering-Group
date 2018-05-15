@@ -19,14 +19,14 @@
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
             android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
 
-                <data android:scheme="tencent1106810223" />
-            </intent-filter>
+                <!--<data android:scheme="tencent1106810223" />-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
@@ -34,9 +34,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
+            android:label="赶快来创建你的任务表吧"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

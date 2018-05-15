@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -48,6 +49,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private DrawerLayout mDrawerLayout;
 	private Switch switchClockStatus;
 	private Switch switchMusicStatus;
+	private Button btChangeMusic;                     //切换歌曲按钮
 
 	private CountTimer timer;
 	private CountTimer totalTimer;                    //总计耗时
@@ -138,6 +140,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		timeLeft = findViewById(R.id.time_left_to_finish);
 		remarkText = findViewById(R.id.edit_remark);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_task_timing_drawer_layout);
+		btChangeMusic = findViewById(R.id.bt_change_music);
 
 		//初始化计时主要界面的内容
 		taskTimeCount = findViewById(R.id.time_action);

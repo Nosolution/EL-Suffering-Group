@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	private TextView textClockOn;
 	private Spinner spinnerChooseTime;
 	private String tomatoClockTimeLength;    //用于获取番茄钟设置时长
+    private Button btChangeMusic;            //切换歌曲按钮
 
     private int[] colors = {R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar};
     private int[] checkedColors={R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen};
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 	    spinnerChooseTime=findViewById(R.id.spinner_choose_time);
 	    textClockOn=findViewById(R.id.text_clock_on);
+        btChangeMusic=findViewById(R.id.bt_change_music);
 
 	    //设置背景
         BackgroundCollection backgroundCollection = new BackgroundCollection();
@@ -86,12 +89,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	    switchClockStatus.setOnCheckedChangeListener(this);
 	    switchMusicStatus.setOnCheckedChangeListener(this);
 
+
 	    //修改设置内显示番茄钟时长
 //	    if(GeneralSetting.getTomatoClockEnable(this)){
 //            textClockOn.setVisibility(View.VISIBLE);
 //            spinnerChooseTime.setVisibility(View.VISIBLE);
 //        }
 //        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
+
 
         //创建默认的线性LayoutManager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
