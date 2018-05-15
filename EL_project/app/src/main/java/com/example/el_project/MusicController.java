@@ -21,6 +21,7 @@ package com.example.el_project;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.util.Log;
 import android.widget.Toast;
 
 public class MusicController {
@@ -41,6 +42,7 @@ public class MusicController {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 randomSwitch();
+                Log.d("TEST", "onCompletion: MusicComplete");
             }
         });
     }

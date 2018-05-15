@@ -44,11 +44,6 @@ import android.widget.TextView;
 
 import com.tencent.tauth.Tencent;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-
 public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	private Switch switchClockStatus;
@@ -123,10 +118,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 
 		//初始化Toolbar
-		toolbar=findViewById(R.id.setting_toolbar);
+		toolbar = findViewById(R.id.setting_toolbar);
 		setSupportActionBar(toolbar);
-		mDrawerLayout=findViewById(R.id.activity_main_drawer_layout);
-		ActionBar actionBar=getSupportActionBar();
+		mDrawerLayout = findViewById(R.id.activity_main_drawer_layout);
+		ActionBar actionBar = getSupportActionBar();
+		toolbar.setBackgroundColor(backgroundCollection.getTodayColor());
+		toolbar.setAlpha(0.5f);
 
 		if(actionBar!=null){
 			actionBar.setDisplayHomeAsUpEnabled(true);  //显示导航按钮
@@ -140,6 +137,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		textClockOn = findViewById(R.id.text_clock_on);
 		timeLeft = findViewById(R.id.time_left_to_finish);
 		remarkText = findViewById(R.id.edit_remark);
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_task_timing_drawer_layout);
 
 		//初始化计时主要界面的内容
 		taskTimeCount = findViewById(R.id.time_action);
@@ -280,9 +278,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-//			case android.R.id.home:
-//				mDrawerLayout.openDrawer(GravityCompat.START);  //展示滑动菜单，传入Gravity参数
-//				break;
+			case android.R.id.home:
+				onBackPressed();
+				break;
 			case R.id.setting:
 				mDrawerLayout.openDrawer(GravityCompat.END);
 			default:
@@ -405,13 +403,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		unregisterReceiver(screenOffReceiver);
 
 		saveTaskFinishToDB(saveFinishStatue.ordinal());
-		MyDatabaseOperation.refreshFinishTaskTable(this);
-
-		Calendar calendar = new GregorianCalendar();
-		SimpleDateFormat format = new SimpleDateFormat("yyMMdd", Locale.getDefault());
-		MyDatabaseOperation.getTotalSomeDayTimeUsed(this, Integer.parseInt(format.format(calendar.getTime())));
-		format = new SimpleDateFormat("yyw", Locale.getDefault());
-		MyDatabaseOperation.getWeekPerDayTimeUsed(this, Integer.parseInt(format.format(calendar.getTime())));
 
 		super.onDestroy();
 	}

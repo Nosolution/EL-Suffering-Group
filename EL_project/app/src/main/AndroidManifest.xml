@@ -35,7 +35,8 @@
         <activity
             android:name=".MainActivity"
             android:label="赶快来创建你的任务表吧"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+			android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,7 +45,8 @@
 		</activity>
 		<activity
 			android:name=".TaskTimingActivity"
-			android:launchMode="singleTop">
+			android:launchMode="singleTop"
+			android:screenOrientation="portrait">
 
 			<!-- <intent-filter> -->
 			<!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -55,7 +57,8 @@
 		</activity>
 		<activity
 			android:name=".EditTaskActivity"
-			android:label="@string/add_task_activity_title">
+			android:label="@string/add_task_activity_title"
+			android:screenOrientation="portrait">
 
 			<!-- <intent-filter> -->
 			<!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -65,7 +68,8 @@
 			<!-- </intent-filter> -->
 		</activity>
 
-		<activity android:name=".FinishActivity">
+		<activity android:name=".FinishActivity"
+			android:screenOrientation="portrait">
 			<!--<intent-filter>-->
 				<!--<action android:name="android.intent.action.MAIN" />-->
 

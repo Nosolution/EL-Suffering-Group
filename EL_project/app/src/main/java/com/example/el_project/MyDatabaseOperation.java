@@ -169,21 +169,10 @@ public class MyDatabaseOperation {
         SimpleDateFormat formatDate = new SimpleDateFormat("yyMMdd", Locale.getDefault());
         SimpleDateFormat formatWeekCount = new SimpleDateFormat("yyw", Locale.getDefault());
         SimpleDateFormat formatWeek = new SimpleDateFormat("EEE", Locale.getDefault());
-        String week = formatWeek.format(calendar.getTime());
-        int weeknum = 1;
-        switch (week){
-            case "Mon": weeknum = 1; break;
-            case "Tue": weeknum = 2; break;
-            case "Wed": weeknum = 3; break;
-            case "The": weeknum = 4; break;
-            case "Fri": weeknum = 5; break;
-            case "Sat": weeknum = 6; break;
-            case "Sun": weeknum = 7; break;
-        }
         ContentValues values = new ContentValues();
         values.put("date", Integer.parseInt(formatDate.format(calendar.getTime())));
         values.put("week_count", Integer.parseInt(formatWeekCount.format(calendar.getTime())));
-        values.put("week", weeknum);
+        values.put("week", getWeekNum());
         values.put("task_time_used", taskTimeUsed);
         values.put("statue", statue);
         values.put("break_count", breakCount);
@@ -249,5 +238,30 @@ public class MyDatabaseOperation {
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat format = new SimpleDateFormat("yyw", Locale.getDefault());
         return getWeekPerDayTimeUsed(context, Integer.parseInt(format.format(calendar.getTime())));
+    }
+
+    public static int getWeekNum(){
+        Calendar calendar = new GregorianCalendar();
+        SimpleDateFormat format = new SimpleDateFormat("EEE", Locale.getDefault());
+        String week = format.format(calendar.getTime());
+        int weekNum = 1;
+        switch (week){
+            case "周一":
+            case "Mon": weekNum = 1; break;
+            case "周二":
+            case "Tue": weekNum = 2; break;
+            case "周三":
+            case "Wed": weekNum = 3; break;
+            case "周四":
+            case "The": weekNum = 4; break;
+            case "周五":
+            case "Fri": weekNum = 5; break;
+            case "周六":
+            case "Sat": weekNum = 6; break;
+            case "周日":
+            case "Sun": weekNum = 7; break;
+        }
+        Log.d("TEST", "getWeekNum: " + weekNum + week);
+        return weekNum;
     }
 }

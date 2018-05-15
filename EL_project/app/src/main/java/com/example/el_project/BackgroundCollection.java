@@ -1,6 +1,7 @@
 package com.example.el_project;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,18 +39,24 @@ public class BackgroundCollection {
     }
 
     private int getWeekNum(){
-
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat format = new SimpleDateFormat("EEE", Locale.getDefault());
         String week = format.format(calendar.getTime());
         int weekNum = 1;
         switch (week){
+            case "周一":
             case "Mon": weekNum = 1; break;
+            case "周二":
             case "Tue": weekNum = 2; break;
+            case "周三":
             case "Wed": weekNum = 3; break;
+            case "周四":
             case "The": weekNum = 4; break;
+            case "周五":
             case "Fri": weekNum = 5; break;
+            case "周六":
             case "Sat": weekNum = 6; break;
+            case "周日":
             case "Sun": weekNum = 7; break;
         }
         return weekNum;

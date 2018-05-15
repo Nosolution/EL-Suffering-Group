@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
@@ -88,7 +89,8 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         toolbar = findViewById(R.id.activity_edit_task_toolbar);
 
         BackgroundCollection backgroundCollection = new BackgroundCollection();
-        toolbar.setBackgroundResource(backgroundCollection.getTodayBackground());
+        toolbar.setBackgroundColor(backgroundCollection.getTodayColor());
+        toolbar.setAlpha(0.5f);
 
 
             //两个Spinner的点击事件
@@ -260,6 +262,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                         modifyTask();
                         Toast toast = Toast.makeText(EditTaskActivity.this,"成功修改任务",Toast.LENGTH_SHORT);
                         showMyToast(toast,1000);//提示成功修改任务
+                        finish();
                     }
                     break;
                 case R.id.start_now:
