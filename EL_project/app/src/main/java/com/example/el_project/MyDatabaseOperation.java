@@ -154,7 +154,7 @@ public class MyDatabaseOperation {
                     }
                 }
                 else if(diff>3){
-                    return deadLine.substring(2,4)+"-"+deadLine.substring(4);
+                    return deadLine.substring(5);
                 }
                 else
                     return "";
