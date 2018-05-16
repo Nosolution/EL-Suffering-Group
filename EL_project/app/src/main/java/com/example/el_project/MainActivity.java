@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
@@ -47,13 +48,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	private DrawerLayout mDrawerLayout;
 	private Switch switchClockStatus;
 	private Switch switchMusicStatus;
-	private TextView textClockOn;
-	private Spinner spinnerChooseTime;
-	private String tomatoClockTimeLength;    //用于获取番茄钟设置时长
+	private TextView textClockTime;
     private LinearLayout clockTimeLayout;
-    private TextView textBreakClock;
-    private Spinner spinnerBreakClock;
-    private String breakClockTimeLength;       //用于番茄钟休息一系列设置
+    private TextView textBreakClockTime;
     private LinearLayout breakClockTimeLayout;
     private Button btnCleanShareStorage;
 
@@ -80,12 +77,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);  //如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
 
-	    spinnerChooseTime=findViewById(R.id.spinner_choose_time);
-	    textClockOn=findViewById(R.id.text_clock_on);
-	    clockTimeLayout = (LinearLayout)findViewById(R.id.main_clock_set_layout);
-        textBreakClock = findViewById(R.id.text_choose_break_time);
-        spinnerBreakClock = findViewById(R.id.spinner_choose_break_time);
-        breakClockTimeLayout = (LinearLayout)findViewById(R.id.main_break_clock_set_layout);
 
 	    //设置背景
         BackgroundCollection backgroundCollection = new BackgroundCollection();
@@ -93,13 +84,66 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         RelativeLayout layoutSetting = findViewById(R.id.activity_main_setting_upper);
         layoutSetting.setBackgroundColor(backgroundCollection.getTodayColor());
 
+        //设置部分
+        textClockTime = findViewById(R.id.text_choose_time);
+        clockTimeLayout = (LinearLayout)findViewById(R.id.main_clock_set_layout);
+        textBreakClockTime = findViewById(R.id.text_choose_break_time);
+        breakClockTimeLayout = (LinearLayout)findViewById(R.id.main_break_clock_set_layout);
 	    switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
 	    switchMusicStatus=findViewById(R.id.switch_if_music_on);
 	    btnCleanShareStorage = findViewById(R.id.activity_main_clean_share_storage);
-//	    switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
-//	    switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
 	    switchClockStatus.setOnCheckedChangeListener(this);
 	    switchMusicStatus.setOnCheckedChangeListener(this);
+	    clockTimeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog dialog;
+                final String[] itemToSelect = {"20分钟", "30分钟", "40分钟", "50分钟"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("时长");
+                builder.setItems(itemToSelect, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        GeneralSetting.setTomatoClockTime(MainActivity.this, which * 10 + 20);
+                        refreshSetting();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog = builder.create();
+                dialog.show();
+            }
+        });
+	    breakClockTimeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog dialog;
+                final String[] itemToSelect = {"5分钟", "10分钟", "15分钟", "20分钟"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("休息时长");
+                builder.setItems(itemToSelect, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        GeneralSetting.setTomatoBreakTime(MainActivity.this, which * 5 + 5);
+                        refreshSetting();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog = builder.create();
+                dialog.show();
+            }
+        });
 	    btnCleanShareStorage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,14 +151,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 storageManager.clean();
             }
         });
-
-
-	    //修改设置内显示番茄钟时长
-//	    if(GeneralSetting.getTomatoClockEnable(this)){
-//            textClockOn.setVisibility(View.VISIBLE);
-//            spinnerChooseTime.setVisibility(View.VISIBLE);
-//        }
-//        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
 
 
         //创建默认的线性LayoutManager
@@ -128,19 +164,31 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         //初始化接口实例，实现点击功能
         adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(View view, final int position) {
                 Task task = mTaskList.get(position);
 //                Toast.makeText(view.getContext(), "you clicked view " + task.getName(), Toast.LENGTH_SHORT).show();
                 if (!isFabOpened&&selectedPosition==-1) {
                     openMenu(baseButton);
                     selectedPosition=position;
                     task.switchBackground();
-                    adapter.changeItemBackGround(position);
+                    new Thread(){     //几个线程
+                        @Override
+                        public void run() {
+                            super.run();
+                            adapter.changeItemBackGround(position);
+                        }
+                    }.start();
                 }
                 else if(isFabOpened&&selectedPosition!=position){
                     Task previousTask=mTaskList.get(selectedPosition);
                     previousTask.switchBackground();
-                    adapter.changeItemBackGround(selectedPosition);
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            super.run();
+                            adapter.changeItemBackGround(selectedPosition);
+                        }
+                    }.start();
                     closeMenu(baseButton);
                     selectedPosition=-1;
                 }
@@ -148,7 +196,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     closeMenu(baseButton);
                     selectedPosition=-1;
                     task.switchBackground();
-                    adapter.changeItemBackGround(position);
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            super.run();
+                            adapter.changeItemBackGround(position);
+                        }
+                    }.start();
                 }
             }
 
@@ -230,38 +284,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
-
-	    spinnerChooseTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-		    @Override
-		    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-			    tomatoClockTimeLength = (String)spinnerChooseTime.getSelectedItem();
-                int chosenTime = Integer.parseInt(tomatoClockTimeLength.substring(0, tomatoClockTimeLength.length() - 2));
-                Log.d("Chosen Time", "onItemSelected: " + chosenTime);
-                GeneralSetting.setTomatoClockTime(MainActivity.this, chosenTime);
-		    }
-
-		    @Override
-		    public void onNothingSelected(AdapterView<?> parent) {
-		    }
-	    });
-	    spinnerBreakClock.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                breakClockTimeLength = (String)spinnerBreakClock.getSelectedItem();
-                int chosenTime = Integer.parseInt(breakClockTimeLength.substring(0, breakClockTimeLength.length() - 2));
-                GeneralSetting.setTomatoBreakTime(MainActivity.this, chosenTime);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-//        //初始化设置番茄钟时长
-//        if (GeneralSetting.getTomatoClockEnable(this)){
-//            textClockOn.setVisibility(View.VISIBLE);
-//            spinnerChooseTime.setVisibility(View.VISIBLE);
-//        }
     }
 
     @Override
@@ -326,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             do {
                 if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==2)
                     continue;
-                id=cursor.getInt(cursor.getColumnIndex("id"));
+                id = cursor.getInt(cursor.getColumnIndex("id"));
                 Task task = new Task(cursor.getString(cursor.getColumnIndex("task")),
                         MyDatabaseOperation.getTaskRestDays(MainActivity.this,id),R.drawable.task_bar,R.drawable.taskbar_chosen);
                 mTaskList.add(task);
@@ -459,9 +481,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             clockTimeLayout.setVisibility(View.GONE);
             breakClockTimeLayout.setVisibility(View.GONE);
         }
-        spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
-        spinnerBreakClock.setSelection(Math.max((GeneralSetting.getTomatoBreakTime(this)/5 - 1), 0));
-
+        textClockTime.setText(GeneralSetting.getTomatoClockTime(this) + "分钟");
+        textBreakClockTime.setText(GeneralSetting.getTomatoBreakTime(this) + "分钟");
     }
 
 

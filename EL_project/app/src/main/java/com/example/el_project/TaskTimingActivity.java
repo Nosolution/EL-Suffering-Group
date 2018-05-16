@@ -51,11 +51,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private Switch switchClockStatus;
 	private Switch switchMusicStatus;
 	private Button btnChangeMusic;                     //切换歌曲按钮
-	private String tomatoClockTimeLength;             //用于获取番茄钟设置时长
-	private Spinner spinnerChooseTime;
+	private TextView textClockTime;
 	private LinearLayout clockTimeLayout;
-	private String tomatoBreakClockTimeLength;
-	private Spinner spinnerChooseBreakTime;
+	private TextView textBreakClockTime;
 	private LinearLayout breakClockTimeLayout;
 	private Button btnCleanShareStorage;              //清理图片缓存
 
@@ -74,9 +72,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private int taskTotalSecUsed = 0;                    //任务共用时间
 	private Handler taskTimeRefreshHandler;
 	private Handler taskTotalTimeRefreshHandler;
-//	private TextView tomatoClockCountDownTime;              //显示番茄钟倒计时
-//	private ImageView ivTomatoClockAnim;
-	private TextView textClockOn;
 	private TextView timeLeft;
 	private MusicController musicController;
 	private CountDownTimer tomatoClockCountDown;   //番茄钟倒计时
@@ -102,14 +97,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		QUIT,
 		FINISH
 	}
-
-	private Tencent mTencent;
 	//TODO:计时装置设置示例 1 cz
 	private CircleProgress tomatoClockProgress,circleProgress2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.d("TEST", "onCreate: A");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_timing);
 
@@ -123,35 +115,28 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockProgress.setProgress(GeneralSetting.getTomatoClockTime(this) * 60);
 		tomatoClockProgress.setDrawingCacheBackgroundColor(backgroundCollection.getTodayColor());
 
-		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
-
-
 		//初始化Toolbar
 		toolbar = findViewById(R.id.setting_toolbar);
 		setSupportActionBar(toolbar);
 		mDrawerLayout = findViewById(R.id.activity_main_drawer_layout);
 		ActionBar actionBar = getSupportActionBar();
-		toolbar.setBackgroundColor(backgroundCollection.getTodayColor());
-		toolbar.setAlpha(0.5f);
+		toolbar.setBackgroundColor(backgroundCollection.getTodayColor() + 0x80000000);
 
 		if(actionBar!=null){
 			actionBar.setDisplayHomeAsUpEnabled(true);  //显示导航按钮
 //			actionBar.setHomeAsUpIndicator(R.drawable.category_white_31);  //设置导航按钮图标
 		}
-		Log.d("TEST", "onCreate: C");
 
 		//初始化设置界面具体内容
 		switchClockStatus = findViewById(R.id.switch_if_tomato_clock_on);
 		switchMusicStatus = findViewById(R.id.switch_if_music_on);
-		textClockOn = findViewById(R.id.text_clock_on);
 		btnChangeMusic = findViewById(R.id.bt_change_music);
-		spinnerChooseTime = findViewById(R.id.task_timing_spinner_choose_time);
-		spinnerChooseBreakTime = findViewById(R.id.task_timing_spinner_choose_break_time);
+		textClockTime = findViewById(R.id.text_choose_time);
 		clockTimeLayout = findViewById(R.id.task_timing_clock_set_time);
+		textBreakClockTime = findViewById(R.id.text_choose_break_time);
 		breakClockTimeLayout = findViewById(R.id.task_timing_break_clock_set_time);
 		btnCleanShareStorage = findViewById(R.id.activity_task_timing_clean_share_storage);
 
-		Log.d("TEST", "onCreate: D");
 
 		//初始化计时主要界面的内容
 		taskTimeCount = findViewById(R.id.time_action);
@@ -167,45 +152,70 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		layoutMain.setBackgroundResource(backgroundCollection.getTodayBackground());
 		layoutSetting.setBackgroundColor(backgroundCollection.getTodayColor());
 
-		Log.d("TEST", "onCreate: E");
 
 		//设置设置界面相关监听器
 		switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
 		switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
 		switchClockStatus.setOnCheckedChangeListener(this);
 		switchMusicStatus.setOnCheckedChangeListener(this);
-		spinnerChooseTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		clockTimeLayout.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				tomatoClockTimeLength = (String)spinnerChooseTime.getSelectedItem();
-				int chosenTime = Integer.parseInt(tomatoClockTimeLength.substring(0, tomatoClockTimeLength.length() - 2));
-				GeneralSetting.setTomatoClockTime(TaskTimingActivity.this, chosenTime);
-				initStartTomatoClock();
+			public void onClick(View v) {
+				android.support.v7.app.AlertDialog dialog;
+				final String[] itemToSelect = {"20分钟", "30分钟", "40分钟", "50分钟"};
+				android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(TaskTimingActivity.this);
+				builder.setTitle("时长");
+				builder.setItems(itemToSelect, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						GeneralSetting.setTomatoClockTime(TaskTimingActivity.this, which * 10 + 20);
+						refreshSetting();
+						if(!taskStatuePaused){
+							initStartTomatoClock();
+						}
+						dialog.dismiss();
+					}
+				});
+				builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				dialog = builder.create();
+				dialog.show();
 			}
-
+		});breakClockTimeLayout.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-			}
-		});
-		spinnerChooseBreakTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				tomatoBreakClockTimeLength = (String)spinnerChooseBreakTime.getSelectedItem();
-				int chosenTime = Integer.parseInt(tomatoBreakClockTimeLength.substring(0, tomatoBreakClockTimeLength.length() - 2));
-				GeneralSetting.setTomatoBreakTime(TaskTimingActivity.this, chosenTime);
-				if(taskStatuePaused){
-					initStartTomatoClockBreak();
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
+			public void onClick(View v) {
+				android.support.v7.app.AlertDialog dialog;
+				final String[] itemToSelect = {"5分钟", "10分钟", "15分钟", "20分钟"};
+				android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(TaskTimingActivity.this);
+				builder.setTitle("休息时长");
+				builder.setItems(itemToSelect, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						GeneralSetting.setTomatoBreakTime(TaskTimingActivity.this, which * 5 + 5);
+						refreshSetting();
+						if(taskStatuePaused){
+							initStartTomatoClockBreak();
+						}
+						dialog.dismiss();
+					}
+				});
+				builder.setPositiveButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				dialog = builder.create();
+				dialog.show();
 			}
 		});
 		btnChangeMusic.setOnClickListener(this);
 		btnCleanShareStorage.setOnClickListener(this);
 
-		Log.d("TEST", "onCreate: F");
 
 		//设置计时控制部分所有涉及到的有关的监听器
 		btnTaskFinished.setOnClickListener(this);
@@ -215,7 +225,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//初始化设置表现
 		refreshSetting();
 
-		Log.d("TEST", "onCreate: G");
 
 		//取得开始任务时传来的任务详细信息
 		final Intent intentTaskInfo = getIntent();
@@ -391,6 +400,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				havingTaskOngoing = false;
 				saveFinishStatue = SaveStatue.QUIT;
 				breakCount--;
+				finish();
 				break;
 
 			case R.id.pause_button:
@@ -484,6 +494,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				musicController.stop();
 				showDropActivity();
 				havingTaskOngoing = false;
+				saveFinishStatue = SaveStatue.QUIT;
+				breakCount--;
+				finish();
 			}
 		})
 			.setNegativeButton("继续任务", new DialogInterface.OnClickListener() {
@@ -702,8 +715,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			clockTimeLayout.setVisibility(View.GONE);
 			breakClockTimeLayout.setVisibility(View.GONE);
 		}
-		spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
-		spinnerChooseBreakTime.setSelection(Math.max((GeneralSetting.getTomatoBreakTime(this)/5 - 1), 0));
+		textClockTime.setText(GeneralSetting.getTomatoClockTime(this) + "分钟");
+		textBreakClockTime.setText(GeneralSetting.getTomatoBreakTime(this) + "分钟");
 	}
 
 	private void saveTaskFinishToDB(final int statue){
