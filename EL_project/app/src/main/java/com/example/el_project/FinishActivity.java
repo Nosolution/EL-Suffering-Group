@@ -44,32 +44,20 @@ import java.util.List;
 
 public class FinishActivity extends AppCompatActivity {
 	private TextView tvScores;  // 用于显示专注度的分数，格式：“__分”
-	private TextView tvSingleTaskConsumeTime;  // 单个任务的耗时，格式：“本次任务共耗时 __ 分钟”
-	private TextView tvSingleTaskConcentrateTime;  // 单个任务的专注时间，格式：“专注 __ 分钟”
-	private TextView tvTodayConcentrateTime;  // 一周的专注时间，格式：“本周已专注 __ 分钟”
-	private Button buttonReturnMain;  // 返回主界面按钮
-	private Button buttonNextTask;  // 开始下一项任务的按钮
-	private Button buttonShare;     //分享按钮
-	private String strScores;
-	private String strSingleTaskConsumeTime;
-	private String strSingleTaskConcentrateTime;
-	private String strTodayConcentrateTime;
-	private SpannableStringBuilder ssbScores;
-	private SpannableStringBuilder ssbSingleTaskConsumeTime;
-	private SpannableStringBuilder ssbSingleTaskConcentrateTime;
-	private SpannableStringBuilder ssbTodayConcentrateTime;
-	int intScores = 96;  // 传入数据
-	int intSingleTaskConsumeTime = 120;
-	int intSingleTaskConcentrateTime = 80;
-	int intTodayConcentrateTime = 400;
-	int intStart;  // 字符串索引
-	int intEnd;
+	private TextView tvTaskConsumedTime;  // 单个任务的耗时，格式：“本次任务共耗时 __ 分钟”
+	private TextView tvTaskConcentrateTime;  // 单个任务的专注时间，格式：“专注 __ 分钟”
+	private TextView tvTodayConcentrateTime;  // 今日的专注时间，格式：“今日已专注 __ 分钟”
+	private Button btReturnMain;  // 返回主界面按钮
+	private Button btNextTask;  // 开始下一项任务的按钮
+	private Button btShare;     //分享按钮
+	private int scores = 98;  // 传入数据
 
 	private int taskTotalTimeUsed;         //任务总计完成时间
 	private int taskTimeUsed;              //任务有效完成时间
 	private int timeUsedToday;             //今日用于完成任务的时间
 	private int breakCount;                //任务执行时切出次数
 	private int[] taskTimeUsedWeek;        //本周任务每日总计的有效时间
+	private int[] taskTimeTotallyUsedWeek;  //本周任务每日总时间
 
 	private Tencent mTencent;
 	private MyIUiListener myIUiListener;
@@ -83,57 +71,33 @@ public class FinishActivity extends AppCompatActivity {
 
 		BarChart barChart=findViewById(R.id.data_bar_chart);
 		MyBarChartManager myBarChartManager=new MyBarChartManager(barChart);
-		tvScores = findViewById(R.id.tv_goal);
-		tvSingleTaskConsumeTime = findViewById(R.id.tv_single_task_consume_time);
-		tvSingleTaskConcentrateTime = findViewById(R.id.tv_single_task_concentrate_time);
-		tvTodayConcentrateTime = findViewById(R.id.tv_week_concentrate_time);
-		buttonReturnMain = findViewById(R.id.button_return_main);
-		buttonNextTask = findViewById(R.id.button_next_task);
-		buttonShare = findViewById(R.id.button_share_to_qzone);
+		tvScores = findViewById(R.id.tv_scores);
+		tvTaskConsumedTime = findViewById(R.id.tv_task_consumed_time);
+		tvTaskConcentrateTime = findViewById(R.id.tv_task_concentrate_time);
+		tvTodayConcentrateTime = findViewById(R.id.tv_today_concentrate_time);
+		btReturnMain = findViewById(R.id.button_return_main);
+		btNextTask = findViewById(R.id.button_next_task);
+		btShare = findViewById(R.id.button_share_to_qzone);
 		LinearLayout layoutMain = findViewById(R.id.activity_finish_layout);
 
 		BackgroundCollection backgroundCollection = new BackgroundCollection();
 		layoutMain.setBackgroundResource(backgroundCollection.getTodayBackground());
+
 		//得到任务完成信息和本周每日工作学习时长（有效，总未记录）
 		getTaskFinishInfo();
+		//处理数据
+		scores =MyAlgorithm.calcScores(taskTotalTimeUsed,taskTimeUsed,breakCount);
+		taskTotalTimeUsed+=30;taskTotalTimeUsed/=60;
+		taskTimeUsed+=30;taskTimeUsed/=60;
+		timeUsedToday+=30;timeUsedToday/=60;
+		for(int i=0;i<7;i++)
+			taskTimeUsedWeek[i]=(taskTimeUsedWeek[i]+30)/60;
 
 		// 设置TextView的显示格式
-		intScores=MyAlgorithm.calcScores(taskTotalTimeUsed,taskTimeUsed,breakCount);
-		strScores = intScores + "分";
-		intSingleTaskConsumeTime=taskTotalTimeUsed/60;
-		intSingleTaskConcentrateTime=taskTimeUsed/60;
-		intTodayConcentrateTime=timeUsedToday;
-		strSingleTaskConsumeTime = "本次任务共耗时 " + intSingleTaskConsumeTime + " 分钟";
-		strSingleTaskConcentrateTime = "专注 " + intSingleTaskConcentrateTime + " 分钟";
-		strTodayConcentrateTime = "今日已专注 " + intTodayConcentrateTime + " 分钟";
-
-		// 设置各个TextView显示的值
-		ssbScores = new SpannableStringBuilder(strScores);
-		intStart = strScores.indexOf(String.valueOf(intScores));
-		intEnd = intStart + String.valueOf(intScores).length();
-		ssbScores.setSpan(new RelativeSizeSpan(2.8f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		tvScores.setText(ssbScores);
-
-		ssbSingleTaskConsumeTime = new SpannableStringBuilder(strSingleTaskConsumeTime);
-		intStart = strSingleTaskConsumeTime.indexOf(String.valueOf(intSingleTaskConsumeTime));
-		intEnd = intStart + String.valueOf(intSingleTaskConsumeTime).length();
-		ssbSingleTaskConsumeTime.setSpan(new RelativeSizeSpan(1.4f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		ssbSingleTaskConsumeTime.setSpan(new StyleSpan(Typeface.BOLD), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		tvSingleTaskConsumeTime.setText(ssbSingleTaskConsumeTime);
-
-		ssbSingleTaskConcentrateTime = new SpannableStringBuilder(strSingleTaskConcentrateTime);
-		intStart = strSingleTaskConcentrateTime.indexOf(String.valueOf(intSingleTaskConcentrateTime));
-		intEnd = intStart + String.valueOf(intSingleTaskConcentrateTime).length();
-		ssbSingleTaskConcentrateTime.setSpan(new RelativeSizeSpan(1.4f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		ssbSingleTaskConcentrateTime.setSpan(new StyleSpan(Typeface.BOLD), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		tvSingleTaskConcentrateTime.setText(ssbSingleTaskConcentrateTime);
-
-		ssbTodayConcentrateTime = new SpannableStringBuilder(strTodayConcentrateTime);
-		intStart = strTodayConcentrateTime.indexOf(String.valueOf(intTodayConcentrateTime));
-		intEnd = intStart + String.valueOf(intTodayConcentrateTime).length();
-		ssbTodayConcentrateTime.setSpan(new RelativeSizeSpan(1.4f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		ssbTodayConcentrateTime.setSpan(new StyleSpan(Typeface.BOLD), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		tvTodayConcentrateTime.setText(ssbTodayConcentrateTime);
+		setFormattedString(scores, scores +"分",2.8f,false,tvScores);
+		setFormattedString(taskTotalTimeUsed,"本次任务共耗时 " + taskTotalTimeUsed + " 分钟",1.4f,true,tvTaskConsumedTime);
+		setFormattedString(taskTimeUsed,"专注"+taskTimeUsed+"分钟",1.4f,true,tvTaskConcentrateTime);
+		setFormattedString(timeUsedToday,"今日共专注"+timeUsedToday+"分钟",1.4f,true,tvTodayConcentrateTime);
 
 		Log.d("TEST", "onCreate: FinishActivity");
 
@@ -143,14 +107,15 @@ public class FinishActivity extends AppCompatActivity {
 			xValues.add((float) i);
 		}
 
-		//设置y轴的数据()
+		//设置y轴的数据
 		List<List<Float>> yValues = new ArrayList<>();
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 2; i++) {
 			List<Float> yValue = new ArrayList<>();
 			for (int j = 0; j <= 6; j++) {
-				yValue.add((float) (Math.random() * 240));
+				yValue.add((float) taskTimeUsedWeek[j]);
 			}
 			yValues.add(yValue);
+			break;
 		}
 
 		//颜色集合
@@ -160,23 +125,20 @@ public class FinishActivity extends AppCompatActivity {
 		colors.add(Color.RED);
 		colors.add(Color.CYAN);
 
-		myBarChartManager.showBarChart(xValues,yValues.get(0),"数据一",colors.get(3));
-
-
-
+		myBarChartManager.showBarChart(xValues,yValues.get(0),"每日专注时间",colors.get(3));
 
 		for(int i = 0; i < 7; i++){
 			Log.d("TEST", "onCreate: " + taskTimeUsedWeek[i]);
 		}
 
-		buttonReturnMain.setOnClickListener(new View.OnClickListener() {
+		btReturnMain.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(FinishActivity.this, MainActivity.class);
 				startActivity(intent);
 			}
 		});
-		buttonShare.setOnClickListener(new View.OnClickListener() {
+		btShare.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				shareToQQ(FinishActivity.this);
@@ -188,6 +150,16 @@ public class FinishActivity extends AppCompatActivity {
 		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
 		myIUiListener = new MyIUiListener();
 
+	}
+
+	private void setFormattedString(int data, String srcString, float size, boolean hasStyle, TextView tv){
+		String dataString=String.valueOf(data);
+		int startIndex=srcString.indexOf(dataString);
+		int endIndex=startIndex+dataString.length();
+		SpannableStringBuilder ssb=new SpannableStringBuilder(srcString);
+		ssb.setSpan(new RelativeSizeSpan(size),startIndex,endIndex,Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+		if(hasStyle) ssb.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+		tv.setText(ssb);
 	}
 
 	@Override
@@ -252,7 +224,7 @@ public class FinishActivity extends AppCompatActivity {
 		paint.setTextSize(392);
 		paint.setTextAlign(Paint.Align.CENTER);
 		paint.setAlpha(255);
-		canvas.drawText(Integer.toString(intScores), width / 2, height / 4, paint);
+		canvas.drawText(Integer.toString(scores), width / 2, height / 4, paint);
 
 		//绘制此次有效时长
 		paint.setTextSize(192);

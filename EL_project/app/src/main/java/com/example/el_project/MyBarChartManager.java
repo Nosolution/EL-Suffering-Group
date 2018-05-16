@@ -11,7 +11,10 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,7 @@ public class MyBarChartManager {
     private YAxis leftAxis;
     private YAxis rightAxis;
     private XAxis xAxis;
-    private String[] values={"周日","周一","周二","周三","周四","周五","周六"};
+    private String[] values={"周一","周二","周三","周四","周五","周六","周日"};
 
     public MyBarChartManager(BarChart barChart) {
         this.mBarChart = barChart;
@@ -59,13 +62,16 @@ public class MyBarChartManager {
 
         //折线图例 标签 设置
         Legend legend = mBarChart.getLegend();
-        legend.setForm(Legend.LegendForm.LINE);
+        legend.setForm(Legend.LegendForm.SQUARE);
         legend.setTextSize(11f);
         //显示位置
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
+        legend.setTextColor(Color.WHITE);
+        setDescription("",Color.WHITE);
+
 
         MyXFormatter myXFormatter=new MyXFormatter(values);//为X轴装载字符串
         //XY轴的设置
@@ -77,7 +83,8 @@ public class MyBarChartManager {
         //保证Y轴从0开始，不然会上移一点
         leftAxis.setAxisMinimum(0f);
         rightAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(240f);//注意，设定最大值
+        leftAxis.setSpaceTop(15f);
+//        leftAxis.setAxisMaximum(240f);//注意，设定最大值
         leftAxis.setTextSize(10f);
         leftAxis.setTextColor(Color.WHITE);
         leftAxis.setLabelCount(9,false);
@@ -93,13 +100,22 @@ public class MyBarChartManager {
      */
     public void showBarChart(List<Float> xAxisValues, List<Float> yAxisValues, String label, int color) {
         initLineChart();
+        float max=0;
+        for(float item:yAxisValues)
+            max=item>max? item:max;
         ArrayList<BarEntry> entries = new ArrayList<>();
         for (int i = 0; i < xAxisValues.size(); i++) {
             entries.add(new BarEntry(xAxisValues.get(i), yAxisValues.get(i)));
         }
         // 每一个BarDataSet代表一类柱状图
         BarDataSet barDataSet = new BarDataSet(entries, label);
-
+        //将显示的数据转化为整数
+        barDataSet.setValueFormatter(new IValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+                return (int)value+"";
+            }
+        });
         barDataSet.setColor(color);
         barDataSet.setValueTextSize(9f);
         barDataSet.setValueTextColor(Color.WHITE);
@@ -233,9 +249,10 @@ public class MyBarChartManager {
      *
      * @param str
      */
-    public void setDescription(String str) {
+    public void setDescription(String str,int color) {
         Description description = new Description();
         description.setText(str);
+        description.setTextColor(color);
         mBarChart.setDescription(description);
         mBarChart.invalidate();
     }
