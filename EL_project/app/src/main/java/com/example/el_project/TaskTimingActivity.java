@@ -19,7 +19,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.opengl.Visibility;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
@@ -34,17 +33,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import com.tencent.tauth.Tencent;
 
 public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 	private DrawerLayout mDrawerLayout;
@@ -73,6 +68,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private Handler taskTimeRefreshHandler;
 	private Handler taskTotalTimeRefreshHandler;
 	private TextView timeLeft;
+	private TextView textBelowTimeLeft;
+	private TextView textLeftToTimeLeft;
+	private boolean isQuickTask = false;             //是否为快速任务，即无预计时间的任务
 	private MusicController musicController;
 	private CountDownTimer tomatoClockCountDown;   //番茄钟倒计时
 	private CountDownTimer tomatoClockBreakCountDown;//番茄钟休息倒计时
@@ -141,6 +139,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//初始化计时主要界面的内容
 		taskTimeCount = findViewById(R.id.time_action);
 		timeLeft = findViewById(R.id.time_left_to_finish);
+		textBelowTimeLeft = findViewById(R.id.text_below_time_left);
+		textLeftToTimeLeft = findViewById(R.id.text_left_to_time_left);
 		remarkText = findViewById(R.id.edit_remark);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_task_timing_drawer_layout);
 //		tomatoClockCountDownTime = findViewById(R.id.tomato_text);
@@ -239,6 +239,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//初始化显示的Task各项信息
 		toolbar.setTitle(taskName);                                        //设置toolbar标题显示任务名
 		remarkText.setText(taskComments);                                  //设置备注显示
+        RelativeLayout leftTimeLayout = findViewById(R.id.layout_left_time_to_finish);
+        if (taskMillisRequired <= 0){
+            isQuickTask = true;
+            textLeftToTimeLeft.setText("总计");
+            textBelowTimeLeft.setText("花费时间");
+        }
 
 		//向数据库存储本次信息
 		startTime = MyDatabaseOperation.addFinishTaskWithStartTime(this, taskName);
@@ -254,6 +260,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		};
 		registerReceiver(screenOffReceiver, filter);
 
+		//刷新任务有效时间和任务总计时间
 		taskTimeRefreshHandler = new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -288,6 +295,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			@Override
 			public void onTick(long millisGoneThrough) {
 				taskTotalTimeRefreshHandler.sendEmptyMessage((int)(millisGoneThrough/1000));
+				if(isQuickTask){
+					timeLeft.setText(millis2HourMinSecString(millisGoneThrough, 2));
+				}
 			}
 		};
 		totalTimer.start();
@@ -512,7 +522,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	}
 
 
-
 	@Override //保存实体状态，在内存被回收时也可恢复
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
@@ -600,7 +609,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			public void onTick(long millisGoneThrough) {
 				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
 				taskTimeRefreshHandler.sendEmptyMessage((int)(millisGoneThrough/1000));
-				timeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough + 60000), 0), 2));
+				if(!isQuickTask) {
+					timeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough + 60000), 0), 2));
+				}
 			}
 		};
 	}
@@ -614,13 +625,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockCountDown = new CountDownTimer(GeneralSetting.getTomatoClockTime(this) * 60000, 1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-//				tomatoClockCountDownTime.setText("据下次休息还有" + millis2HourMinSecString(millisUntilFinished));
 				tomatoClockProgress.setProgress((int)(millisUntilFinished / 1000));
 			}
 
 			@Override
 			public void onFinish() {
-//				tomatoClockCountDownTime.setText("番茄钟计时到，按下暂停键休息一会吧");
 				sendNotification("番茄钟计时到", "工作很久了，休息一下吧");
 			}
 		};
@@ -635,13 +644,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 200) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-//				tomatoClockCountDownTime.setText("据休息结束还有" + millis2HourMinSecString(millisUntilFinished));
 				tomatoClockProgress.setProgress((int)(millisUntilFinished / 1000));
 			}
 
 			@Override
 			public void onFinish() {
-//				tomatoClockCountDownTime.setText("番茄钟计时到，按下恢复键继续工作学习吧");
 				sendNotification("番茄钟计时到", "休息有一会了，可以工作了吧");
 			}
 		};

@@ -391,9 +391,9 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void decideButtonEnable(){//检测文件名是否为空和Spinner选择的时间是否为0
-        boolean flag1=taskNameEditText.getText().toString().length()>0;
-        boolean flag2=!hour.equals("00")||!minute.equals("00");
-        if(flag1&&flag2){
+        boolean flag1 = taskNameEditText.getText().toString().length()>0;
+        boolean flag2 = (!hour.equals("00")||!minute.equals("00"));
+        if(flag1){
             finishEditing.setEnabled(true);
             startNow.setEnabled(true);
         }
