@@ -17,7 +17,7 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical">
 			<TextView
-				android:id="@+id/tv_goal"
+				android:id="@+id/tv_scores"
 				android:layout_width="130dp"
 				android:layout_height="130dp"
 				android:layout_gravity="center"
@@ -28,7 +28,7 @@
 				android:textColor="@color/background"/>
 
 			<TextView
-				android:id="@+id/tv_single_task_consume_time"
+				android:id="@+id/tv_task_consumed_time"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center"
@@ -37,7 +37,7 @@
 				android:textColor="@color/background"/>
 
 			<TextView
-				android:id="@+id/tv_single_task_concentrate_time"
+				android:id="@+id/tv_task_concentrate_time"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center"
@@ -46,7 +46,7 @@
 				android:textColor="@color/background"/>
 
 			<TextView
-				android:id="@+id/tv_week_concentrate_time"
+				android:id="@+id/tv_today_concentrate_time"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center"

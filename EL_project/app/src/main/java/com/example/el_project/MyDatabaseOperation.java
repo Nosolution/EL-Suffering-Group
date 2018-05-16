@@ -138,8 +138,14 @@ public class MyDatabaseOperation {
         SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
         if(cursor.moveToFirst()){
-            String deadLine=cursor.getString(cursor.getColumnIndex("deadline")).split(" ")[0];
+            if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==1)
+                return "";
+
+            String deadLine=cursor.getString(cursor.getColumnIndex("deadline"));
             cursor.close();
+            if(deadLine==null||deadLine=="")
+                return "";
+            
             String currentDate=formatDate.format(calendar.getTime());
             try {
                 int diff = calcDateDifference(currentDate, deadLine);
@@ -266,9 +272,6 @@ public class MyDatabaseOperation {
     //得到一周内每日学习工作时间，从周一开始
     public static int[] getWeekPerDayTimeUsed(Context context, int weekCount){
         int[] timesWeek = new int[7];
-        for (int time: timesWeek) {
-            time = 0;
-        }
 
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
         SQLiteDatabase db = dbHelper.getReadableDatabase();

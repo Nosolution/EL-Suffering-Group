@@ -25,7 +25,7 @@ public class MyBarChartManager {
     private YAxis leftAxis;
     private YAxis rightAxis;
     private XAxis xAxis;
-    private String[] values={"周日","周一","周二","周三","周四","周五","周六"};
+    private String[] values={"周一","周二","周三","周四","周五","周六","周日"};
 
     public MyBarChartManager(BarChart barChart) {
         this.mBarChart = barChart;
