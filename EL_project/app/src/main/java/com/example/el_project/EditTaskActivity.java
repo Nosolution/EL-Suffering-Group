@@ -362,6 +362,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             ad.selectDrawable(0);//回到第一帧并暂停
             ad.stop();
         }
+        selectedImageViewPosition=0;
         swc.setChecked(false);
         commentEditText.setText("");
     }
