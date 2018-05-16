@@ -102,7 +102,7 @@ public class FinishActivity extends AppCompatActivity {
 		strScores = intScores + "分";
 		intSingleTaskConsumeTime=taskTotalTimeUsed/60;
 		intSingleTaskConcentrateTime=taskTimeUsed/60;
-		intTodayConcentrateTime=timeUsedToday;
+		intTodayConcentrateTime=timeUsedToday/60;
 		strSingleTaskConsumeTime = "本次任务共耗时 " + intSingleTaskConsumeTime + " 分钟";
 		strSingleTaskConcentrateTime = "专注 " + intSingleTaskConcentrateTime + " 分钟";
 		strTodayConcentrateTime = "今日已专注 " + intTodayConcentrateTime + " 分钟";
