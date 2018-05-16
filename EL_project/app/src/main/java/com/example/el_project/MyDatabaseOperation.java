@@ -145,7 +145,7 @@ public class MyDatabaseOperation {
             cursor.close();
             if(deadLine==null||deadLine=="")
                 return "";
-            
+
             String currentDate=formatDate.format(calendar.getTime());
             try {
                 int diff = calcDateDifference(currentDate, deadLine);
