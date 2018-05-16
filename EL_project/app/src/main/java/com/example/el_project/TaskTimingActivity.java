@@ -125,7 +125,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
 
-		Log.d("TEST", "onCreate: B");
 
 		//初始化Toolbar
 		toolbar = findViewById(R.id.setting_toolbar);
@@ -235,8 +234,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//向数据库存储本次信息
 		startTime = MyDatabaseOperation.addFinishTaskWithStartTime(this, taskName);
 
-		Log.d("TEST", "onCreate: H");
-
 		//设置系统熄屏的广播接收
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -263,8 +260,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			}
 		};
 
-		Log.d("TEST", "onCreate: I");
-
 		//初始化然后启动正向计时
 		initCountTimer();
 		//从被回收内存恢复，但感觉问题还是挺大
@@ -279,8 +274,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		else {
 			timer.start();
 		}
-
-		Log.d("TEST", "onCreate: J");
 
 		totalTimer = new CountTimer(1000) {
 			@Override
@@ -298,8 +291,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			musicController.start();
 		}
 
-		Log.d("TEST", "onCreate: K");
-
 		//更新是否启用番茄钟动画
 		refreshTomatoClockVisible();
 
@@ -308,7 +299,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if(GeneralSetting.getTomatoClockEnable(this)){
 			initStartTomatoClock();
 		}
-		Log.d("TEST", "onCreate: L");
 
 	}
 

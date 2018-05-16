@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -316,85 +318,19 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
-    //初始化任务列表
-//    private void initTasks() {
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
-//                mTaskList.add(task);
-//                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
-//                        cursor.getString(cursor.getColumnIndex("task")),
-//                        cursor.getString(cursor.getColumnIndex("assumedtime")),
-//                        cursor.getString(cursor.getColumnIndex("deadline")),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-//                        cursor.getString(cursor.getColumnIndex("comments"))};
-//                taskList.add(tempstring);
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//    }
-
-    //更新recyclerview
-//    private void updateTasks() {
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
-//        if (cursor.moveToPosition(mTaskList.size())) {
-//            do {
-//                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
-//                adapter.addItem(task);
-//                Toast.makeText(this, "Succeeded to update", Toast.LENGTH_SHORT).show();
-//                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
-//                        cursor.getString(cursor.getColumnIndex("task")),
-//                        cursor.getString(cursor.getColumnIndex("assumedtime")),
-//                        cursor.getString(cursor.getColumnIndex("deadline")),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-//                        cursor.getString(cursor.getColumnIndex("comments"))};
-//                taskList.add(tempstring);
-//            } while (cursor.moveToNext());
-//        } else {
-//            Toast.makeText(this, "Failed to update", Toast.LENGTH_SHORT).show();
-//        }
-//        cursor.close();
-//    }
-//
-//    private void modifyTask(String taskId){
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        Cursor cursor = db.query("Tasklist",null,"id="+taskId,null,null,null,null);
-//        if(cursor.moveToFirst()) {
-//            for (int i = 0; i < taskList.size(); i++) {
-//                if (taskId.equals(taskList.get(i)[0])) {
-//                    Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), mTaskList.get(i).getBackgroundId(), mTaskList.get(i).getSelectedBackgroundId());
-//                    adapter.modifyItem(i, task);
-//                    String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
-//                            cursor.getString(cursor.getColumnIndex("task")),
-//                            cursor.getString(cursor.getColumnIndex("assumedtime")),
-//                            cursor.getString(cursor.getColumnIndex("deadline")),
-//                            String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
-//                            String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-//                            cursor.getString(cursor.getColumnIndex("comments"))};
-//                    taskList.set(i, tempstring);
-//                    break;
-//                }
-//            }
-//        }
-//        cursor.close();
-//    }
-
     private void refreshTask(){
         mTaskList.clear();
         taskList.clear();
-        MyDatabaseOperation.refreshAllDailyTask(MainActivity.this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
+            int id;
             do {
                 if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==2)
                     continue;
-                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")), colors[mTaskList.size() % 5],checkedColors[mTaskList.size()%5]);
+                id=cursor.getInt(cursor.getColumnIndex("id"));
+                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")),
+                        MyDatabaseOperation.getTaskRestDays(MainActivity.this,id),R.drawable.task_bar,R.drawable.taskbar_chosen);
                 mTaskList.add(task);
                 String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
                         cursor.getString(cursor.getColumnIndex("task")),
@@ -497,9 +433,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.switch_if_music_on:
                 if(compoundButton.isChecked()) {
                     GeneralSetting.setMusicOn(MainActivity.this, true);
+                    btChangeMusic.setVisibility(View.VISIBLE);
                 }
                 else {
                     GeneralSetting.setMusicOn(MainActivity.this, false);
+                    btChangeMusic.setVisibility(View.GONE);
                 }
                 break;
             case R.id.switch_if_tomato_clock_on:
@@ -527,6 +465,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
         spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
         spinnerBreakClock.setSelection(Math.max((GeneralSetting.getTomatoBreakTime(this)/5 - 1), 0));
+
+
+	    if(GeneralSetting.getMusicOn(this)){
+		    btChangeMusic.setVisibility(View.VISIBLE);
+	    }
     }
 
 

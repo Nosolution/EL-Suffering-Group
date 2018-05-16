@@ -2,12 +2,14 @@ package com.example.el_project;
 
 public class Task {
 	private String name;
+	private String remark;
 	private int backgroundId;
 	private int selectedBackgroundId;
 	private int defaultBackground;
 
-	public Task(String name,int backgroundId,int checkedbackgroundId){
+	public Task(String name,String remark,int backgroundId,int checkedbackgroundId){
 		this.name=name;
+		this.remark=remark;
 		this.backgroundId=backgroundId;
 		this.selectedBackgroundId =checkedbackgroundId;
 		this.defaultBackground=backgroundId;
@@ -16,6 +18,8 @@ public class Task {
 	public String getName(){
 		return name;
 	}
+
+	public String getRemark(){return remark;}
 
 	public void setName(String name){this.name=name;}
 

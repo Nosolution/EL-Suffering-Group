@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.net.SocketImpl;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -120,12 +121,61 @@ public class MyDatabaseOperation {
         if(cursor.moveToFirst()){
            do{
                 if(cursor.getInt(cursor.getColumnIndex("last_finished_date"))!=Integer.parseInt(formatDate.format(calendar.getTime()))){
-                    idList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("id"))));
+//                    idList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("id"))));
+                    db.update("Tasklist",values,"id=?",new String[]{cursor.getString(cursor.getColumnIndex("id"))});
                 }
            }while(cursor.moveToNext());
         }
         cursor.close();
-        db.update("Tasklist",values,"id=?",idList.toArray(new String[idList.size()]));
+//        if(!idList.isEmpty())
+//            db.update("Tasklist",values,"id=?",(String[])idList.toArray(new String[idList.size()]));
+    }
+
+    public static String getTaskRestDays(Context context,int id){
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Calendar calendar = new GregorianCalendar();
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
+        if(cursor.moveToFirst()){
+            String deadLine=cursor.getString(cursor.getColumnIndex("deadline")).split(" ")[0];
+            cursor.close();
+            String currentDate=formatDate.format(calendar.getTime());
+            try {
+                int diff = calcDateDifference(currentDate, deadLine);
+                if(diff>0&&diff<=3){
+                    switch (diff){
+                        case 1:
+                            return "1天";
+                        case 2:
+                            return "2天";
+                        case 3:
+                            return "3天";
+                    }
+                }
+                else if(diff>3){
+                    return deadLine.substring(5);
+                }
+                else
+                    return "";
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+        return "";
+    }
+
+    public static int calcDateDifference(String date1,String date2)throws ParseException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sdf.parse(date1));
+        long time1 = cal.getTimeInMillis();
+        cal.setTime(sdf.parse(date2));
+        long time2 = cal.getTimeInMillis();
+        if(time2<=time1)
+            return -1;
+        long between_days=(time2-time1)/(1000*3600*24);
+        return Integer.parseInt(String.valueOf(between_days));
     }
 
 
