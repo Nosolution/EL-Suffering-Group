@@ -100,6 +100,8 @@ public class FinishActivity extends AppCompatActivity {
 		// 设置TextView的显示格式
 		intScores=MyAlgorithm.calcScores(taskTotalTimeUsed,taskTimeUsed,breakCount);
 		strScores = intScores + "分";
+		intSingleTaskConsumeTime=taskTotalTimeUsed/60;
+		intSingleTaskConcentrateTime=taskTimeUsed/60;
 		strSingleTaskConsumeTime = "本次任务共耗时 " + intSingleTaskConsumeTime + " 分钟";
 		strSingleTaskConcentrateTime = "专注 " + intSingleTaskConcentrateTime + " 分钟";
 		strWeekConcentrateTime = "本周已专注 " +intWeekConcentrateTime + " 分钟";
