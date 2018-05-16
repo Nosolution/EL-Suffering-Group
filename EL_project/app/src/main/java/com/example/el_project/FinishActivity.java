@@ -162,6 +162,10 @@ public class FinishActivity extends AppCompatActivity {
 		//得到任务完成信息和本周每日工作学习时长（有效，总未记录）
 		getTaskFinishInfo();
 
+		for(int i = 0; i < 7; i++){
+			Log.d("TEST", "onCreate: " + taskTimeUsedWeek[i]);
+		}
+
 		buttonReturnMain.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -183,14 +187,21 @@ public class FinishActivity extends AppCompatActivity {
 
 	}
 
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
+
 	//获得任务完成信息
 	private void getTaskFinishInfo(){
 		Intent intent = getIntent();
 		taskTotalTimeUsed = intent.getIntExtra("task_total_time_used", 0);
 		taskTimeUsed = intent.getIntExtra("task_time_used", 0);
-		timeUsedToday = MyDatabaseOperation.getTotalTimeUsedToday(this);
+		timeUsedToday = MyDatabaseOperation.getTotalTimeUsedToday(this) + taskTimeUsed;
 		breakCount = intent.getIntExtra("break_count", 0);
-		taskTimeUsedWeek = MyDatabaseOperation.getThisWeekPerDayTimeUsed(this);
+		taskTimeUsedWeek = MyDatabaseOperation.getThisWeekPerDayTimeUsedWithCorrection(this, taskTimeUsed);
 	}
 
 	private void shareToQQ(Context context){

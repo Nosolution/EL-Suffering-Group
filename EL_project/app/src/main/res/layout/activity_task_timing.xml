@@ -312,14 +312,15 @@
 				android:id="@+id/task_timing_clock_set_time"
 				android:layout_width="match_parent"
 				android:layout_height="30dp"
-				android:orientation="horizontal">
+				android:orientation="horizontal"
+				android:focusable="true"
+				android:clickable="true">
 
 				<RelativeLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content">
 
 					<TextView
-						android:id="@+id/task_timing_text_clock_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginLeft="30dp"
@@ -328,12 +329,15 @@
 						android:textColor="@color/background"/>
 
 
-					<Spinner
-						android:id="@+id/task_timing_spinner_choose_time"
+					<TextView
+						android:id="@+id/text_choose_time"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
-						android:entries="@array/times"/>
+						android:layout_centerVertical="true"
+						android:layout_marginEnd="30dp"
+						android:text="时长"
+						android:textSize="14sp"/>
 
 
 				</RelativeLayout>
@@ -343,29 +347,32 @@
 				android:id="@+id/task_timing_break_clock_set_time"
 				android:layout_width="match_parent"
 				android:layout_height="30dp"
-				android:orientation="horizontal">
+				android:orientation="horizontal"
+				android:focusable="true"
+				android:clickable="true">
 
 				<RelativeLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content">
 
 					<TextView
-						android:id="@+id/task_timing_text_choose_break_time"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:layout_marginLeft="30dp"
-						android:text="@string/string_tomato_clock_on"
+						android:layout_marginStart="30dp"
+						android:text="@string/choose_break_time"
 						android:textSize="18sp"
 						android:textColor="@color/background"/>
 
 
-					<Spinner
-						android:id="@+id/task_timing_spinner_choose_break_time"
+					<TextView
+						android:id="@+id/text_choose_break_time"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
-						android:entries="@array/break_times"/>
-
+						android:layout_centerVertical="true"
+						android:layout_marginEnd="30dp"
+						android:text="时长"
+						android:textSize="14sp"/>
 
 				</RelativeLayout>
 			</LinearLayout>

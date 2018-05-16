@@ -290,6 +290,14 @@ public class MyDatabaseOperation {
         return getWeekPerDayTimeUsed(context, Integer.parseInt(format.format(calendar.getTime())));
     }
 
+    public static int[] getThisWeekPerDayTimeUsedWithCorrection(Context context, int correction){
+        Calendar calendar = new GregorianCalendar();
+        SimpleDateFormat format = new SimpleDateFormat("yyw", Locale.getDefault());
+        int[] result = getWeekPerDayTimeUsed(context, Integer.parseInt(format.format(calendar.getTime())));
+        result[getWeekNum() - 1] += correction;
+        return result;
+    }
+
     public static int getWeekNum(){
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat format = new SimpleDateFormat("EEE", Locale.getDefault());
