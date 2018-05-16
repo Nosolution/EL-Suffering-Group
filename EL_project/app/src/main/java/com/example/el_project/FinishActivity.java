@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -38,7 +37,6 @@ import com.tencent.tauth.Tencent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 /**
  * 我不确定完成界面的专注度的得分下面要显示什么，就把它们都放上去了
@@ -52,15 +50,15 @@ public class FinishActivity extends AppCompatActivity {
 	private Button buttonReturnMain;  // 返回主界面按钮
 	private Button buttonNextTask;  // 开始下一项任务的按钮
 	private Button buttonShare;     //分享按钮
-	private String strGoal;
+	private String strScores;
 	private String strSingleTaskConsumeTime;
 	private String strSingleTaskConcentrateTime;
 	private String strWeekConcentrateTime;
-	private SpannableStringBuilder ssbGoal;
+	private SpannableStringBuilder ssbScores;
 	private SpannableStringBuilder ssbSingleTaskConsumeTime;
 	private SpannableStringBuilder ssbSingleTaskConcentrateTime;
 	private SpannableStringBuilder ssbWeekConcentrateTime;
-	int intGoal = 96;  // 传入数据
+	int intScores = 96;  // 传入数据
 	int intSingleTaskConsumeTime = 120;
 	int intSingleTaskConcentrateTime = 80;
 	int intWeekConcentrateTime = 400;
@@ -96,19 +94,22 @@ public class FinishActivity extends AppCompatActivity {
 
 		BackgroundCollection backgroundCollection = new BackgroundCollection();
 		layoutMain.setBackgroundResource(backgroundCollection.getTodayBackground());
+		//得到任务完成信息和本周每日工作学习时长（有效，总未记录）
+		getTaskFinishInfo();
 
 		// 设置TextView的显示格式
-		strGoal = intGoal + "分";
+		intScores=MyAlgorithm.calcScores(taskTotalTimeUsed,taskTimeUsed,breakCount);
+		strScores = intScores + "分";
 		strSingleTaskConsumeTime = "本次任务共耗时 " + intSingleTaskConsumeTime + " 分钟";
 		strSingleTaskConcentrateTime = "专注 " + intSingleTaskConcentrateTime + " 分钟";
 		strWeekConcentrateTime = "本周已专注 " +intWeekConcentrateTime + " 分钟";
 
 		// 设置各个TextView显示的值
-		ssbGoal = new SpannableStringBuilder(strGoal);
-		intStart = strGoal.indexOf(String.valueOf(intGoal));
-		intEnd = intStart + String.valueOf(intGoal).length();
-		ssbGoal.setSpan(new RelativeSizeSpan(2.8f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		tvGoal.setText(ssbGoal);
+		ssbScores = new SpannableStringBuilder(strScores);
+		intStart = strScores.indexOf(String.valueOf(intScores));
+		intEnd = intStart + String.valueOf(intScores).length();
+		ssbScores.setSpan(new RelativeSizeSpan(2.8f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+		tvGoal.setText(ssbScores);
 
 		ssbSingleTaskConsumeTime = new SpannableStringBuilder(strSingleTaskConsumeTime);
 		intStart = strSingleTaskConsumeTime.indexOf(String.valueOf(intSingleTaskConsumeTime));
@@ -159,8 +160,7 @@ public class FinishActivity extends AppCompatActivity {
 		myBarChartManager.showBarChart(xValues,yValues.get(0),"数据一",colors.get(3));
 
 
-		//得到任务完成信息和本周每日工作学习时长（有效，总未记录）
-		getTaskFinishInfo();
+
 
 		buttonReturnMain.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -238,7 +238,7 @@ public class FinishActivity extends AppCompatActivity {
 		paint.setTextSize(392);
 		paint.setTextAlign(Paint.Align.CENTER);
 		paint.setAlpha(255);
-		canvas.drawText(Integer.toString(intGoal), width / 2, height / 4, paint);
+		canvas.drawText(Integer.toString(intScores), width / 2, height / 4, paint);
 
 		//绘制此次有效时长
 		paint.setTextSize(192);
