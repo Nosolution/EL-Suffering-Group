@@ -343,14 +343,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			case R.id.switch_if_tomato_clock_on:
 				if(compoundButton.isChecked()) {
 				    GeneralSetting.setTomatoClockEnable(TaskTimingActivity.this, true);
-				    refreshSetting();
 
 					//打开番茄钟
 					initStartTomatoClock();
 				}
 				else {
 				    GeneralSetting.setTomatoClockEnable(TaskTimingActivity.this, false);
-				    refreshSetting();
 
 					//关闭番茄钟
 					if (tomatoClockCountDown != null) {
@@ -365,6 +363,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				refreshTomatoClockVisible();
 				break;
 		}
+		refreshSetting();
 	}
 
 	@Override
@@ -690,6 +689,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		switchMusicStatus.setChecked(GeneralSetting.getMusicOn(this));
 		switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
 
+		if(GeneralSetting.getMusicOn(this)){
+		    btnChangeMusic.setVisibility(View.VISIBLE);
+        }else {
+		    btnChangeMusic.setVisibility(View.GONE);
+        }
 		//修改设置内显示番茄钟时长
 		if(GeneralSetting.getTomatoClockEnable(this)){
 			clockTimeLayout.setVisibility(View.VISIBLE);
