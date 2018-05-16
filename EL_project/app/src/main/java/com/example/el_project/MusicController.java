@@ -41,8 +41,8 @@ public class MusicController {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                randomSwitch();
                 Log.d("TEST", "onCompletion: MusicComplete");
+                randomSwitch();
             }
         });
     }
@@ -56,6 +56,13 @@ public class MusicController {
         musicPlaying = collection.getRandomMusicEx(musicPlaying);
         release();
         mediaPlayer = MediaPlayer.create(context, musicPlaying);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                Log.d("TEST", "onCompletion: MusicComplete");
+                randomSwitch();
+            }
+        });
         mediaPlayer.start();
     }
 

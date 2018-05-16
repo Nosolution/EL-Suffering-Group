@@ -308,6 +308,7 @@
 			</LinearLayout>
 
 			<LinearLayout
+				android:id="@+id/task_timing_clock_set_time"
 				android:layout_width="match_parent"
 				android:layout_height="30dp"
 				android:orientation="horizontal">
@@ -317,23 +318,52 @@
 					android:layout_height="wrap_content">
 
 					<TextView
-						android:id="@+id/text_clock_on"
+						android:id="@+id/task_timing_text_clock_on"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginLeft="30dp"
 						android:text="@string/string_tomato_clock_on"
 						android:textSize="18sp"
-						android:textColor="@color/background"
-						android:visibility="gone"/>
+						android:textColor="@color/background"/>
 
 
 					<Spinner
-						android:id="@+id/spinner_choose_time"
+						android:id="@+id/task_timing_spinner_choose_time"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
-						android:entries="@array/times"
-						android:visibility="gone"></Spinner>
+						android:entries="@array/times"/>
+
+
+				</RelativeLayout>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/task_timing_break_clock_set_time"
+				android:layout_width="match_parent"
+				android:layout_height="30dp"
+				android:orientation="horizontal">
+
+				<RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content">
+
+					<TextView
+						android:id="@+id/task_timing_text_choose_break_time"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginLeft="30dp"
+						android:text="@string/string_tomato_clock_on"
+						android:textSize="18sp"
+						android:textColor="@color/background"/>
+
+
+					<Spinner
+						android:id="@+id/task_timing_spinner_choose_break_time"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_alignParentEnd="true"
+						android:entries="@array/break_times"/>
 
 
 				</RelativeLayout>
@@ -367,6 +397,8 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_alignParentEnd="true"
+						android:layout_marginEnd="5dp"
+						android:layout_marginBottom="4dp"
 						android:text="@string/btn_text_clean_share_storage"
 						android:textSize="18sp"
 						android:textColor="@color/background"

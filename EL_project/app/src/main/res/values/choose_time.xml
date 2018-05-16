@@ -5,4 +5,10 @@
 		<item>30分钟</item>
 		<item>40分钟</item>
 	</string-array>
+	<string-array name="break_times">
+		<item>5分钟</item>
+		<item>10分钟</item>
+		<item>15分钟</item>
+		<item>20分钟</item>
+	</string-array>
 </resources>

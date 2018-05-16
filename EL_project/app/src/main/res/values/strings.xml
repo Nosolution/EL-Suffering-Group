@@ -43,4 +43,5 @@
     <string name="tomato3">距离下次休息还有00分钟</string>
 	<string name="text_clean_share_store">清理图片\n分享缓存</string>
 	<string name="btn_text_clean_share_storage">清理</string>
+    <string name="choose_break_time">休息时长</string>
 </resources>

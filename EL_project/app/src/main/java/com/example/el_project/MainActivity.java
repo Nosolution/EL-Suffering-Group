@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,12 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -49,10 +48,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	private TextView textClockOn;
 	private Spinner spinnerChooseTime;
 	private String tomatoClockTimeLength;    //用于获取番茄钟设置时长
+    private LinearLayout clockTimeLayout;
+    private TextView textBreakClock;
+    private Spinner spinnerBreakClock;
+    private String breakClockTimeLength;       //用于番茄钟休息一系列设置
+    private LinearLayout breakClockTimeLayout;
     private Button btnCleanShareStorage;
     private Button btChangeMusic;            //切换歌曲按钮
 
-    private int[] colors = {R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar, R.drawable.task_bar};
+    private int[] colors = {R.drawable.task_bar_blue, R.drawable.task_bar_brown, R.drawable.task_bar_green, R.drawable.task_bar_purple, R.drawable.task_bar};
     private int[] checkedColors={R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen};
     //颜色ID数组，用于循环改变任务背景颜色
 
@@ -77,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 	    spinnerChooseTime=findViewById(R.id.spinner_choose_time);
 	    textClockOn=findViewById(R.id.text_clock_on);
+	    clockTimeLayout = (LinearLayout)findViewById(R.id.main_clock_set_layout);
+        textBreakClock = findViewById(R.id.text_choose_break_time);
+        spinnerBreakClock = findViewById(R.id.spinner_choose_break_time);
+        breakClockTimeLayout = (LinearLayout)findViewById(R.id.main_break_clock_set_layout);
         btChangeMusic=findViewById(R.id.bt_change_music);
 
 	    //设置背景
@@ -236,6 +244,18 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 		    public void onNothingSelected(AdapterView<?> parent) {
 		    }
 	    });
+	    spinnerBreakClock.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                breakClockTimeLength = (String)spinnerBreakClock.getSelectedItem();
+                int chosenTime = Integer.parseInt(breakClockTimeLength.substring(0, breakClockTimeLength.length() - 2));
+                GeneralSetting.setTomatoBreakTime(MainActivity.this, chosenTime);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
 //        //初始化设置番茄钟时长
 //        if (GeneralSetting.getTomatoClockEnable(this)){
@@ -483,16 +503,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 }
                 break;
             case R.id.switch_if_tomato_clock_on:
-                if(compoundButton.isChecked()) {
-                    GeneralSetting.setTomatoClockEnable(MainActivity.this, true);
-                    textClockOn.setVisibility(View.VISIBLE);
-                    spinnerChooseTime.setVisibility(View.VISIBLE);
+                if(compoundButton.isChecked()){
+                    GeneralSetting.setTomatoClockEnable(this, true);
+                }else {
+                    GeneralSetting.setTomatoClockEnable(this, false);
                 }
-                else {
-                    GeneralSetting.setTomatoClockEnable(MainActivity.this, false);
-                    textClockOn.setVisibility(View.GONE);
-                    spinnerChooseTime.setVisibility(View.GONE);
-                }
+                refreshSetting();
                 break;
         }
     }
@@ -503,10 +519,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         //修改设置内显示番茄钟时长
         if(GeneralSetting.getTomatoClockEnable(this)){
-            textClockOn.setVisibility(View.VISIBLE);
-            spinnerChooseTime.setVisibility(View.VISIBLE);
+            clockTimeLayout.setVisibility(View.VISIBLE);
+            breakClockTimeLayout.setVisibility(View.VISIBLE);
+        }else {
+            clockTimeLayout.setVisibility(View.GONE);
+            breakClockTimeLayout.setVisibility(View.GONE);
         }
         spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
+        spinnerBreakClock.setSelection(Math.max((GeneralSetting.getTomatoBreakTime(this)/5 - 1), 0));
     }
 
 
