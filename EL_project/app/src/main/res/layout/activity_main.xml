@@ -155,26 +155,6 @@
 
 			</LinearLayout>
 
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical">
-
-				<!--随机切歌按钮-->
-
-				<Button
-					android:id="@+id/bt_change_music"
-					android:layout_width="wrap_content"
-					android:layout_height="30dp"
-					android:layout_gravity="end"
-					android:layout_marginEnd="5dp"
-					android:layout_marginBottom="4dp"
-					android:text="切换歌曲"
-					android:textSize="14sp"
-					android:textColor="@color/background"
-					android:background="@drawable/setting_button"
-					android:visibility="gone"/>
-			</LinearLayout>
 
 			<!--插入分割线-->
 			<View

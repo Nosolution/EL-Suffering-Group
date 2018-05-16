@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private String breakClockTimeLength;       //用于番茄钟休息一系列设置
     private LinearLayout breakClockTimeLayout;
     private Button btnCleanShareStorage;
-    private Button btChangeMusic;            //切换歌曲按钮
 
     private int[] colors = {R.drawable.task_bar_blue, R.drawable.task_bar_brown, R.drawable.task_bar_green, R.drawable.task_bar_purple, R.drawable.task_bar};
     private int[] checkedColors={R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen};
@@ -87,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         textBreakClock = findViewById(R.id.text_choose_break_time);
         spinnerBreakClock = findViewById(R.id.spinner_choose_break_time);
         breakClockTimeLayout = (LinearLayout)findViewById(R.id.main_break_clock_set_layout);
-        btChangeMusic=findViewById(R.id.bt_change_music);
 
 	    //设置背景
         BackgroundCollection backgroundCollection = new BackgroundCollection();
@@ -433,11 +431,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             case R.id.switch_if_music_on:
                 if(compoundButton.isChecked()) {
                     GeneralSetting.setMusicOn(MainActivity.this, true);
-                    btChangeMusic.setVisibility(View.VISIBLE);
                 }
                 else {
                     GeneralSetting.setMusicOn(MainActivity.this, false);
-                    btChangeMusic.setVisibility(View.GONE);
                 }
                 break;
             case R.id.switch_if_tomato_clock_on:
@@ -466,10 +462,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         spinnerChooseTime.setSelection(Math.max((GeneralSetting.getTomatoClockTime(this)/10 - 2), 0));
         spinnerBreakClock.setSelection(Math.max((GeneralSetting.getTomatoBreakTime(this)/5 - 1), 0));
 
-
-	    if(GeneralSetting.getMusicOn(this)){
-		    btChangeMusic.setVisibility(View.VISIBLE);
-	    }
     }
 
 
