@@ -43,25 +43,25 @@ import java.util.List;
  */
 
 public class FinishActivity extends AppCompatActivity {
-	private TextView tvGoal;  // 用于显示专注度的分数，格式：“__分”
+	private TextView tvScores;  // 用于显示专注度的分数，格式：“__分”
 	private TextView tvSingleTaskConsumeTime;  // 单个任务的耗时，格式：“本次任务共耗时 __ 分钟”
 	private TextView tvSingleTaskConcentrateTime;  // 单个任务的专注时间，格式：“专注 __ 分钟”
-	private TextView tvWeekConcentrateTime;  // 一周的专注时间，格式：“本周已专注 __ 分钟”
+	private TextView tvTodayConcentrateTime;  // 一周的专注时间，格式：“本周已专注 __ 分钟”
 	private Button buttonReturnMain;  // 返回主界面按钮
 	private Button buttonNextTask;  // 开始下一项任务的按钮
 	private Button buttonShare;     //分享按钮
 	private String strScores;
 	private String strSingleTaskConsumeTime;
 	private String strSingleTaskConcentrateTime;
-	private String strWeekConcentrateTime;
+	private String strTodayConcentrateTime;
 	private SpannableStringBuilder ssbScores;
 	private SpannableStringBuilder ssbSingleTaskConsumeTime;
 	private SpannableStringBuilder ssbSingleTaskConcentrateTime;
-	private SpannableStringBuilder ssbWeekConcentrateTime;
+	private SpannableStringBuilder ssbTodayConcentrateTime;
 	int intScores = 96;  // 传入数据
 	int intSingleTaskConsumeTime = 120;
 	int intSingleTaskConcentrateTime = 80;
-	int intWeekConcentrateTime = 400;
+	int intTodayConcentrateTime = 400;
 	int intStart;  // 字符串索引
 	int intEnd;
 
@@ -83,10 +83,10 @@ public class FinishActivity extends AppCompatActivity {
 
 		BarChart barChart=findViewById(R.id.data_bar_chart);
 		MyBarChartManager myBarChartManager=new MyBarChartManager(barChart);
-		tvGoal = findViewById(R.id.tv_goal);
+		tvScores = findViewById(R.id.tv_goal);
 		tvSingleTaskConsumeTime = findViewById(R.id.tv_single_task_consume_time);
 		tvSingleTaskConcentrateTime = findViewById(R.id.tv_single_task_concentrate_time);
-		tvWeekConcentrateTime = findViewById(R.id.tv_week_concentrate_time);
+		tvTodayConcentrateTime = findViewById(R.id.tv_week_concentrate_time);
 		buttonReturnMain = findViewById(R.id.button_return_main);
 		buttonNextTask = findViewById(R.id.button_next_task);
 		buttonShare = findViewById(R.id.button_share_to_qzone);
@@ -102,16 +102,17 @@ public class FinishActivity extends AppCompatActivity {
 		strScores = intScores + "分";
 		intSingleTaskConsumeTime=taskTotalTimeUsed/60;
 		intSingleTaskConcentrateTime=taskTimeUsed/60;
+		intTodayConcentrateTime=timeUsedToday;
 		strSingleTaskConsumeTime = "本次任务共耗时 " + intSingleTaskConsumeTime + " 分钟";
 		strSingleTaskConcentrateTime = "专注 " + intSingleTaskConcentrateTime + " 分钟";
-		strWeekConcentrateTime = "本周已专注 " +intWeekConcentrateTime + " 分钟";
+		strTodayConcentrateTime = "今日已专注 " + intTodayConcentrateTime + " 分钟";
 
 		// 设置各个TextView显示的值
 		ssbScores = new SpannableStringBuilder(strScores);
 		intStart = strScores.indexOf(String.valueOf(intScores));
 		intEnd = intStart + String.valueOf(intScores).length();
 		ssbScores.setSpan(new RelativeSizeSpan(2.8f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		tvGoal.setText(ssbScores);
+		tvScores.setText(ssbScores);
 
 		ssbSingleTaskConsumeTime = new SpannableStringBuilder(strSingleTaskConsumeTime);
 		intStart = strSingleTaskConsumeTime.indexOf(String.valueOf(intSingleTaskConsumeTime));
@@ -127,12 +128,12 @@ public class FinishActivity extends AppCompatActivity {
 		ssbSingleTaskConcentrateTime.setSpan(new StyleSpan(Typeface.BOLD), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
 		tvSingleTaskConcentrateTime.setText(ssbSingleTaskConcentrateTime);
 
-		ssbWeekConcentrateTime = new SpannableStringBuilder(strWeekConcentrateTime);
-		intStart = strWeekConcentrateTime.indexOf(String.valueOf(intWeekConcentrateTime));
-		intEnd = intStart + String.valueOf(intWeekConcentrateTime).length();
-		ssbWeekConcentrateTime.setSpan(new RelativeSizeSpan(1.4f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		ssbWeekConcentrateTime.setSpan(new StyleSpan(Typeface.BOLD), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		tvWeekConcentrateTime.setText(ssbWeekConcentrateTime);
+		ssbTodayConcentrateTime = new SpannableStringBuilder(strTodayConcentrateTime);
+		intStart = strTodayConcentrateTime.indexOf(String.valueOf(intTodayConcentrateTime));
+		intEnd = intStart + String.valueOf(intTodayConcentrateTime).length();
+		ssbTodayConcentrateTime.setSpan(new RelativeSizeSpan(1.4f), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+		ssbTodayConcentrateTime.setSpan(new StyleSpan(Typeface.BOLD), intStart, intEnd, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+		tvTodayConcentrateTime.setText(ssbTodayConcentrateTime);
 
 		Log.d("TEST", "onCreate: FinishActivity");
 
