@@ -11,6 +11,8 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
@@ -51,13 +53,16 @@ public class FinishActivity extends AppCompatActivity {
 	private Button btNextTask;  // 开始下一项任务的按钮
 	private Button btShare;     //分享按钮
 	private int scores = 98;  // 传入数据
+	private RecyclerView recyclerView;
+	private RecyclerViewAdapter adapter;
+	private List<Task> recommendedTaskList=new ArrayList<Task>();
+	private ArrayList<String[]> recommendedTasks = new ArrayList<>();
 
 	private int taskTotalTimeUsed;         //任务总计完成时间
 	private int taskTimeUsed;              //任务有效完成时间
 	private int timeUsedToday;             //今日用于完成任务的时间
 	private int breakCount;                //任务执行时切出次数
 	private int[] taskTimeUsedWeek;        //本周任务每日总计的有效时间
-	private int[] taskTimeTotallyUsedWeek;  //本周任务每日总时间
 
 	private Tencent mTencent;
 	private MyIUiListener myIUiListener;
@@ -79,6 +84,14 @@ public class FinishActivity extends AppCompatActivity {
 		btNextTask = findViewById(R.id.button_next_task);
 		btShare = findViewById(R.id.button_share_to_qzone);
 		LinearLayout layoutMain = findViewById(R.id.activity_finish_layout);
+
+		recyclerView=findViewById(R.id.recycler_view);
+		recyclerView.setHasFixedSize(true);
+		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+		recyclerView.setLayoutManager(layoutManager);
+		loadRecommendedTasks();
+		adapter=new RecyclerViewAdapter(recommendedTaskList);
+		recyclerView.setAdapter(adapter);
 
 		BackgroundCollection backgroundCollection = new BackgroundCollection();
 		layoutMain.setBackgroundResource(backgroundCollection.getTodayBackground());
@@ -150,6 +163,26 @@ public class FinishActivity extends AppCompatActivity {
 		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
 		myIUiListener = new MyIUiListener();
 
+		adapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
+			@Override
+			public void onItemClick(View view, int position) {
+				Intent intent=new Intent(FinishActivity.this,TaskTimingActivity.class);
+				intent.putExtra("intent_task_id",Integer.parseInt(recommendedTasks.get(position)[0]));
+				intent.putExtra("intent_task_name",recommendedTasks.get(position)[1]);
+				String[] temp=recommendedTasks.get(position)[3].split(":");
+				intent.putExtra("intent_task_hours_required", Integer.parseInt(temp[0]));
+				intent.putExtra("intent_task_minutes_required", Integer.parseInt(temp[1]));
+				intent.putExtra("intent_is_daily_task",recommendedTasks.get(position)[4]);
+				intent.putExtra("intent_task_comments",recommendedTasks.get(position)[5]);
+				startActivity(intent);
+			}
+
+			@Override
+			public void onItemLongClick(View view, int position) {
+
+			}
+		});
+
 	}
 
 	private void setFormattedString(int data, String srcString, float size, boolean hasStyle, TextView tv){
@@ -160,6 +193,15 @@ public class FinishActivity extends AppCompatActivity {
 		ssb.setSpan(new RelativeSizeSpan(size),startIndex,endIndex,Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
 		if(hasStyle) ssb.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
 		tv.setText(ssb);
+	}
+
+	private void loadRecommendedTasks(){
+		int[] tasks=MyDatabaseOperation.getRecommendedTaskId(FinishActivity.this);
+		for(int i=0;i<tasks.length;i++){
+			String[] taskInfo=MyDatabaseOperation.getCertainTaskInfo(FinishActivity.this,tasks[i]);
+			recommendedTasks.add(taskInfo);
+			recommendedTaskList.add(new Task(taskInfo[1],taskInfo[2],R.drawable.task_bar,R.drawable.taskbar_chosen));
+		}
 	}
 
 	@Override
