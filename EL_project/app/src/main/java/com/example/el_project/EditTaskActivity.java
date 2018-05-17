@@ -20,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -41,6 +42,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private RelativeLayout selectTime;
     private TextView ddlTime;
     private CustomDatePicker cdp;
+    private CustomTimeToFinishPicker timeToFinishPicker;
     private ImageView iv1,iv2,iv3,iv4,iv5;
     private Switch swc;
     private MyDatabaseHelper dbHelper;
@@ -51,7 +53,8 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private int selectedImageViewPosition;//被选择的ImageView的位置
     private boolean editMode;//是否是编辑任务
     private String taskId;//数据库中task的ID，作为唯一标识符
-    private Spinner hourSpinner,minuteSpinner;
+    private RelativeLayout layoutTimeToFinish;//预计完成时间
+    private TextView textTimeToFinish;
     private String hour, minute;//Spinner的显示文本
     private String[]hourPosition={"00","01","02","03","04","05"};
     private String[]minutePosition={"00","10","20","30","40","50",};
@@ -83,8 +86,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         taskNameEditText = findViewById(R.id.task_name_et);
         taskNameEditText.addTextChangedListener(tc);
-        hourSpinner=findViewById(R.id.hour_spinner);
-        minuteSpinner=findViewById(R.id.minute_spinner);
         commentEditText = findViewById(R.id.comment_et);
         toolbar = findViewById(R.id.activity_edit_task_toolbar);
 
@@ -93,33 +94,10 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         toolbar.setAlpha(0.5f);
 
 
-            //两个Spinner的点击事件
-        hourSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                resetKeyBoard();
-                hour =getResources().getStringArray(R.array.hour_list)[position];
-                decideButtonEnable();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                resetKeyBoard();
-            }
-        });
-        minuteSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                resetKeyBoard();
-                minute =getResources().getStringArray(R.array.minute_list)[position];
-                decideButtonEnable();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                resetKeyBoard();
-            }
-        });
+        layoutTimeToFinish = findViewById(R.id.layout_select_time_to_finish);
+        layoutTimeToFinish.setOnClickListener(this);
+        textTimeToFinish = findViewById(R.id.text_time_to_finish);
+        initTimeToFinishPicker();
 
         draw1=getDrawable(R.drawable.circle_animation);//点亮动画
         //打开数据库
@@ -200,24 +178,25 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    private void initTimeToFinishPicker(){
+        timeToFinishPicker = new CustomTimeToFinishPicker(this, new CustomTimeToFinishPicker.ResultHandler() {
+            @Override
+            public void handle(String hour, String min) {
+                textTimeToFinish.setText(hour + ":" + min);
+                EditTaskActivity.this.hour = hour;
+                EditTaskActivity.this.minute = min;
+            }
+        });
+        timeToFinishPicker.setIsLoop(true);
+    }
+
     private void setTaskDetails(String[] taskDetails){
         taskId=taskDetails[0];
         taskNameEditText.setText(taskDetails[1]);
         String[]tempString=taskDetails[2].split(":");
-        for(int i=0;i<hourPosition.length;i++){
-            if(tempString[0].equals(hourPosition[i])){
-                hourSpinner.setSelection(i);
-                break;
-            }
-        }
-        for(int j=0;j<minutePosition.length;j++){
-            if(tempString[1].equals(minutePosition[j])){
-                minuteSpinner.setSelection(j);
-                break;
-            }
-        }
         hour =tempString[0];
         minute =tempString[1];
+        textTimeToFinish.setText(formatTimeUnit(Integer.parseInt(hour)) + ":" + formatTimeUnit(Integer.parseInt(minute)));
 
         for(int index=4;index>=0;index--){
             if(taskDetails[4].equals(String.valueOf(index+1))){
@@ -229,6 +208,13 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             swc.setChecked(true);
         }
         commentEditText.setText(taskDetails[6]);
+    }
+
+    /**
+     * 将“0-9”转换为“00-09”
+     */
+    private String formatTimeUnit(int unit) {
+        return unit < 10 ? "0" + String.valueOf(unit) : String.valueOf(unit);
     }
 
     @Override
@@ -250,6 +236,9 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             switch (id) {
                 case R.id.selectTime:
                     cdp.show(ddlTime.getText().toString());
+                    break;
+                case R.id.layout_select_time_to_finish:
+                    timeToFinishPicker.show(textTimeToFinish.getText().toString());
                     break;
                 case R.id.finish_editing:
                     if(!editMode) {
@@ -352,8 +341,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
     private void resetAllComponent(){
         taskNameEditText.setText("");
-        hourSpinner.setSelection(0);
-        minuteSpinner.setSelection(0);
+        textTimeToFinish.setText("00:00");
         ImageView iv;
         AnimationDrawable ad;
         for(int i=selectedImageViewPosition;i>0;i--){

@@ -147,6 +147,15 @@ public class CustomTimeToFinishPicker {
         String[] times = time.split(":");
         hourPicker.setSelected(times[0]);
         minutePicker.setSelected(times[1]);
+        selectedHour = times[0];
+        selectedMinute = times[1];
+    }
+
+    public void setIsLoop(boolean isLoop){
+        if (canAccess){
+            hourPicker.setIsLoop(isLoop);
+            minutePicker.setIsLoop(isLoop);
+        }
     }
 
     public void show(String time){
