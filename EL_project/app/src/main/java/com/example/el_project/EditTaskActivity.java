@@ -197,6 +197,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         hour =tempString[0];
         minute =tempString[1];
         textTimeToFinish.setText(formatTimeUnit(Integer.parseInt(hour)) + ":" + formatTimeUnit(Integer.parseInt(minute)));
+        ddlTime.setText(taskDetails[3]);
 
         for(int index=4;index>=0;index--){
             if(taskDetails[4].equals(String.valueOf(index+1))){

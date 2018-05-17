@@ -141,7 +141,7 @@ public class MyDatabaseOperation {
             if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==1)
                 return "";
 
-            String deadLine=cursor.getString(cursor.getColumnIndex("deadline"));
+            String deadLine=cursor.getString(cursor.getColumnIndex("deadline")).split(" ")[0];
             cursor.close();
             if(deadLine==null||deadLine=="")
                 return "";
@@ -160,7 +160,11 @@ public class MyDatabaseOperation {
                     }
                 }
                 else if(diff>3){
-                    return deadLine.substring(5);
+                    String[] temp=deadLine.substring(5).split("-");
+                    if(Integer.parseInt(temp[0])<10)
+                        return temp[0].substring(1)+"."+temp[1];
+                    else
+                        return temp[0]+"."+temp[1];
                 }
                 else
                     return "";
