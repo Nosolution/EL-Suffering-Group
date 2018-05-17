@@ -125,7 +125,7 @@ public class FinishActivity extends AppCompatActivity {
 		colors.add(Color.RED);
 		colors.add(Color.CYAN);
 
-		myBarChartManager.showBarChart(xValues,yValues.get(0),"每日专注时间",colors.get(3));
+		myBarChartManager.showBarChart(xValues,yValues.get(0),"每日专注时间");
 
 		for(int i = 0; i < 7; i++){
 			Log.d("TEST", "onCreate: " + taskTimeUsedWeek[i]);

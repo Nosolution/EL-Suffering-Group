@@ -41,8 +41,11 @@ public class MyBarChartManager {
      * 初始化LineChart
      */
     private void initLineChart() {
-        //背景颜色:透明
-        mBarChart.setBackgroundColor(0xff0000);
+        /*
+        **图表背景颜色
+         */
+        mBarChart.setBackgroundColor(0x00ffffff);
+
         //网格
         mBarChart.setDrawGridBackground(false);//设置网格不可见
         mBarChart.getAxisLeft().setDrawGridLines(false);
@@ -69,16 +72,24 @@ public class MyBarChartManager {
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
+
+        /*
+        **图表底下“每日专注时间”文字颜色
+         */
         legend.setTextColor(Color.WHITE);
-        setDescription("",Color.WHITE);
 
 
+//        setDescription("",Color.WHITE);
         MyXFormatter myXFormatter=new MyXFormatter(values);//为X轴装载字符串
         //XY轴的设置
         //X轴设置显示位置在底部
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(myXFormatter);
+
+        /*
+        **X轴颜色
+         */
         xAxis.setTextColor(Color.WHITE);
         xAxis.setTextSize(12f);
         //保证Y轴从0开始，不然会上移一点
@@ -87,7 +98,12 @@ public class MyBarChartManager {
         leftAxis.setSpaceTop(13f);
 //        leftAxis.setAxisMaximum(240f);//注意，设定最大值
         leftAxis.setTextSize(11f);
+
+        /*
+        **Y轴颜色
+         */
         leftAxis.setTextColor(Color.WHITE);
+        //Y轴标签个数（近似值）
         leftAxis.setLabelCount(7,false);
     }
 
@@ -97,9 +113,8 @@ public class MyBarChartManager {
      * @param xAxisValues
      * @param yAxisValues
      * @param label
-     * @param color
      */
-    public void showBarChart(List<Float> xAxisValues, List<Float> yAxisValues, String label, int color) {
+    public void showBarChart(List<Float> xAxisValues, List<Float> yAxisValues, String label) {
         initLineChart();
         float max=0;
         for(float item:yAxisValues)
@@ -117,7 +132,10 @@ public class MyBarChartManager {
                 return (int)value+"";
             }
         });
-        barDataSet.setColor(color);
+        /*
+        **柱体颜色
+         */
+        barDataSet.setColor(Color.CYAN);
         barDataSet.setValueTextSize(9f);
         barDataSet.setValueTextColor(Color.WHITE);
         barDataSet.setFormLineWidth(0.5f);
@@ -140,7 +158,7 @@ public class MyBarChartManager {
      * @param labels
      * @param colours
      */
-    public void showBarChart(List<Float> xAxisValues, List<List<Float>> yAxisValues, List<String> labels, List<Integer> colours) {
+    /*public void showBarChart(List<Float> xAxisValues, List<List<Float>> yAxisValues, List<String> labels, List<Integer> colours) {
         initLineChart();
         BarData data = new BarData();
         for (int i = 0; i < yAxisValues.size(); i++) {
@@ -170,7 +188,7 @@ public class MyBarChartManager {
 
         data.groupBars(0, groupSpace, barSpace);
         mBarChart.setData(data);
-    }
+    }*/
 
 
     /**
