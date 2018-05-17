@@ -125,7 +125,12 @@ public class FinishActivity extends AppCompatActivity {
 		colors.add(Color.RED);
 		colors.add(Color.CYAN);
 		//颜色顺序为：背景颜色、Y轴颜色、X轴颜色、柱体颜色、图表标签颜色
-		myBarChartManager.showBarChart(xValues,yValues.get(0),"每日专注时间",0x00ffffff,Color.WHITE,Color.WHITE,Color.CYAN,Color.WHITE);
+		int colorBackground = 0x80000000;
+		int colorAxisY = Color.WHITE;
+		int colorAxisX = Color.WHITE;
+		int colorBody = Color.WHITE;
+		int colorLabel = Color.WHITE;
+		myBarChartManager.showBarChartWithBackGroundRes(xValues,yValues.get(0),"每日专注时间",R.drawable.chart_background_shape,colorAxisY,colorAxisX,colorBody,colorLabel);
 
 		for(int i = 0; i < 7; i++){
 			Log.d("TEST", "onCreate: " + taskTimeUsedWeek[i]);
@@ -228,11 +233,11 @@ public class FinishActivity extends AppCompatActivity {
 
 		//绘制此次有效时长
 		paint.setTextSize(192);
-		canvas.drawText(secToHourMin(taskTimeUsed), (int)(0.3f * width), (int)(0.535 * height), paint);
+		canvas.drawText(secToHourMin(taskTimeUsed * 60), (int)(0.3f * width), (int)(0.535 * height), paint);
 		//绘制此次总时长，今日有效时长
 		paint.setTextSize(144);
-		canvas.drawText(secToHourMin(taskTotalTimeUsed), (int)(0.65f * width), (int)(0.47 * height), paint);
-		canvas.drawText(secToHourMin(timeUsedToday), (int)(0.65f * width), (int)(0.58 * height), paint);
+		canvas.drawText(secToHourMin(taskTotalTimeUsed * 60), (int)(0.65f * width), (int)(0.47 * height), paint);
+		canvas.drawText(secToHourMin(timeUsedToday * 60), (int)(0.65f * width), (int)(0.58 * height), paint);
 
 		String filePicStoredPath = dirPath + File.separator + fileName + ".jpg";
 		File filePicStored = new File(filePicStoredPath);

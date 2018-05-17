@@ -30,6 +30,8 @@ public class MyBarChartManager {
     private XAxis xAxis;
     private Legend legend;
     private String[] values={"周一","周二","周三","周四","周五","周六","周日"};
+    public static final int COLOR = 707;
+    public static final int DRAWABLE = 701;
 
     public MyBarChartManager(BarChart barChart) {
         this.mBarChart = barChart;
@@ -96,6 +98,17 @@ public class MyBarChartManager {
         leftAxis.setLabelCount(7,false);
     }
 
+    public void showBarChartWithBackGroundRes(List<Float> xAxisValues, List<Float> yAxisValues, String label,int backGroundInfo,
+                                              int yTextColor,int xTextColor,int barColor,int legendColor){
+
+        showBarChart(xAxisValues,yAxisValues, label, backGroundInfo, yTextColor, xTextColor, barColor, legendColor, DRAWABLE);
+    }
+
+    public void showBarChart(List<Float> xAxisValues, List<Float> yAxisValues, String label,int backGroundInfo,
+                             int yTextColor,int xTextColor,int barColor,int legendColor){
+        showBarChart(xAxisValues,yAxisValues, label, backGroundInfo, yTextColor, xTextColor, barColor, legendColor, COLOR);
+    }
+
     /**
      * 展示柱状图(一条)
      *
@@ -103,7 +116,8 @@ public class MyBarChartManager {
      * @param yAxisValues
      * @param label
      */
-    public void showBarChart(List<Float> xAxisValues, List<Float> yAxisValues, String label,int backGroundColor,int yTextColor,int xTextColor,int barColor,int legendColor) {
+    public void showBarChart(List<Float> xAxisValues, List<Float> yAxisValues, String label,int backGroundInfo,
+                             int yTextColor,int xTextColor,int barColor,int legendColor, int backgroundInfoType) {
         initLineChart();
         float max=0;
         for(float item:yAxisValues)
@@ -122,7 +136,11 @@ public class MyBarChartManager {
             }
         });
         //颜色设置
-        mBarChart.setBackgroundColor(backGroundColor);
+        if (backgroundInfoType == COLOR) {
+            mBarChart.setBackgroundColor(backGroundInfo);
+        }else if(backgroundInfoType == DRAWABLE){
+            mBarChart.setBackgroundResource(backGroundInfo);
+        }
         leftAxis.setTextColor(yTextColor);
         xAxis.setTextColor(xTextColor);
         legend.setTextColor(legendColor);
