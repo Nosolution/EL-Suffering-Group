@@ -166,9 +166,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             @Override
             public void onItemClick(View view, final int position) {
                 Task task = mTaskList.get(position);
-//                Toast.makeText(view.getContext(), "you clicked view " + task.getName(), Toast.LENGTH_SHORT).show();
                 if (!isFabOpened&&selectedPosition==-1) {
-                    openMenu(baseButton);
                     selectedPosition=position;
                     task.switchBackground();
                     new Thread(){     //几个线程
@@ -178,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             adapter.changeItemBackGround(position);
                         }
                     }.start();
+                    openMenu(baseButton);
                 }
                 else if(isFabOpened&&selectedPosition!=position){
                     Task previousTask=mTaskList.get(selectedPosition);
@@ -209,27 +208,27 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             //长按与短按功能相同
             @Override
             public void onItemLongClick(View view, int position) {
-                Task task = mTaskList.get(position);
-//                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-                if (!isFabOpened&&selectedPosition==-1) {
-                    openMenu(baseButton);
-                    selectedPosition=position;
-                    task.switchBackground();
-                    adapter.changeItemBackGround(position);
-                }
-                else if(isFabOpened&&selectedPosition!=position){
-                    Task previousTask=mTaskList.get(selectedPosition);
-                    previousTask.switchBackground();
-                    adapter.changeItemBackGround(selectedPosition);
-                    closeMenu(baseButton);
-                    selectedPosition=-1;
-                }
-                else{
-                    closeMenu(baseButton);
-                    selectedPosition=-1;
-                    task.switchBackground();
-                    adapter.changeItemBackGround(position);
-                }
+//                Task task = mTaskList.get(position);
+////                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
+//                if (!isFabOpened&&selectedPosition==-1) {
+//                    openMenu(baseButton);
+//                    selectedPosition=position;
+//                    task.switchBackground();
+//                    adapter.changeItemBackGround(position);
+//                }
+//                else if(isFabOpened&&selectedPosition!=position){
+//                    Task previousTask=mTaskList.get(selectedPosition);
+//                    previousTask.switchBackground();
+//                    adapter.changeItemBackGround(selectedPosition);
+//                    closeMenu(baseButton);
+//                    selectedPosition=-1;
+//                }
+//                else{
+//                    closeMenu(baseButton);
+//                    selectedPosition=-1;
+//                    task.switchBackground();
+//                    adapter.changeItemBackGround(position);
+//                }
             }
         });
 
@@ -310,7 +309,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         fabDelete.startAnimation(in_from_fab);
         fabDetail.startAnimation(in_from_fab);
         fabStart.startAnimation(in_from_fab);
-
     }
 
     // 点击关闭后，悬浮按钮的动画

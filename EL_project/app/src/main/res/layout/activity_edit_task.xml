@@ -61,51 +61,34 @@
             android:background="@color/split_line">
         </View>
 
-        <LinearLayout
-            android:id="@+id/layout_limit"
+        <RelativeLayout
+            android:id="@+id/layout_select_time_to_finish"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:orientation="horizontal"
-            android:layout_marginLeft="30dp">
+            android:layout_marginStart="30dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:text="@string/time2"
                 style="@style/main2text"/>
 
-            <LinearLayout
+
+            <TextView
+                android:id="@+id/text_time_to_finish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="40dp">
+                android:text="00:00"
+                android:textSize="15sp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:paddingEnd="15dp"
+                android:paddingStart="15dp"
+                android:textColor="@color/lightblue"/>
 
-                <Spinner
-                    android:id="@+id/hour_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/hour_list"
-                    android:layout_gravity="center_vertical"></Spinner>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=":"
-                    android:textSize="20dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"/>
-
-                <Spinner
-                    android:id="@+id/minute_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:entries="@array/minute_list"
-                    android:layout_gravity="center_vertical"></Spinner>
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
