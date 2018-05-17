@@ -126,6 +126,7 @@ public class FinishActivity extends AppCompatActivity {
 		colors.add(Color.CYAN);
 		//颜色顺序为：背景颜色、Y轴颜色、X轴颜色、柱体颜色、图表标签颜色
 		int colorBackground = 0x80000000;
+		int resBackground;
 		int colorAxisY = Color.WHITE;
 		int colorAxisX = Color.WHITE;
 		int colorBody = Color.WHITE;

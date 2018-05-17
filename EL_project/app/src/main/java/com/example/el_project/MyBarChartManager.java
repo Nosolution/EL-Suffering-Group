@@ -75,8 +75,7 @@ public class MyBarChartManager {
 
 //        legend.setTextColor(Color.WHITE);
 
-
-//        setDescription("",Color.WHITE);
+        setDescription("",0x00000000);
         MyXFormatter myXFormatter=new MyXFormatter(values);//为X轴装载字符串
         //XY轴的设置
         //X轴设置显示位置在底部
@@ -100,6 +99,7 @@ public class MyBarChartManager {
 
     public void showBarChartWithBackGroundRes(List<Float> xAxisValues, List<Float> yAxisValues, String label,int backGroundInfo,
                                               int yTextColor,int xTextColor,int barColor,int legendColor){
+
 
         showBarChart(xAxisValues,yAxisValues, label, backGroundInfo, yTextColor, xTextColor, barColor, legendColor, DRAWABLE);
     }
