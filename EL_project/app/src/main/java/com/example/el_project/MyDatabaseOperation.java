@@ -11,7 +11,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -173,6 +175,69 @@ public class MyDatabaseOperation {
             }
         }
         return "";
+    }
+
+    public static int[] getRecommendedTaskId(Context context){
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Calendar calendar = new GregorianCalendar();
+        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
+        if(cursor.moveToFirst()){
+            List<Task> myList=new ArrayList<Task>();
+            int tempId;
+            do{
+                tempId=cursor.getInt(cursor.getColumnIndex("id"));
+                switch(cursor.getInt(cursor.getColumnIndex("isdailytask"))) {
+                    case 1:
+                        myList.add(new Task(tempId));
+                        break;
+                    case 0:
+                        String deadLine = cursor.getString(cursor.getColumnIndex("deadline")).split(" ")[0];
+                        String currentDate = formatDate.format(calendar.getTime());
+                        try {
+                            int diff = calcDateDifference(currentDate, deadLine);
+                            myList.add(new Task(tempId, cursor.getInt(cursor.getColumnIndex("emergencydegree")), diff > 0 ? diff : 0));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                }
+            }while(cursor.moveToNext());
+
+            Collections.sort(myList);
+            if(myList.size()>=3){
+                int[] result=new int[3];
+                for(int i=0;i<3;i++)
+                    result[i]=myList.get(i).getId();
+                return result;
+            }
+            else{
+                int []result=new int[myList.size()];
+                for(int i=0;i<myList.size();i++)
+                    result[i]=myList.get(i).getId();
+                return result;
+            }
+        }
+        cursor.close();
+        return null;
+    }
+
+    public static String[] getCertainTaskInfo(Context context,int id){
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
+        if(cursor.moveToFirst()){
+            String[] taskInfo={ String.valueOf(id),
+                                cursor.getString(cursor.getColumnIndex("task")),
+                                MyDatabaseOperation.getTaskRestDays(context,id),
+                                cursor.getString(cursor.getColumnIndex("assumedtime")),
+                                String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
+                                cursor.getString(cursor.getColumnIndex("comments"))};
+
+            return taskInfo;
+        }
+        return null;
     }
 
     public static int calcDateDifference(String date1,String date2)throws ParseException {

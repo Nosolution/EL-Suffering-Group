@@ -1,11 +1,16 @@
 package com.example.el_project;
 
-public class Task {
+public class Task implements Comparable<Task>{
 	private String name;
 	private String remark;
 	private int backgroundId;
 	private int selectedBackgroundId;
 	private int defaultBackground;
+	private int id;
+	//以下是为了实现排序，与Task功能无关
+	private Integer eDgree;
+	private Integer dateDiffWeight;
+	private Integer weight;
 
 	public Task(String name,String remark,int backgroundId,int checkedbackgroundId){
 		this.name=name;
@@ -15,6 +20,23 @@ public class Task {
 		this.defaultBackground=backgroundId;
 	}
 
+	public Task(int id,Integer eDgree,int dateDiff){
+		this.id=id;
+		this.eDgree=eDgree;
+		this.dateDiffWeight=dateDiff<5? 5-dateDiff:0;
+		this.weight=2*this.eDgree+3*this.dateDiffWeight;//权重模型
+	}
+
+	public Task(int id){
+		this.id=id;
+		this.weight=18;
+	}
+
+
+	public int compareTo(Task arg0){
+		return arg0.getWeight().compareTo(this.getWeight());
+	}
+
 	public String getName(){
 		return name;
 	}
@@ -22,6 +44,12 @@ public class Task {
 	public String getRemark(){return remark;}
 
 	public void setName(String name){this.name=name;}
+
+	public int getId(){return id;}
+
+	public Integer getWeight(){
+		return this.weight;
+	}
 
 //	public int getImageId(){
 //		return imageId;
@@ -42,4 +70,5 @@ public class Task {
 	public void initBackground(){
 		this.backgroundId=defaultBackground;
 	}
+
 }

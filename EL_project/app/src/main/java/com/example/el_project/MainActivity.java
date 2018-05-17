@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,33 +13,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private MyDatabaseHelper dbHelper;
-    private FloatingActionButton baseButton;
+    private FloatingActionButton baseFab;
     private android.support.design.widget.FloatingActionButton fabDelete, fabDetail, fabStart;
     private boolean isFabOpened = false;
     private Animation in_from_fab;
@@ -53,10 +47,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private TextView textBreakClockTime;
     private LinearLayout breakClockTimeLayout;
     private Button btnCleanShareStorage;
-
-    private int[] colors = {R.drawable.task_bar_blue, R.drawable.task_bar_brown, R.drawable.task_bar_green, R.drawable.task_bar_purple, R.drawable.task_bar};
-    private int[] checkedColors={R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen,R.drawable.taskbar_chosen};
-    //颜色ID数组，用于循环改变任务背景颜色
 
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
     private int selectedPosition;//被选中的Item位置
@@ -176,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             adapter.changeItemBackGround(position);
                         }
                     }.start();
-                    openMenu(baseButton);
+                    openMenu(baseFab);
                 }
                 else if(isFabOpened&&selectedPosition!=position){
                     Task previousTask=mTaskList.get(selectedPosition);
@@ -188,11 +178,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                             adapter.changeItemBackGround(selectedPosition);
                         }
                     }.start();
-                    closeMenu(baseButton);
+                    closeMenu(baseFab);
                     selectedPosition=-1;
                 }
                 else{
-                    closeMenu(baseButton);
+                    closeMenu(baseFab);
                     selectedPosition=-1;
                     task.switchBackground();
                     new Thread(){
@@ -211,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 //                Task task = mTaskList.get(position);
 ////                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
 //                if (!isFabOpened&&selectedPosition==-1) {
-//                    openMenu(baseButton);
+//                    openMenu(baseFab);
 //                    selectedPosition=position;
 //                    task.switchBackground();
 //                    adapter.changeItemBackGround(position);
@@ -220,11 +210,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 //                    Task previousTask=mTaskList.get(selectedPosition);
 //                    previousTask.switchBackground();
 //                    adapter.changeItemBackGround(selectedPosition);
-//                    closeMenu(baseButton);
+//                    closeMenu(baseFab);
 //                    selectedPosition=-1;
 //                }
 //                else{
-//                    closeMenu(baseButton);
+//                    closeMenu(baseFab);
 //                    selectedPosition=-1;
 //                    task.switchBackground();
 //                    adapter.changeItemBackGround(position);
@@ -232,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
-        baseButton =findViewById(R.id.fab_base);
+        baseFab =findViewById(R.id.fab_base);
         fabDelete = findViewById(R.id.fab_delete);
         fabDetail = findViewById(R.id.fab_detail);
         fabStart = findViewById(R.id.fab_start);
@@ -240,14 +230,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         fabDetail.setVisibility(View.INVISIBLE);
         fabStart.setVisibility(View.INVISIBLE);
 
-        baseButton.setOnClickListener(new View.OnClickListener() {
+        baseFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!isFabOpened) {
                     Intent intent = new Intent(MainActivity.this,EditTaskActivity.class);
                     startActivityForResult(intent,1);//对是否点击了完成按钮实现监听
                 } else {
-                    closeMenu(baseButton);
+                    closeMenu(baseFab);
                     Task task = mTaskList.get(selectedPosition);
                     task.switchBackground();
                     adapter.changeItemBackGround(selectedPosition);
@@ -260,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             @Override
             public void onClick(View v) {
                startTask();
-                closeMenu(baseButton);
+                closeMenu(baseFab);
                 selectedPosition=-1;
             }
         });
@@ -278,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             @Override
             public void onClick(View v) {
                 deleteTask(selectedPosition);
-                closeMenu(baseButton);
+                closeMenu(baseFab);
                 selectedPosition=-1;
             }
         });
@@ -401,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 Intent intent=new Intent(MainActivity.this,EditTaskActivity.class);
                 intent.putExtra("details",taskDetails);
                 startActivityForResult(intent,2);
-                closeMenu(baseButton);
+                closeMenu(baseFab);
                 selectedPosition=-1;
             }
         });
