@@ -57,7 +57,7 @@
 			<com.github.mikephil.charting.charts.BarChart
 				android:id="@+id/data_bar_chart"
 				android:layout_width="match_parent"
-				android:layout_height="380dp"
+				android:layout_height="220dp"
 				android:background="@mipmap/circle_white_250" />
 
 			<Button

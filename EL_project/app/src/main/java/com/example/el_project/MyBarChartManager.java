@@ -80,14 +80,15 @@ public class MyBarChartManager {
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(myXFormatter);
         xAxis.setTextColor(Color.WHITE);
+        xAxis.setTextSize(12f);
         //保证Y轴从0开始，不然会上移一点
         leftAxis.setAxisMinimum(0f);
         rightAxis.setAxisMinimum(0f);
-        leftAxis.setSpaceTop(15f);
+        leftAxis.setSpaceTop(13f);
 //        leftAxis.setAxisMaximum(240f);//注意，设定最大值
-        leftAxis.setTextSize(10f);
+        leftAxis.setTextSize(11f);
         leftAxis.setTextColor(Color.WHITE);
-        leftAxis.setLabelCount(9,false);
+        leftAxis.setLabelCount(7,false);
     }
 
     /**
@@ -125,7 +126,7 @@ public class MyBarChartManager {
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(barDataSet);
         BarData data = new BarData(dataSets);
-        data.setBarWidth(0.5f);//设置bar的宽度
+        data.setBarWidth(0.3f);//设置bar的宽度
         //设置X轴的刻度数
         xAxis.setLabelCount(xAxisValues.size() - 1, false);
         mBarChart.setData(data);
@@ -253,6 +254,7 @@ public class MyBarChartManager {
         Description description = new Description();
         description.setText(str);
         description.setTextColor(color);
+        description.setTextSize(9f);
         mBarChart.setDescription(description);
         mBarChart.invalidate();
     }
