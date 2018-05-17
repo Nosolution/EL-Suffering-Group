@@ -28,6 +28,7 @@ public class MyBarChartManager {
     private YAxis leftAxis;
     private YAxis rightAxis;
     private XAxis xAxis;
+    private Legend legend;
     private String[] values={"周一","周二","周三","周四","周五","周六","周日"};
 
     public MyBarChartManager(BarChart barChart) {
@@ -41,10 +42,7 @@ public class MyBarChartManager {
      * 初始化LineChart
      */
     private void initLineChart() {
-        /*
-        **图表背景颜色
-         */
-        mBarChart.setBackgroundColor(0x00ffffff);
+//        mBarChart.setBackgroundColor(0x00ffffff);
 
         //网格
         mBarChart.setDrawGridBackground(false);//设置网格不可见
@@ -64,7 +62,7 @@ public class MyBarChartManager {
         mBarChart.animateX(1000, Easing.EasingOption.Linear);
 
         //折线图例 标签 设置
-        Legend legend = mBarChart.getLegend();
+        legend = mBarChart.getLegend();
         legend.setForm(Legend.LegendForm.SQUARE);
         legend.setTextSize(11f);
         //显示位置
@@ -73,10 +71,7 @@ public class MyBarChartManager {
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
 
-        /*
-        **图表底下“每日专注时间”文字颜色
-         */
-        legend.setTextColor(Color.WHITE);
+//        legend.setTextColor(Color.WHITE);
 
 
 //        setDescription("",Color.WHITE);
@@ -87,10 +82,7 @@ public class MyBarChartManager {
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(myXFormatter);
 
-        /*
-        **X轴颜色
-         */
-        xAxis.setTextColor(Color.WHITE);
+//        xAxis.setTextColor(Color.WHITE);
         xAxis.setTextSize(12f);
         //保证Y轴从0开始，不然会上移一点
         leftAxis.setAxisMinimum(0f);
@@ -99,10 +91,7 @@ public class MyBarChartManager {
 //        leftAxis.setAxisMaximum(240f);//注意，设定最大值
         leftAxis.setTextSize(11f);
 
-        /*
-        **Y轴颜色
-         */
-        leftAxis.setTextColor(Color.WHITE);
+//        leftAxis.setTextColor(Color.WHITE);
         //Y轴标签个数（近似值）
         leftAxis.setLabelCount(7,false);
     }
@@ -114,7 +103,7 @@ public class MyBarChartManager {
      * @param yAxisValues
      * @param label
      */
-    public void showBarChart(List<Float> xAxisValues, List<Float> yAxisValues, String label) {
+    public void showBarChart(List<Float> xAxisValues, List<Float> yAxisValues, String label,int backGroundColor,int yTextColor,int xTextColor,int barColor,int legendColor) {
         initLineChart();
         float max=0;
         for(float item:yAxisValues)
@@ -132,10 +121,13 @@ public class MyBarChartManager {
                 return (int)value+"";
             }
         });
-        /*
-        **柱体颜色
-         */
-        barDataSet.setColor(Color.CYAN);
+        //颜色设置
+        mBarChart.setBackgroundColor(backGroundColor);
+        leftAxis.setTextColor(yTextColor);
+        xAxis.setTextColor(xTextColor);
+        legend.setTextColor(legendColor);
+        barDataSet.setColor(barColor);
+        
         barDataSet.setValueTextSize(9f);
         barDataSet.setValueTextColor(Color.WHITE);
         barDataSet.setFormLineWidth(0.5f);
