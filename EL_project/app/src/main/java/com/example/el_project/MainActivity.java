@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -284,6 +285,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         super.onResume();
     }
 
+    @Override
+    protected void onDestroy() {
+        Toast.makeText(MainActivity.this,"onDestroy",Toast.LENGTH_SHORT).show();
+        super.onDestroy();
+    }
 
     // 点击task后，悬浮按钮产生的动画
     public void openMenu(View view) {
