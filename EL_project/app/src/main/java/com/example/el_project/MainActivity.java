@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private TextView textBreakClockTime;
     private LinearLayout breakClockTimeLayout;
     private Button btnCleanShareStorage;
-    private int randomNumber;
 
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
     private int selectedPosition;//被选中的Item位置
@@ -58,13 +57,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        randomNumber=(int)(Math.random()*100);
-        Toast.makeText(MainActivity.this,"Main"+randomNumber+"onCreate",Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_main);
-//        if (!isTaskRoot()) {
-//            finish();
-//            return;
-//        }
 
         dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 3);
         selectedPosition=-1;
@@ -292,11 +285,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         super.onResume();
     }
 
-    @Override
-    protected void onDestroy() {
-        Toast.makeText(MainActivity.this,"Main"+randomNumber+"onDestroy",Toast.LENGTH_SHORT).show();
-        super.onDestroy();
-    }
 
     // 点击task后，悬浮按钮产生的动画
     public void openMenu(View view) {

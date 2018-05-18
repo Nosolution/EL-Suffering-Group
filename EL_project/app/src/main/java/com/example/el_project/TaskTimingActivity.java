@@ -463,7 +463,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		unregisterReceiver(screenOffReceiver);
 
 		saveTaskFinishToDB(saveFinishStatue.ordinal());
-		Toast.makeText(TaskTimingActivity.this,"Timing onDestroy",Toast.LENGTH_SHORT).show();
 
 		super.onDestroy();
 	}
