@@ -1,7 +1,6 @@
 package com.example.el_project;
 
 import android.graphics.Color;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,10 +29,10 @@ public class BackgroundCollection {
         backgroundCollection.add(R.drawable.background_7);
 
         colorCollection.add(Color.rgb(255, 168, 108));
-        colorCollection.add(Color.rgb(73, 102, 88));
+        colorCollection.add(Color.rgb(128, 57, 181));
         colorCollection.add(Color.rgb(141, 167, 242));
         colorCollection.add(Color.rgb(242, 99, 97));
-        colorCollection.add(Color.rgb(128, 57, 181));
+        colorCollection.add(Color.rgb(73, 102, 88));
         colorCollection.add(Color.rgb(98, 168, 153));
         colorCollection.add(Color.rgb(146, 168, 165));
     }

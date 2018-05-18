@@ -223,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
+
         baseFab =findViewById(R.id.fab_base);
         fabDelete = findViewById(R.id.fab_delete);
         fabDetail = findViewById(R.id.fab_detail);
