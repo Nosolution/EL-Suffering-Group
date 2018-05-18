@@ -24,7 +24,7 @@ public class Task implements Comparable<Task>{
 		this.id=id;
 		this.eDgree=eDgree;
 		this.dateDiffWeight=dateDiff<5? 5-dateDiff:0;
-		this.weight=2*this.eDgree+3*this.dateDiffWeight;//权重模型
+		this.weight=3*this.eDgree+4*this.dateDiffWeight;//权重模型
 	}
 
 	public Task(int id){

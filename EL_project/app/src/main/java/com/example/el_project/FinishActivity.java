@@ -153,8 +153,9 @@ public class FinishActivity extends AppCompatActivity {
 		btReturnMain.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(FinishActivity.this, MainActivity.class);
-				startActivity(intent);
+//				Intent intent = new Intent(FinishActivity.this, MainActivity.class);
+//				startActivity(intent);
+				finish();
 			}
 		});
 		btShare.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +182,7 @@ public class FinishActivity extends AppCompatActivity {
 				intent.putExtra("intent_is_daily_task",recommendedTasks.get(position)[4]);
 				intent.putExtra("intent_task_comments",recommendedTasks.get(position)[5]);
 				startActivity(intent);
+				finish();
 			}
 
 			@Override
@@ -213,8 +215,8 @@ public class FinishActivity extends AppCompatActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
+//		Intent intent = new Intent(this, MainActivity.class);
+//		startActivity(intent);
 	}
 
 	//获得任务完成信息

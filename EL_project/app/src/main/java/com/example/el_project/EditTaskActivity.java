@@ -266,6 +266,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                         modifyTask();
                         startTask(Integer.parseInt(taskId));
                     }
+                    finish();
                     break;
             }
         }

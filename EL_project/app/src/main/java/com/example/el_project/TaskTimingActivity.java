@@ -40,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 	private DrawerLayout mDrawerLayout;
@@ -406,7 +407,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				//TODO:放弃完成任务
 				//    changeTask();
 				musicController.stop();
-				showDropActivity();
+//				showDropActivity();
 				havingTaskOngoing = false;
 				saveFinishStatue = SaveStatue.QUIT;
 				breakCount--;
@@ -462,6 +463,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		unregisterReceiver(screenOffReceiver);
 
 		saveTaskFinishToDB(saveFinishStatue.ordinal());
+		Toast.makeText(TaskTimingActivity.this,"Timing onDestroy",Toast.LENGTH_SHORT).show();
 
 		super.onDestroy();
 	}
@@ -502,7 +504,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				//TODO:放弃完成任务
 				//changeTask();
 				musicController.stop();
-				showDropActivity();
+//				showDropActivity();
 				havingTaskOngoing = false;
 				saveFinishStatue = SaveStatue.QUIT;
 				breakCount--;
