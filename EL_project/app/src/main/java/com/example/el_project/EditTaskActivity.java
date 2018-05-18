@@ -278,7 +278,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         SQLiteDatabase db = dbHelper.getWritableDatabase();//真正打开数据库
         ContentValues values = new ContentValues();//传值工具
         values.put("task",taskNameEditText.getText().toString() );
-        values.put("assumedtime", hour +":"+ minute);
+        values.put("assumedtime", textTimeToFinish.getText().toString());
         values.put("deadline",ddlTime.getText().toString());//对应每一列传值
         values.put("emergencydegree",selectedImageViewPosition>0? selectedImageViewPosition : 1);//默认值为1
         values.put("isdailytask",isDailyTask());
@@ -292,7 +292,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("task",taskNameEditText.getText().toString() );
-        values.put("assumedtime", hour +":"+ minute);
+        values.put("assumedtime", textTimeToFinish.getText().toString());
         values.put("deadline",ddlTime.getText().toString());
         values.put("emergencydegree",selectedImageViewPosition>0? selectedImageViewPosition : 1);
         values.put("isdailytask",isDailyTask());
@@ -344,6 +344,8 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private void resetAllComponent(){
         taskNameEditText.setText("");
         textTimeToFinish.setText("00:00");
+        hour = "0";
+        minute = "0";
         ImageView iv;
         AnimationDrawable ad;
         for(int i=selectedImageViewPosition;i>0;i--){
