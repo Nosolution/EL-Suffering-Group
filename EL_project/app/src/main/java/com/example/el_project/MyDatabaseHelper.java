@@ -31,6 +31,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     public static final String ADD_COLUMN_LAST_FINISHED_TIME="alter table Tasklist add column last_finished_date integer";
 
+    public static final String ADD_COLUMN_TIME_USED="alter table Tasklist add column time_used integer";
+
     private Context mContext;
 
     public MyDatabaseHelper(Context context, String name,
@@ -50,13 +52,18 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion <= 1){
-            db.execSQL(CREATE_FINISHTASKTABLE);
-            Toast.makeText(mContext,"Create succeeded",Toast.LENGTH_SHORT).show();
-        }
-        else if(oldVersion<=2){
-            db.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
-            Toast.makeText(mContext,"succeeded upgrade to version 3",Toast.LENGTH_SHORT).show();
+        switch(oldVersion) {
+            case 1:
+                db.execSQL(CREATE_FINISHTASKTABLE);
+                Toast.makeText(mContext, "Create succeeded", Toast.LENGTH_SHORT).show();
+
+            case 2:
+                db.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
+                Toast.makeText(mContext, "succeeded upgrade to version 3", Toast.LENGTH_SHORT).show();
+            case 3:
+                db.execSQL(ADD_COLUMN_TIME_USED);
+                Toast.makeText(mContext, "succeeded upgrade to version 4", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

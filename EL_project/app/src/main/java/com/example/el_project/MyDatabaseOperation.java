@@ -28,13 +28,13 @@ public class MyDatabaseOperation {
     传入上下文context与任务id
      */
     public static void deleteTask(Context context,int id){
-        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,3);
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         db.delete("Tasklist","id=?",new String[]{String.valueOf(id)});
     }
 
     public static int queryLatestTaskId(Context context){
-        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,3);
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
         if(cursor.moveToPosition(cursor.getCount()-1)){
@@ -45,9 +45,24 @@ public class MyDatabaseOperation {
         else return 0;
     }
 
+    /*
+    **放弃任务时更新已进行的时间
+     */
+    public static void giveUpFinishingTask(Context context,int id,int time){
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
+        SQLiteDatabase db=dbHelper.getWritableDatabase();
+        Cursor cursor = db.query("Tasklist", null, "id=?", new String[]{String.valueOf(id)}, null, null, null);
+        if(cursor.moveToFirst()){
+            int oldTime=cursor.getInt(cursor.getColumnIndex("timeUsed"));
+            ContentValues values = new ContentValues();
+            values.put("time_used",time+oldTime);
+            db.update("Tasklist",values,"id=?",new String[]{String.valueOf(id)});
+        }
+    }
+
     //提供两种查询方法，可分别根据id和任务名查询是否是每日任务
     public static boolean isDailyTask(Context context,int id){
-        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,3);
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
         if(cursor.moveToFirst()){
@@ -62,7 +77,7 @@ public class MyDatabaseOperation {
 
     }
     public static boolean isDailyTask(Context context,String taskName){
-        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,3);
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Cursor cursor=db.query("Tasklist",null,"task=?",new String[]{taskName},null,null,null);
         if(cursor.moveToFirst()){
@@ -77,7 +92,7 @@ public class MyDatabaseOperation {
     }
 
     public static int lastFinishedDate(Context context,int id){
-        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,3);
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
         if(cursor.moveToFirst()){
@@ -89,7 +104,7 @@ public class MyDatabaseOperation {
 
     //方法重载，完成每日任务，更新状态
     public static void setDailyTaskFinished(Context context,int id){
-        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,3);
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat formatDate = new SimpleDateFormat("yyMMdd", Locale.getDefault());
@@ -99,7 +114,7 @@ public class MyDatabaseOperation {
         db.update("Tasklist",values,"id=?",new String[]{String.valueOf(id)});
     }
     public static void setDailyTaskFinished(Context context,String taskName){
-        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,3);
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat formatDate = new SimpleDateFormat("yyMMdd", Locale.getDefault());
@@ -112,7 +127,7 @@ public class MyDatabaseOperation {
     //刷新所有已完成的每日任务
     public static void refreshAllDailyTask(Context context){
         ArrayList<String> idList=new ArrayList<>();
-        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,3);
+        MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat formatDate = new SimpleDateFormat("yyMMdd", Locale.getDefault());
@@ -133,125 +148,152 @@ public class MyDatabaseOperation {
 //            db.update("Tasklist",values,"id=?",(String[])idList.toArray(new String[idList.size()]));
     }
 
-    public static String getTaskRestDays(Context context,int id){
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+    public static List<Task> getTaskList(Context context){
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Calendar calendar = new GregorianCalendar();
-        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
+        Cursor cursor=db.query("Tasklist",null,null,null,null,null,null);
         if(cursor.moveToFirst()){
-            if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==1)
-                return "";
-
-            String deadLine=cursor.getString(cursor.getColumnIndex("deadline")).split(" ")[0];
-            cursor.close();
-            if(deadLine==null||deadLine=="")
-                return "";
-
-            String currentDate=formatDate.format(calendar.getTime());
-            try {
-                int diff = calcDateDifference(currentDate, deadLine);
-                if(diff>0&&diff<=3){
-                    switch (diff){
-                        case 1:
-                            return "1天";
-                        case 2:
-                            return "2天";
-                        case 3:
-                            return "3天";
-                    }
-                }
-                else if(diff>3){
-                    String[] temp=deadLine.substring(5).split("-");
-                    if(Integer.parseInt(temp[0])<10)
-                        return temp[0].substring(1)+"."+temp[1];
-                    else
-                        return temp[0]+"."+temp[1];
-                }
-                else
-                    return "";
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        return "";
-    }
-
-    public static int[] getRecommendedTaskId(Context context){
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Calendar calendar = new GregorianCalendar();
-        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
-        if(cursor.moveToFirst()){
-            List<Task> myList=new ArrayList<Task>();
-            int tempId;
+            List<Task> taskList=new ArrayList<>();
             do{
-                tempId=cursor.getInt(cursor.getColumnIndex("id"));
-                switch(cursor.getInt(cursor.getColumnIndex("isdailytask"))) {
-                    case 1:
-                        myList.add(new Task(tempId));
-                        break;
-                    case 0:
-                        String deadLine = cursor.getString(cursor.getColumnIndex("deadline")).split(" ")[0];
-                        String currentDate = formatDate.format(calendar.getTime());
-                        try {
-                            int diff = calcDateDifference(currentDate, deadLine);
-                            myList.add(new Task(tempId, cursor.getInt(cursor.getColumnIndex("emergencydegree")), diff > 0 ? diff : 0));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        break;
+                int isDailyTask=cursor.getInt(cursor.getColumnIndex("isdailytask"));
+                if(isDailyTask!=2){
+                    Task tempTask=new Task(
+                            cursor.getInt(cursor.getColumnIndex("id")),
+                            cursor.getString(cursor.getColumnIndex("task")),
+                            cursor.getString(cursor.getColumnIndex("assumedtime")),
+                            cursor.getString(cursor.getColumnIndex("deadline")),
+                            cursor.getInt(cursor.getColumnIndex("emergencydegree")),
+                            isDailyTask,
+                            cursor.getString(cursor.getColumnIndex("comments")),
+                            cursor.getInt(cursor.getColumnIndex("time_used"))
+                    );
+                    taskList.add(tempTask);
                 }
             }while(cursor.moveToNext());
-
-            Collections.sort(myList);
-            if(myList.size()>=3){
-                int[] result=new int[3];
-                for(int i=0;i<3;i++)
-                    result[i]=myList.get(i).getId();
-                return result;
-            }
-            else{
-                int []result=new int[myList.size()];
-                for(int i=0;i<myList.size();i++)
-                    result[i]=myList.get(i).getId();
-                return result;
-            }
+            cursor.close();
+            Collections.sort(taskList);
+            return taskList;
         }
         cursor.close();
         return null;
     }
 
-    public static String[] getCertainTaskInfo(Context context,int id){
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
-        if(cursor.moveToFirst()){
-            String[] taskInfo={ String.valueOf(id),
-                                cursor.getString(cursor.getColumnIndex("task")),
-                                MyDatabaseOperation.getTaskRestDays(context,id),
-                                cursor.getString(cursor.getColumnIndex("assumedtime")),
-                                String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-                                cursor.getString(cursor.getColumnIndex("comments"))};
-
-            return taskInfo;
-        }
-        return null;
+    public static List<Task> getRecommendedTaskList(Context context){
+        List<Task> finalList=getTaskList(context);
+        if(finalList.size()>3)
+            return finalList.subList(0,3);
+        else
+            return finalList;
     }
 
-    public static int calcDateDifference(String date1,String date2)throws ParseException {
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(sdf.parse(date1));
-        long time1 = cal.getTimeInMillis();
-        cal.setTime(sdf.parse(date2));
-        long time2 = cal.getTimeInMillis();
-        if(time2<=time1)
-            return -1;
-        long between_days=(time2-time1)/(1000*3600*24);
-        return Integer.parseInt(String.valueOf(between_days));
-    }
+//    public static String getTaskRestDays(Context context,int id){
+//        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        Calendar calendar = new GregorianCalendar();
+//        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+//        Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
+//        if(cursor.moveToFirst()){
+//            if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==1)
+//                return "";
+//
+//            String deadLine=cursor.getString(cursor.getColumnIndex("deadline")).split(" ")[0];
+//            cursor.close();
+//            if(deadLine==null||deadLine=="")
+//                return "";
+//
+//            String currentDate=formatDate.format(calendar.getTime());
+//            try {
+//                int diff = MyAlgorithm.calcDateDifference(currentDate, deadLine);
+//                if(diff>0&&diff<=3){
+//                    switch (diff){
+//                        case 1:
+//                            return "1天";
+//                        case 2:
+//                            return "2天";
+//                        case 3:
+//                            return "3天";
+//                    }
+//                }
+//                else if(diff>3){
+//                    String[] temp=deadLine.substring(5).split("-");
+//                    if(Integer.parseInt(temp[0])<10)
+//                        return temp[0].substring(1)+"."+temp[1];
+//                    else
+//                        return temp[0]+"."+temp[1];
+//                }
+//                else
+//                    return "";
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
+//        }
+//        return "";
+//    }
+
+
+//    public static int[] getRecommendedTaskList(Context context){
+//        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        Calendar calendar = new GregorianCalendar();
+//        SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+//        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
+//        if(cursor.moveToFirst()){
+//            List<Task> myList=new ArrayList<Task>();
+//            int tempId;
+//            do{
+//                tempId=cursor.getInt(cursor.getColumnIndex("id"));
+//                switch(cursor.getInt(cursor.getColumnIndex("isdailytask"))) {
+//                    case 1:
+//                        myList.add(new Task(tempId));
+//                        break;
+//                    case 0:
+//                        String deadLine = cursor.getString(cursor.getColumnIndex("deadline")).split(" ")[0];
+//                        String currentDate = formatDate.format(calendar.getTime());
+//                        try {
+//                            int dateDiffWeight = MyAlgorithm.calcDateDiffWeight(currentDate, deadLine);
+//                            myList.add(new Task(tempId, cursor.getInt(cursor.getColumnIndex("emergencydegree")),dateDiffWeight));
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
+//                }
+//            }while(cursor.moveToNext());
+//
+//            Collections.sort(myList);
+//            if(myList.size()>=3){
+//                int[] result=new int[3];
+//                for(int i=0;i<3;i++)
+//                    result[i]=myList.get(i).getId();
+//                return result;
+//            }
+//            else{
+//                int []result=new int[myList.size()];
+//                for(int i=0;i<myList.size();i++)
+//                    result[i]=myList.get(i).getId();
+//                return result;
+//            }
+//        }
+//        cursor.close();
+//        return null;
+//    }
+
+
+//    public static String[] getCertainTaskInfo(Context context,int id){
+//        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        Cursor cursor=db.query("Tasklist",null,"id=?",new String[]{String.valueOf(id)},null,null,null);
+//        if(cursor.moveToFirst()){
+//            String[] taskInfo={ String.valueOf(id),
+//                    cursor.getString(cursor.getColumnIndex("task")),
+//                    MyDatabaseOperation.getTaskRestDays(context,id),
+//                    cursor.getString(cursor.getColumnIndex("assumedtime")),
+//                    String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
+//                    cursor.getString(cursor.getColumnIndex("comments"))};
+//
+//            return taskInfo;
+//        }
+//        return null;
+//    }
 
 
     //完成每日任务，传入上下文context和id
@@ -266,7 +308,7 @@ public class MyDatabaseOperation {
 
     //任务开始时向数据库插入一条完成信息，此信息只保存具体开始时间，任务名，其他置为默认
     public static String addFinishTaskWithStartTime(Context context, String taskName){
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         Calendar calendar = new GregorianCalendar();
@@ -287,7 +329,7 @@ public class MyDatabaseOperation {
 
     //当任务完成或放弃后修改对应的完成信息，保存完成时日期，总任务耗时，完成状态，切换次数等
     public static void editFinishTaskWhenFinishing(Context context, String startTime, int taskTimeUsed, int statue, int breakCount){
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         Calendar calendar = new GregorianCalendar();
@@ -307,14 +349,14 @@ public class MyDatabaseOperation {
 
     //更新任务计时记录表，删除无效记录
     public static void refreshFinishTaskTable(Context context){
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete("FinishTaskTable", "week = ?", new String[]{"0"});
     }
 
     //得到某日总计学习工作时间
     public static int getTotalSomeDayTimeUsed(Context context, int date){
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         int totalTime = 0;
 
@@ -342,7 +384,7 @@ public class MyDatabaseOperation {
     public static int[] getWeekPerDayTimeUsed(Context context, int weekCount){
         int[] timesWeek = new int[7];
 
-        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 3);
+        MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         Cursor cursor = db.query("FinishTaskTable", null, "week_count = ?",

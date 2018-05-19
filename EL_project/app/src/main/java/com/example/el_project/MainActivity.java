@@ -47,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private LinearLayout clockTimeLayout;
     private TextView textBreakClockTime;
     private LinearLayout breakClockTimeLayout;
-
-    private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
     private int selectedPosition;//被选中的Item位置
 
     private DrawerLayout drawerLayoutMain;
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 3);
+        dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 4);
         selectedPosition=-1;
 
         Toolbar toolbar = findViewById(R.id.title_toolbar);
@@ -305,57 +303,49 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         fabDetail.startAnimation(out_to_fab);
         fabStart.startAnimation(out_to_fab);
     }
-    //重载方法，若点击了完成按钮，返回此Acivity时更新recyclerview
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK ){
-            if(requestCode==1) {
-//                updateTasks();
-            }
-            else if(requestCode==2){
-//                String taskId=data.getStringExtra("task_ID");
-//                modifyTask(taskId);
-            }
-        }
-    }
 
     private void refreshTask(){
         mTaskList.clear();
-        taskList.clear();
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            int id;
-            do {
-                if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==2)
-                    continue;
-                id = cursor.getInt(cursor.getColumnIndex("id"));
-                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")),
-                        MyDatabaseOperation.getTaskRestDays(MainActivity.this,id),R.drawable.task_bar,R.drawable.taskbar_chosen);
-                mTaskList.add(task);
-                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
-                        cursor.getString(cursor.getColumnIndex("task")),
-                        cursor.getString(cursor.getColumnIndex("assumedtime")),
-                        cursor.getString(cursor.getColumnIndex("deadline")),
-                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
-                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-                        cursor.getString(cursor.getColumnIndex("comments")),
-                        String.valueOf(cursor.getInt(cursor.getColumnIndex("last_finished_date")))};
-                taskList.add(tempstring);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
+        mTaskList.addAll(MyDatabaseOperation.getTaskList(MainActivity.this));
+//        taskList.clear();
+//        SQLiteDatabase db = dbHelper.getWritableDatabase();
+//        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
+//        if (cursor.moveToFirst()) {
+//            int id;
+//            do {
+//                if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==2)
+//                    continue;
+//                id = cursor.getInt(cursor.getColumnIndex("id"));
+//                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")),
+//                        MyDatabaseOperation.getTaskRestDays(MainActivity.this,id),R.drawable.task_bar,R.drawable.taskbar_chosen);
+//                mTaskList.add(task);
+//                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
+//                        cursor.getString(cursor.getColumnIndex("task")),
+//                        cursor.getString(cursor.getColumnIndex("assumedtime")),
+//                        cursor.getString(cursor.getColumnIndex("deadline")),
+//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
+//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
+//                        cursor.getString(cursor.getColumnIndex("comments")),
+//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("last_finished_date")))};
+//                taskList.add(tempstring);
+//            } while (cursor.moveToNext());
+//        }
+//        cursor.close();
     }
 
     private void startTask(){
         Intent intent=new Intent(MainActivity.this,TaskTimingActivity.class);
-        intent.putExtra("intent_task_id",Integer.parseInt(taskList.get(selectedPosition)[0]));
-        intent.putExtra("intent_task_name",taskList.get(selectedPosition)[1]);
-        String[] tempString=taskList.get(selectedPosition)[2].split(":");
-        intent.putExtra("intent_task_hours_required", Integer.parseInt(tempString[0]));
-        intent.putExtra("intent_task_minutes_required", Integer.parseInt(tempString[1]));
-        intent.putExtra("intent_is_daily_task",Integer.parseInt(taskList.get(selectedPosition)[5]));
-        intent.putExtra("intent_task_comments",taskList.get(selectedPosition)[6]);
+//        intent.putExtra("intent_task_id",Integer.parseInt(taskList.get(selectedPosition)[0]));
+        intent.putExtra("intent_task_id",mTaskList.get(selectedPosition).getId());
+        intent.putExtra("intent_task_name",mTaskList.get(selectedPosition).getName());
+//        String[] tempString=taskList.get(selectedPosition)[2].split(":");
+//        intent.putExtra("intent_task_hours_required", Integer.parseInt(tempString[0]));
+//        intent.putExtra("intent_task_minutes_required", Integer.parseInt(tempString[1]));
+        intent.putExtra("intent_task_hours_required", mTaskList.get(selectedPosition).getHourRequired());
+        intent.putExtra("intent_task_minutes_required", mTaskList.get(selectedPosition).getMinuteRequired());
+        intent.putExtra("intent_is_daily_task",mTaskList.get(selectedPosition).getIsDailyTask());
+        intent.putExtra("intent_task_comments",mTaskList.get(selectedPosition).getComments());
+        intent.putExtra("intent_time_used",mTaskList.get(selectedPosition).getTimeUsed());
         startActivity(intent);
     }
 
@@ -380,10 +370,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         detailsDialog.setNegativeButton("修改", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String[] taskDetails=taskList.get(position);
+                String[] taskDetails=mTaskList.get(position).getThisTaskInfo();
                 Intent intent=new Intent(MainActivity.this,EditTaskActivity.class);
                 intent.putExtra("details",taskDetails);
-                startActivityForResult(intent,2);
+                startActivity(intent);
                 closeMenu(baseFab);
                 selectedPosition=-1;
             }
@@ -394,19 +384,19 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private String constructDetails(int position){
         String finalString= "";
         String temp="";
-        finalString+="任务："+taskList.get(position)[1]+"\n";
-        String[] tempString=taskList.get(position)[2].split(":");
-        finalString+="预计时间:"+tempString[0]+"时"+tempString[1]+"分\n";
-        temp=taskList.get(position)[3];
+        finalString+="任务："+mTaskList.get(selectedPosition).getName()+"\n";
+//        String[] tempString=taskList.get(position)[2].split(":");
+        finalString+="预计时间:"+mTaskList.get(position).getHourRequired()+"时"+mTaskList.get(position).getMinuteRequired()+"分\n";
+        temp=mTaskList.get(selectedPosition).getDeadline();
         finalString+="最后日期："+(temp==null ? "无":temp)+"\n";
-        finalString+="紧急程度："+taskList.get(position)[4]+"\n";
-        finalString+="是否是每日任务："+(taskList.get(position)[5].equals( "1" )? "是":"不是")+"\n";
-        finalString+="备注:"+taskList.get(position)[6]+"\n";
+        finalString+="紧急程度："+mTaskList.get(selectedPosition).getEmergencyDegree()+"\n";
+        finalString+="是否是每日任务："+(mTaskList.get(selectedPosition).getIsDailyTask()==1? "是":"不是")+"\n";
+        finalString+="备注:"+mTaskList.get(selectedPosition).getComments()+"\n";
         return finalString;
     }
 
     private void deleteTask(int position){
-        MyDatabaseOperation.deleteTask(MainActivity.this,Integer.parseInt(taskList.get(position)[0]));
+        MyDatabaseOperation.deleteTask(MainActivity.this,mTaskList.get(position).getId());
         refreshTask();
         adapter.refreshItemView();
     }

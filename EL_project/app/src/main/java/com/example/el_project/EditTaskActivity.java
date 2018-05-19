@@ -52,7 +52,8 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private Button startNow;//立即开始按钮
     private int selectedImageViewPosition;//被选择的ImageView的位置
     private boolean editMode;//是否是编辑任务
-    private String taskId;//数据库中task的ID，作为唯一标识符
+    private int taskId;//数据库中task的ID，作为唯一标识符
+    private int taskTimeUsed;
     private RelativeLayout layoutTimeToFinish;//预计完成时间
     private TextView textTimeToFinish;
     private String hour, minute;//Spinner的显示文本
@@ -74,7 +75,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
         findViewById(R.id.edit_task_layout).setOnClickListener(this);//整个页面都监听点击事件
         editMode=false;
-        taskId=null;
+        taskId=0;taskTimeUsed=0;
         finishEditing = (Button)findViewById(R.id.finish_editing);
         startNow = (Button)findViewById(R.id.start_now);
         finishEditing.setOnClickListener(this);
@@ -102,7 +103,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         draw1=getDrawable(R.drawable.circle_animation);//点亮动画
         //打开数据库
 
-        dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,3);
+        dbHelper = new MyDatabaseHelper(this,"TaskStore.db",null,4);
 
         //DDL选择
         selectTime=(RelativeLayout)findViewById(R.id.selectTime);
@@ -191,7 +192,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setTaskDetails(String[] taskDetails){
-        taskId=taskDetails[0];
+        taskId=Integer.parseInt(taskDetails[0]);
         taskNameEditText.setText(taskDetails[1]);
         String[]tempString=taskDetails[2].split(":");
         hour =tempString[0];
@@ -209,6 +210,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             swc.setChecked(true);
         }
         commentEditText.setText(taskDetails[6]);
+        taskTimeUsed=Integer.parseInt(taskDetails[7]);
     }
 
     /**
@@ -264,7 +266,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
                     }
                     else {
                         modifyTask();
-                        startTask(Integer.parseInt(taskId));
+                        startTask(taskId);
                     }
                     finish();
                     break;
@@ -284,6 +286,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
         values.put("last_finished_date  ",0);
+        values.put("time_used",0);
         db.insert("Tasklist",null,values);//将值传入数据库中的"Tasklist"表
     }
 
@@ -297,7 +300,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         values.put("emergencydegree",selectedImageViewPosition>0? selectedImageViewPosition : 1);
         values.put("isdailytask",isDailyTask());
         values.put("comments",commentEditText.getText().toString());
-        db.update("Tasklist",values,"id=?",new String[]{taskId});
+        db.update("Tasklist",values,"id=?",new String[]{String.valueOf(taskId)});
     }
 
 
@@ -367,6 +370,7 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         intent.putExtra("intent_task_minutes_required", Integer.parseInt(minute));
         intent.putExtra("intent_is_daily_task",isDailyTask());
         intent.putExtra("intent_task_comments",commentEditText.getText().toString());
+        intent.putExtra("intent_time_used",taskTimeUsed);
         startActivity(intent);
     }
 

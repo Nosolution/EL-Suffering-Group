@@ -56,7 +56,6 @@ public class FinishActivity extends AppCompatActivity {
 	private RecyclerView recyclerView;
 	private RecyclerViewAdapter adapter;
 	private List<Task> recommendedTaskList=new ArrayList<Task>();
-	private ArrayList<String[]> recommendedTasks = new ArrayList<>();
 
 	private int taskTotalTimeUsed;         //任务总计完成时间
 	private int taskTimeUsed;              //任务有效完成时间
@@ -89,7 +88,8 @@ public class FinishActivity extends AppCompatActivity {
 		recyclerView.setHasFixedSize(true);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 		recyclerView.setLayoutManager(layoutManager);
-		loadRecommendedTasks();
+//		loadRecommendedTasks();
+		recommendedTaskList=MyDatabaseOperation.getRecommendedTaskList(FinishActivity.this);
 		adapter=new RecyclerViewAdapter(recommendedTaskList);
 		recyclerView.setAdapter(adapter);
 
@@ -174,13 +174,19 @@ public class FinishActivity extends AppCompatActivity {
 			@Override
 			public void onItemClick(View view, int position) {
 				Intent intent=new Intent(FinishActivity.this,TaskTimingActivity.class);
-				intent.putExtra("intent_task_id",Integer.parseInt(recommendedTasks.get(position)[0]));
-				intent.putExtra("intent_task_name",recommendedTasks.get(position)[1]);
-				String[] temp=recommendedTasks.get(position)[3].split(":");
-				intent.putExtra("intent_task_hours_required", Integer.parseInt(temp[0]));
-				intent.putExtra("intent_task_minutes_required", Integer.parseInt(temp[1]));
-				intent.putExtra("intent_is_daily_task",recommendedTasks.get(position)[4]);
-				intent.putExtra("intent_task_comments",recommendedTasks.get(position)[5]);
+//				intent.putExtra("intent_task_id",Integer.parseInt(recommendedTasks.get(position)[0]));
+//				intent.putExtra("intent_task_name",recommendedTasks.get(position)[1]);
+//				String[] temp=recommendedTasks.get(position)[3].split(":");
+//				intent.putExtra("intent_task_hours_required", Integer.parseInt(temp[0]));
+//				intent.putExtra("intent_task_minutes_required", Integer.parseInt(temp[1]));
+//				intent.putExtra("intent_is_daily_task",recommendedTasks.get(position)[4]);
+//				intent.putExtra("intent_task_comments",recommendedTasks.get(position)[5]);
+				intent.putExtra("intent_task_id",recommendedTaskList.get(position).getId());
+				intent.putExtra("intent_task_name",recommendedTaskList.get(position).getName());
+				intent.putExtra("intent_task_hours_required",recommendedTaskList.get(position).getHourRequired());
+				intent.putExtra("intent_task_minutes_required",recommendedTaskList.get(position).getMinuteRequired());
+				intent.putExtra("intent_is_daily_task",recommendedTaskList.get(position).getIsDailyTask());
+				intent.putExtra("intent_time_used",recommendedTaskList.get(position).getTimeUsed());
 				startActivity(intent);
 				finish();
 			}
@@ -204,12 +210,13 @@ public class FinishActivity extends AppCompatActivity {
 	}
 
 	private void loadRecommendedTasks(){
-		int[] tasks=MyDatabaseOperation.getRecommendedTaskId(FinishActivity.this);
-		for(int i=0;i<tasks.length;i++){
-			String[] taskInfo=MyDatabaseOperation.getCertainTaskInfo(FinishActivity.this,tasks[i]);
-			recommendedTasks.add(taskInfo);
-			recommendedTaskList.add(new Task(taskInfo[1],taskInfo[2],R.drawable.task_bar,R.drawable.taskbar_chosen));
-		}
+//		int[] tasks=MyDatabaseOperation.getRecommendedTaskList(FinishActivity.this);
+//		for(int i=0;i<tasks.length;i++){
+//			String[] taskInfo=MyDatabaseOperation.getCertainTaskInfo(FinishActivity.this,tasks[i]);
+//			recommendedTasks.add(taskInfo);
+//			recommendedTaskList.add(new Task(taskInfo[1],taskInfo[2],R.drawable.task_bar,R.drawable.taskbar_chosen));
+//		}
+//		recommendedTaskList=MyDatabaseOperation.getRecommendedTaskList(FinishActivity.this);
 	}
 
 	@Override
