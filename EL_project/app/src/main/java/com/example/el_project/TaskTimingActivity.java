@@ -473,6 +473,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			tomatoClockBreakCountDown.cancel();
 			tomatoClockBreakCountDown = null;
 		}
+		if(breakFiveMinCountDown != null){
+			breakFiveMinCountDown.cancel();
+			breakFiveMinCountDown = null;
+		}
 
 		unregisterReceiver(screenOffReceiver);
 
