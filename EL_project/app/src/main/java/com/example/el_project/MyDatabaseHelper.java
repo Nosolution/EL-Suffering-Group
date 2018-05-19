@@ -47,6 +47,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TASKLIST);
         sqLiteDatabase.execSQL(CREATE_FINISHTASKTABLE);
         sqLiteDatabase.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
+        sqLiteDatabase.execSQL(ADD_COLUMN_TIME_USED);
         Toast.makeText(mContext,"Create succeeded",Toast.LENGTH_SHORT).show();
     }
 

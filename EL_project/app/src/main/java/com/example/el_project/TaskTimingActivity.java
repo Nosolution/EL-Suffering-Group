@@ -85,6 +85,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private long taskMillisRequired;                 //任务预计用时，毫秒
 	private String taskName;                         //任务名
 	private String taskComments;                      //任务备注
+	private int taskTimeUsed;                        //任务此前已用时间
 
 	private LinearLayout remarkLayout;             //备注所在的布局
 	private LinearLayout.LayoutParams remarkLayoutLayoutParams; //布局大小
@@ -242,6 +243,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		int taskMintersRequired = intentTaskInfo.getIntExtra("intent_task_minutes_required", 0);
 		taskComments = intentTaskInfo.getStringExtra("intent_task_comments");
 		taskMillisRequired = hourMinSec2Millis(taskHoursRequired, taskMintersRequired, 0);
+		taskTimeUsed = intentTaskInfo.getIntExtra("intent_time_used", 0);
 
 		//初始化显示的Task各项信息
 		toolbar.setTitle(taskName);                                        //设置toolbar标题显示任务名
@@ -539,6 +541,13 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				havingTaskOngoing = false;
 				saveFinishStatue = SaveStatue.QUIT;
 				breakCount--;
+				new Thread() {
+					@Override
+					public void run() {
+						super.run();
+						MyDatabaseOperation.giveUpFinishingTask(TaskTimingActivity.this,taskId,taskSecGone);
+					}
+				}.start();
 				finish();
 			}
 		})
@@ -647,7 +656,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
 				taskTimeRefreshHandler.sendEmptyMessage((int)(millisGoneThrough/1000));
 				if(!isQuickTask) {
-					timeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough + 60000), 0), 2));
+					timeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - taskTimeUsed * 1000 - millisGoneThrough + 60000), 0), 2));
 				}
 				imgDial.setPivotX(imgDial.getWidth() / 2);
 				imgDial.setPivotY(imgDial.getHeight() / 2);

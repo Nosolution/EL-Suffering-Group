@@ -53,7 +53,7 @@ public class MyDatabaseOperation {
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         Cursor cursor = db.query("Tasklist", null, "id=?", new String[]{String.valueOf(id)}, null, null, null);
         if(cursor.moveToFirst()){
-            int oldTime=cursor.getInt(cursor.getColumnIndex("timeUsed"));
+            int oldTime=cursor.getInt(cursor.getColumnIndex("time_used"));
             ContentValues values = new ContentValues();
             values.put("time_used",time+oldTime);
             db.update("Tasklist",values,"id=?",new String[]{String.valueOf(id)});
