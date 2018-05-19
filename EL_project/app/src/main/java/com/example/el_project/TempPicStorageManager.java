@@ -51,9 +51,6 @@ public class TempPicStorageManager {
             }
         }
 
-        if(flag = dir.delete()){
-            Toast.makeText(context, "清理完成！", Toast.LENGTH_SHORT).show();
-        }
         return flag;
     }
 

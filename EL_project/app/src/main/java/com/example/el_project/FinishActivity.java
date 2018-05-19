@@ -146,9 +146,9 @@ public class FinishActivity extends AppCompatActivity {
 		int colorLabel = Color.WHITE;
 		myBarChartManager.showBarChartWithBackGroundRes(xValues,yValues.get(0),"每日专注时间",R.drawable.chart_background_shape,colorAxisY,colorAxisX,colorBody,colorLabel);
 
-		for(int i = 0; i < 7; i++){
-			Log.d("TEST", "onCreate: " + taskTimeUsedWeek[i]);
-		}
+
+		TempPicStorageManager storageManager = new TempPicStorageManager(this, "tempPicToShare");
+		storageManager.clean();
 
 		btReturnMain.setOnClickListener(new View.OnClickListener() {
 			@Override

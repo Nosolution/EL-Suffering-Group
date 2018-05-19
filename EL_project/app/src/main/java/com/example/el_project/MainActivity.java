@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private LinearLayout clockTimeLayout;
     private TextView textBreakClockTime;
     private LinearLayout breakClockTimeLayout;
-    private Button btnCleanShareStorage;
 
     private ArrayList<String[]> taskList = new ArrayList<>();//也许会有用
     private int selectedPosition;//被选中的Item位置
@@ -82,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         breakClockTimeLayout = (LinearLayout)findViewById(R.id.main_break_clock_set_layout);
 	    switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
 	    switchMusicStatus=findViewById(R.id.switch_if_music_on);
-	    btnCleanShareStorage = findViewById(R.id.activity_main_clean_share_storage);
 	    switchClockStatus.setOnCheckedChangeListener(this);
 	    switchMusicStatus.setOnCheckedChangeListener(this);
 	    clockTimeLayout.setOnClickListener(new View.OnClickListener() {
@@ -133,13 +131,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 });
                 dialog = builder.create();
                 dialog.show();
-            }
-        });
-	    btnCleanShareStorage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TempPicStorageManager storageManager = new TempPicStorageManager(MainActivity.this, "tempPicToShare");
-                storageManager.clean();
             }
         });
 

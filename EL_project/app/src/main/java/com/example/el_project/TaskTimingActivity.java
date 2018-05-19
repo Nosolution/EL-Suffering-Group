@@ -56,7 +56,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private LinearLayout clockTimeLayout;
 	private TextView textBreakClockTime;
 	private LinearLayout breakClockTimeLayout;
-	private Button btnCleanShareStorage;              //清理图片缓存
 
 	private CountTimer timer;
 	private CountTimer totalTimer;                    //总计耗时
@@ -142,7 +141,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		clockTimeLayout = findViewById(R.id.task_timing_clock_set_time);
 		textBreakClockTime = findViewById(R.id.text_choose_break_time);
 		breakClockTimeLayout = findViewById(R.id.task_timing_break_clock_set_time);
-		btnCleanShareStorage = findViewById(R.id.activity_task_timing_clean_share_storage);
 
 
 		//初始化计时主要界面的内容
@@ -224,7 +222,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			}
 		});
 		btnChangeMusic.setOnClickListener(this);
-		btnCleanShareStorage.setOnClickListener(this);
 
 
 		//设置计时控制部分所有涉及到的有关的监听器
@@ -438,10 +435,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				break;
 			case R.id.bt_change_music:
 				musicController.randomSwitch();
-				break;
-			case R.id.activity_task_timing_clean_share_storage:
-				TempPicStorageManager storageManager = new TempPicStorageManager(this, "tempPicToShare");
-				storageManager.clean();
 				break;
 		}
 	}
