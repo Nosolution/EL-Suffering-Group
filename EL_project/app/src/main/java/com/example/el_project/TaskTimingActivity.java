@@ -80,6 +80,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private MusicController musicController;
 	private CountDownTimer tomatoClockCountDown;   //番茄钟倒计时
 	private CountDownTimer tomatoClockBreakCountDown;//番茄钟休息倒计时
+	private CountDownTimer breakFiveMinCountDown;   //是否切出满5分钟的提醒
 
 	private int taskId;                              //任务id
 	private long taskMillisRequired;                 //任务预计用时，毫秒
@@ -96,6 +97,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private String startTime;                     //开始时间，以年月日时分秒计，作为唯一标识一项进行任务活动的key
 	private int breakCount = 0;                   //切出活动计数
 	private boolean withinOneSecondAfterPause = false;    //是否是pause之后1s内
+	private boolean isOutOfApp = false;
 	private SaveStatue saveFinishStatue = SaveStatue.QUIT;    //最后的完成状态
 
 	public enum SaveStatue{
@@ -103,7 +105,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		FINISH
 	}
 	//TODO:计时装置设置示例 1 cz
-	private CircleProgress tomatoClockProgress,circleProgress2;
+	private CircleProgress tomatoClockProgress, tomatoBreakProgress,circleProgress2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +119,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//TODO:示例 2 cz
 		tomatoClockProgress =(CircleProgress)findViewById(R.id.cp1);
 		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoClockTime(this) * 60);
-		tomatoClockProgress.setDrawingCacheBackgroundColor(backgroundCollection.getTodayColor());
+		tomatoBreakProgress = (CircleProgress)findViewById(R.id.cp_break);
+		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoBreakTime(this) * 60);
 
 		//初始化Toolbar
 		toolbar = findViewById(R.id.setting_toolbar);
@@ -263,7 +266,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		screenOffReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				if (withinOneSecondAfterPause) breakCount--;
+				if (withinOneSecondAfterPause) {
+					breakCount--;
+					isOutOfApp = false;
+				}
 			}
 		};
 		registerReceiver(screenOffReceiver, filter);
@@ -419,14 +425,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				break;
 
 			case R.id.give_up_button:
-				//TODO:放弃完成任务
-				//    changeTask();
-				musicController.stop();
-//				showDropActivity();
-				havingTaskOngoing = false;
-				saveFinishStatue = SaveStatue.QUIT;
-				breakCount--;
-				finish();
+				onBackPressed();
 				break;
 
 			case R.id.pause_button:
@@ -485,6 +484,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	@Override
 	protected void onResume() {
 		super.onResume();
+		isOutOfApp = false;
 //        resume();
 	}
 
@@ -504,6 +504,26 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				withinOneSecondAfterPause = false;
 			}
 		}.start();
+
+		//若连续切出应用5分钟后，提醒
+		isOutOfApp = true;
+		if (breakFiveMinCountDown != null){
+			breakFiveMinCountDown.cancel();
+			breakFiveMinCountDown = null;
+		}
+		breakFiveMinCountDown = new CountDownTimer(5 * 60 * 1000, 1000) {
+			@Override
+			public void onTick(long millisUntilFinished) {
+			}
+
+			@Override
+			public void onFinish() {
+				if (isOutOfApp) {
+					sendNotification("你已离开5分钟", "你已离开应用5分钟，继续工作吧");
+				}
+			}
+		};
+		breakFiveMinCountDown.start();
 	}
 
 	@Override
@@ -569,7 +589,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 		taskStatuePaused = true;
 		btnPause.setBackgroundResource(R.drawable.stop);
-		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoBreakTime(this) * 60);
 
 
 		//若开启番茄钟，开始番茄钟任务进行时间计时
@@ -580,6 +599,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if(GeneralSetting.getTomatoClockEnable(this) && GeneralSetting.getTomatoClockEnable(this)) {
 			initStartTomatoClockBreak();
 		}
+
+		taskTimeCount.setText("休息中");
+		tomatoClockProgress.setProgress(0);
 	}
 
 	private void resume(){
@@ -600,6 +622,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if (GeneralSetting.getTomatoClockEnable(this) && GeneralSetting.getTomatoClockEnable(this)) {
 			initStartTomatoClock();
 		}
+
+		tomatoBreakProgress.setProgress(0);
 	}
 
 	//显示完成界面
@@ -659,16 +683,36 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if (tomatoClockBreakCountDown != null){
 			tomatoClockBreakCountDown.cancel();
 		}
-		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoBreakTime(this) * 60);
-		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 200) {
+		tomatoBreakProgress.setmTotalProgress(GeneralSetting.getTomatoBreakTime(this) * 60);
+		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-				tomatoClockProgress.setProgress(GeneralSetting.getTomatoBreakTime(TaskTimingActivity.this) * 60 - (int)(millisUntilFinished / 1000));
+				tomatoBreakProgress.setProgress(GeneralSetting.getTomatoBreakTime(TaskTimingActivity.this) * 60 - (int)(millisUntilFinished / 1000));
 			}
 
 			@Override
 			public void onFinish() {
-				sendNotification("番茄钟计时到", "休息有一会了，可以工作了吧");
+				sendNotification("番茄钟计时到", "休息有一会了，开始工作吧");
+
+				AlertDialog breakFinishDialog = new AlertDialog.Builder(TaskTimingActivity.this)
+						.setTitle("番茄钟休息计时到")
+						.setMessage("休息有一会了，开始工作吧")
+						.setPositiveButton("开始工作", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								resume();
+							}
+						})
+						.setNegativeButton("再休息一会", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								initStartTomatoClockBreak();
+							}
+						})
+						.create();
+				breakFinishDialog.show();
+
+
 			}
 		};
 		tomatoClockBreakCountDown.start();

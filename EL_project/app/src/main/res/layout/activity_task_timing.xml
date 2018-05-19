@@ -36,6 +36,13 @@
 			android:layout_height="400dp"
 			android:layout_gravity="center">
 
+			<ImageView
+				android:id="@+id/image_dial"
+				android:layout_width="266dp"
+				android:layout_height="266dp"
+				android:layout_centerHorizontal="true"
+				android:layout_centerVertical="true" />
+
 			<com.example.el_project.CircleProgress
 				android:id="@+id/cp1"
 				android:layout_width="match_parent"
@@ -45,6 +52,16 @@
 				app:ringColor="@color/orange"
 				app:radius="120dp"
 				app:strokeWidth="3dp"/>
+
+			<com.example.el_project.CircleProgress
+				android:id="@+id/cp_break"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				app:bigCircleColor="@android:color/transparent"
+				app:circleColor="@android:color/transparent"
+				app:radius="120dp"
+				app:ringColor="#bb94e1dc"
+				app:strokeWidth="3dp" />
 
 			<com.example.el_project.CircleProgress
 				android:id="@+id/cp2"
@@ -100,13 +117,6 @@
 					android:textColor="@color/white"
 					android:textSize="14sp" />
 			</RelativeLayout>
-
-			<ImageView
-				android:id="@+id/image_dial"
-				android:layout_width="266dp"
-				android:layout_height="266dp"
-				android:layout_centerVertical="true"
-				android:layout_centerHorizontal="true"/>
 
 		</RelativeLayout>
 <!--三个按钮-->
