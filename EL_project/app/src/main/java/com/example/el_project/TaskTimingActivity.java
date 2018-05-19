@@ -19,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
@@ -33,9 +34,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -84,6 +89,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private LinearLayout remarkLayout;             //备注所在的布局
 	private LinearLayout.LayoutParams remarkLayoutLayoutParams; //布局大小
 	private TextView remarkText;                   //备注
+    private ImageView imgDial;
 	private Toolbar toolbar;
 
 	private BroadcastReceiver screenOffReceiver;   //接收熄屏广播
@@ -111,7 +117,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		//TODO:示例 2 cz
 		tomatoClockProgress =(CircleProgress)findViewById(R.id.cp1);
 		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoClockTime(this) * 60);
-		tomatoClockProgress.setProgress(GeneralSetting.getTomatoClockTime(this) * 60);
 		tomatoClockProgress.setDrawingCacheBackgroundColor(backgroundCollection.getTodayColor());
 
 		//初始化Toolbar
@@ -148,6 +153,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		btnTaskFinished = findViewById(R.id.finish_button);
 		btnThrowTask = findViewById(R.id.give_up_button);
 		btnPause = findViewById(R.id.pause_button);
+		imgDial = findViewById(R.id.image_dial);
 		LinearLayout layoutMain = findViewById(R.id.activity_task_timing_linearLayout);
 		RelativeLayout layoutSetting = findViewById(R.id.activity_task_timing_setting_upper);
 		layoutMain.setBackgroundResource(backgroundCollection.getTodayBackground());
@@ -245,6 +251,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
             isQuickTask = true;
             textLeftToTimeLeft.setText("总计");
             textBelowTimeLeft.setText("花费时间");
+			tomatoClockProgress.setProgress(GeneralSetting.getTomatoClockTime(this) * 60);
         }
 
 		//向数据库存储本次信息
@@ -310,6 +317,14 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		if(GeneralSetting.getMusicOn(this)) {
 			musicController.start();
 		}
+
+		//旋转刻度图形
+        imgDial.setImageResource(R.drawable.circle_gapped_doing);
+//        Animation animationDialRotate = AnimationUtils.loadAnimation(this, R.anim.rotate_dial);
+//        animationDialRotate.setDuration(60000);
+//        animationDialRotate.setRepeatCount(Animation.INFINITE);
+//        animationDialRotate.setRepeatMode(Animation.RESTART);
+//        imgDial.setAnimation(animationDialRotate);
 
 		//更新是否启用番茄钟动画
 		refreshTomatoClockVisible();
@@ -613,6 +628,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				if(!isQuickTask) {
 					timeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - millisGoneThrough + 60000), 0), 2));
 				}
+				imgDial.setPivotX(imgDial.getWidth() / 2);
+				imgDial.setPivotY(imgDial.getHeight() / 2);
+				imgDial.setRotation((int)(millisGoneThrough / 1000) * 5);
 			}
 		};
 	}
@@ -626,7 +644,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockCountDown = new CountDownTimer(GeneralSetting.getTomatoClockTime(this) * 60000, 1000) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-				tomatoClockProgress.setProgress((int)(millisUntilFinished / 1000));
+				tomatoClockProgress.setProgress(GeneralSetting.getTomatoClockTime(TaskTimingActivity.this) * 60 - (int)(millisUntilFinished / 1000));
 			}
 
 			@Override
@@ -645,7 +663,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		tomatoClockBreakCountDown = new CountDownTimer(GeneralSetting.getTomatoBreakTime(this) * 60000, 200) {
 			@Override
 			public void onTick(long millisUntilFinished) {
-				tomatoClockProgress.setProgress((int)(millisUntilFinished / 1000));
+				tomatoClockProgress.setProgress(GeneralSetting.getTomatoBreakTime(TaskTimingActivity.this) * 60 - (int)(millisUntilFinished / 1000));
 			}
 
 			@Override

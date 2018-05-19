@@ -44,7 +44,7 @@
 				app:circleColor="@android:color/transparent"
 				app:ringColor="@color/orange"
 				app:radius="120dp"
-				app:strokeWidth="4dp"/>
+				app:strokeWidth="3dp"/>
 
 			<com.example.el_project.CircleProgress
 				android:id="@+id/cp2"
@@ -53,8 +53,8 @@
 				app:bigCircleColor="@android:color/transparent"
 				app:circleColor="@android:color/transparent"
 				app:ringColor="@color/half_white"
-				app:radius="115dp"
-				app:strokeWidth="4dp"/>
+				app:radius="117dp"
+				app:strokeWidth="1dp"/>
 
 
 			<TextView
@@ -100,6 +100,13 @@
 					android:textColor="@color/white"
 					android:textSize="14sp" />
 			</RelativeLayout>
+
+			<ImageView
+				android:id="@+id/image_dial"
+				android:layout_width="266dp"
+				android:layout_height="266dp"
+				android:layout_centerVertical="true"
+				android:layout_centerHorizontal="true"/>
 
 		</RelativeLayout>
 <!--三个按钮-->
