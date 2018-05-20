@@ -640,6 +640,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		intent.putExtra("task_time_used", taskSecGone);
 		intent.putExtra("break_count", breakCount);
 
+		Log.d("TEST", "showFinishingActivity: ");
 		startActivity(intent);
 	}
 
@@ -750,7 +751,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 				.setContentIntent(pendingIntent)
 				.setDefaults(Notification.DEFAULT_SOUND)
 				.setVisibility(Notification.VISIBILITY_PUBLIC)
-				.setFullScreenIntent(pendingIntent, false)
+//				.setFullScreenIntent(pendingIntent, false)
 				.build();
 
 		try {

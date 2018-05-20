@@ -15,9 +15,9 @@ import android.content.SharedPreferences;
 
 public class GeneralSetting {
     private static boolean settingInitialized = false;    //设置是否初始化过了，即是否从SharedPreferences中取出过所有设置了
-    private static boolean musicOn = false;               //音乐是否开启
-    private static boolean tomatoClockEnable = false;     //番茄钟是否开启
-    private static boolean callWhenTimeUpEnable = false;  //是否倒计时到时时提醒
+    private static boolean musicOn = true;               //音乐是否开启
+    private static boolean tomatoClockEnable = true;     //番茄钟是否开启
+    private static boolean callWhenTimeUpEnable = true;  //是否倒计时到时时提醒
     private static int tomatoClockTime = 25;              //番茄钟设置时长(分钟计)
     private static int tomatoBreakTime = 5;               //番茄钟间隔休息时间（分钟计）
 

@@ -152,7 +152,7 @@ public class MyDatabaseOperation {
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor=db.query("Tasklist",null,null,null,null,null,null);
-        if(cursor.moveToFirst()){
+        if(cursor != null && cursor.moveToFirst()){
             List<Task> taskList=new ArrayList<>();
             do{
                 int isDailyTask=cursor.getInt(cursor.getColumnIndex("isdailytask"));
@@ -180,7 +180,7 @@ public class MyDatabaseOperation {
 
     public static List<Task> getRecommendedTaskList(Context context){
         List<Task> finalList=getTaskList(context);
-        if(finalList.size()>3)
+        if(finalList != null && finalList.size()>3)
             return finalList.subList(0,3);
         else
             return finalList;

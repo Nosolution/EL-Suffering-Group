@@ -306,7 +306,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     private void refreshTask(){
         mTaskList.clear();
-        mTaskList.addAll(MyDatabaseOperation.getTaskList(MainActivity.this));
+        List<Task> temp = MyDatabaseOperation.getTaskList(MainActivity.this);
+        if (temp != null) {
+            mTaskList.addAll(temp);
+        }
 //        taskList.clear();
 //        SQLiteDatabase db = dbHelper.getWritableDatabase();
 //        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);

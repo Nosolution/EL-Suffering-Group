@@ -83,7 +83,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 	@Override
 	public int getItemCount() {
-		return mTaskList.size();
+		if (mTaskList == null)
+			return 0;
+		else
+			return mTaskList.size();
 	}
 
 	//动态添加Item
