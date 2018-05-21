@@ -20,6 +20,7 @@
 	<string name="back4">返回主界面</string>
 	<string name="next4">下一项任务</string>
 	<string name="left4">返回</string>
+	<string name="my_suggestion">试试把番茄钟调到40分钟吧XD</string>
 
 	<!--activity_main2-->
 	<string name="task2">任务：</string>

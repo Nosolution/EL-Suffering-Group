@@ -46,19 +46,44 @@
 				android:textColor="@color/background"/>
 
 			<TextView
+				android:id="@+id/suggest"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:layout_marginTop="8dp"
+				android:textSize="14sp"
+				android:textColor="@color/white"
+				android:text="@string/my_suggestion"/>
+
+			<TextView
 				android:id="@+id/tv_today_concentrate_time"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center"
 				android:layout_marginTop="8dp"
 				android:textSize="14sp"
-				android:textColor="@color/background"/>
+				android:textColor="@color/half_white"/>
+
 
 			<com.github.mikephil.charting.charts.BarChart
 				android:id="@+id/data_bar_chart"
 				android:layout_width="match_parent"
 				android:layout_height="220dp"
 				android:background="@mipmap/circle_white_250" />
+
+			<Button
+				android:id="@+id/button_share_to_qzone"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="15dp"
+				android:gravity="center_vertical"
+				android:paddingStart="20dp"
+				android:drawablePadding="10dp"
+				android:text="分享到QQ空间"
+				android:textSize="18sp"
+				android:background="@drawable/finish_activity_button_shape"
+				android:textColor="@color/background"
+				android:drawableStart="@mipmap/share"/>
 
 			<Button
 				android:id="@+id/button_return_main"
@@ -74,19 +99,6 @@
 				android:textColor="@color/background"
 				android:drawableStart="@mipmap/arrow_left_white"/>
 
-			<Button
-				android:id="@+id/button_share_to_qzone"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginBottom="15dp"
-				android:gravity="center_vertical"
-				android:paddingStart="20dp"
-				android:drawablePadding="10dp"
-				android:text="分享到QQ空间"
-				android:textSize="18sp"
-				android:background="@drawable/finish_activity_button_shape"
-				android:textColor="@color/background"
-				android:drawableStart="@mipmap/share"/>
 
 			<Button
 				android:id="@+id/button_next_task"
