@@ -70,6 +70,10 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //修改界面主题
+        BackgroundCollection backgroundCollection = new BackgroundCollection();
+        setTheme(backgroundCollection.getTodayTheme());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_task);
 
@@ -90,7 +94,6 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         commentEditText = findViewById(R.id.comment_et);
         toolbar = findViewById(R.id.activity_edit_task_toolbar);
 
-        BackgroundCollection backgroundCollection = new BackgroundCollection();
         toolbar.setBackgroundColor(backgroundCollection.getTodayColor());
         toolbar.setAlpha(0.5f);
 

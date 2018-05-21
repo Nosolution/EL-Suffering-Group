@@ -53,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //修改界面主题
+        BackgroundCollection backgroundCollection = new BackgroundCollection();
+        setTheme(backgroundCollection.getTodayTheme());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -67,10 +71,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 
 	    //设置背景
-        BackgroundCollection backgroundCollection = new BackgroundCollection();
         mDrawerLayout.setBackgroundResource(backgroundCollection.getTodayBackground());
         RelativeLayout layoutSetting = findViewById(R.id.activity_main_setting_upper);
         layoutSetting.setBackgroundColor(backgroundCollection.getTodayColor());
+
 
         //设置部分
         textClockTime = findViewById(R.id.text_choose_time);

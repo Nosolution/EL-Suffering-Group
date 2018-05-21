@@ -109,10 +109,13 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		//修改界面主题
+		BackgroundCollection backgroundCollection = new BackgroundCollection();
+		setTheme(backgroundCollection.getTodayTheme());
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_timing);
 
-		BackgroundCollection backgroundCollection = new BackgroundCollection();
 		circleProgress2=(CircleProgress)findViewById(R.id.cp2);
 		circleProgress2.setmTotalProgress(100);
 		circleProgress2.setProgress(100);

@@ -22,4 +22,12 @@
     <color name="orange">#edac66</color>
     <color name="black">#000000</color>
     <color name="half_white">#80ffffff</color>
+
+    <color name="day1">#ffa86c</color>
+    <color name="day2">#8039b5</color>
+    <color name="day3">#8da7f2</color>
+    <color name="day4">#f26361</color>
+    <color name="day5">#496658</color>
+    <color name="day6">#62a899</color>
+    <color name="day7">#92a8a5</color>
 </resources>

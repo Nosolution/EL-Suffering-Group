@@ -214,6 +214,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="110dp" />
+
         </LinearLayout>
 
         <View

@@ -12,10 +12,12 @@ import java.util.Locale;
 public class BackgroundCollection {
     private List<Integer> backgroundCollection;
     private List<Integer> colorCollection;
+    private List<Integer> themeCollection;
 
     BackgroundCollection(){
         backgroundCollection = new ArrayList<Integer>();
         colorCollection = new ArrayList<Integer>();
+        themeCollection = new ArrayList<Integer>();
         init();
     }
 
@@ -35,6 +37,14 @@ public class BackgroundCollection {
         colorCollection.add(Color.rgb(73, 102, 88));
         colorCollection.add(Color.rgb(98, 168, 153));
         colorCollection.add(Color.rgb(146, 168, 165));
+
+        themeCollection.add(R.style.AppTheme1);
+        themeCollection.add(R.style.AppTheme2);
+        themeCollection.add(R.style.AppTheme3);
+        themeCollection.add(R.style.AppTheme4);
+        themeCollection.add(R.style.AppTheme5);
+        themeCollection.add(R.style.AppTheme6);
+        themeCollection.add(R.style.AppTheme7);
     }
 
     private int getWeekNum(){
@@ -69,4 +79,7 @@ public class BackgroundCollection {
         return colorCollection.get(getWeekNum() - 1);
     }
 
+    public int getTodayTheme(){
+        return themeCollection.get(getWeekNum() - 1);
+    }
 }
