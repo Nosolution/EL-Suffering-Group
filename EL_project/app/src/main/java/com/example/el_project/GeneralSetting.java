@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 
 public class GeneralSetting {
     private static boolean settingInitialized = false;    //设置是否初始化过了，即是否从SharedPreferences中取出过所有设置了
+    private static boolean firstOpen = true;              //设置是否是第一次打开
     private static boolean musicOn = true;               //音乐是否开启
     private static boolean tomatoClockEnable = true;     //番茄钟是否开启
     private static boolean callWhenTimeUpEnable = true;  //是否倒计时到时时提醒
@@ -25,8 +26,9 @@ public class GeneralSetting {
 
     private static void initializeSetting(Context context){
         SharedPreferences pref = context.getSharedPreferences("general_setting", Context.MODE_PRIVATE);
-        musicOn = pref.getBoolean("music_on", false);
-        tomatoClockEnable = pref.getBoolean("tomato_clock_enable", false);
+        firstOpen = pref.getBoolean("first_open", true);
+        musicOn = pref.getBoolean("music_on", true);
+        tomatoClockEnable = pref.getBoolean("tomato_clock_enable", true);
         callWhenTimeUpEnable = pref.getBoolean("call_when_time_up_enable", false);
         tomatoClockTime = pref.getInt("tomato_clock_time", 25);
         tomatoBreakTime = pref.getInt("tomato_break_time", 5);
@@ -38,6 +40,7 @@ public class GeneralSetting {
 
     private static void syncSetting(Context context){
         SharedPreferences.Editor editor = context.getSharedPreferences("general_setting", Context.MODE_PRIVATE).edit();
+        editor.putBoolean("first_open", firstOpen);
         editor.putBoolean("music_on", musicOn);
         editor.putBoolean("tomato_clock_enable", tomatoClockEnable);
         editor.putBoolean("call_when_time_up_enable", callWhenTimeUpEnable);
@@ -45,6 +48,18 @@ public class GeneralSetting {
         editor.putInt("tomato_break_time", tomatoBreakTime);
         editor.putInt("total_task_time", totalTaskTime);
         editor.apply();
+    }
+
+    public static boolean getFirstOpen(Context context){
+        if(!settingInitialized){
+            initializeSetting(context);
+        }
+        if (firstOpen){
+            firstOpen = false;
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public static boolean getMusicOn(Context context){

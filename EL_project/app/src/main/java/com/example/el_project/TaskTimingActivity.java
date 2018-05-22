@@ -57,6 +57,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private Activity thisActivity = this;
 	private boolean havingTaskOngoing = false;     //是否有任务正在进行中
 	private boolean taskStatuePaused = false;        //任务暂停或进行中Flag
+	private boolean locked = false;
 
 	private ImageButton btnTaskFinished;                //任务完成，按钮
 	private ImageButton btnThrowTask;                   //放弃任务，按钮
@@ -263,10 +264,14 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		screenOffReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				if (withinOneSecondAfterPause) {
+				Log.d("TEST", "onReceive: withinOneSecondAfterPause " + withinOneSecondAfterPause);
+				if (withinOneSecondAfterPause && isOutOfApp) {
 					breakCount--;
+					Log.d("TEST", "onReceive: " + isOutOfApp);
 					isOutOfApp = false;
 				}
+				locked = true;
+				Log.d("TEST", "onReceive: " + isOutOfApp);
 			}
 		};
 		registerReceiver(screenOffReceiver, filter);
@@ -482,45 +487,50 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	protected void onResume() {
 		super.onResume();
 		isOutOfApp = false;
+		locked = false;
 //        resume();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		if (!locked) {
+			isOutOfApp = true;
 //        pause();
-		breakCount++;
-		withinOneSecondAfterPause = true;
-		new CountDownTimer(1000, 100) {
-			@Override
-			public void onTick(long millisUntilFinished) {}
-
-			//如果1秒内，熄屏则判断为熄屏，不认为打断
-			@Override
-			public void onFinish() {
-				withinOneSecondAfterPause = false;
-			}
-		}.start();
-
-		//若连续切出应用5分钟后，提醒
-		isOutOfApp = true;
-		if (breakFiveMinCountDown != null){
-			breakFiveMinCountDown.cancel();
-			breakFiveMinCountDown = null;
-		}
-		breakFiveMinCountDown = new CountDownTimer(5 * 60 * 1000, 1000) {
-			@Override
-			public void onTick(long millisUntilFinished) {
-			}
-
-			@Override
-			public void onFinish() {
-				if (isOutOfApp) {
-					sendNotification("你已离开5分钟", "你已离开应用5分钟，继续工作吧");
+			breakCount++;
+			withinOneSecondAfterPause = true;
+			new Thread() {
+				@Override
+				public void run() {
+					super.run();
+					try {
+						sleep(4000);
+						withinOneSecondAfterPause = false;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
+			}.start();
+
+			//若连续切出应用5分钟后，提醒
+			if (breakFiveMinCountDown != null) {
+				breakFiveMinCountDown.cancel();
+				breakFiveMinCountDown = null;
 			}
-		};
-		breakFiveMinCountDown.start();
+			breakFiveMinCountDown = new CountDownTimer(5 * 60 * 1000, 1000) {
+				@Override
+				public void onTick(long millisUntilFinished) {
+				}
+
+				@Override
+				public void onFinish() {
+					if (isOutOfApp) {
+						sendNotification("你已离开5分钟", "你已离开应用5分钟，继续工作吧");
+					}
+				}
+			};
+			breakFiveMinCountDown.start();
+		}
 	}
 
 	@Override
