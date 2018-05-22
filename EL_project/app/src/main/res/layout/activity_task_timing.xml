@@ -188,7 +188,8 @@
 					android:layout_marginRight="20dp"
 					android:maxEms="35"
 					android:ellipsize="end"
-					android:singleLine="true"/>
+					android:singleLine="true"
+					android:textColor="@color/white"/>
 
 			</LinearLayout>
 		</LinearLayout>
