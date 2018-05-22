@@ -3,6 +3,7 @@ package com.example.el_project;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
@@ -37,6 +38,7 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
+    private RelativeLayout relativeLayout;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private MyDatabaseHelper dbHelper;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private LinearLayout breakClockTimeLayout;
     private int selectedPosition;//被选中的Item位置
     private boolean isExit=false;
+
 
     private DrawerLayout drawerLayoutMain;
 
@@ -74,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	    mDrawerLayout=findViewById(R.id.activity_main_drawer_layout);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);  //如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
-
 
 	    //设置背景
         mDrawerLayout.setBackgroundResource(backgroundCollection.getTodayBackground());
@@ -518,8 +520,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         },cnt);
     }
-
-
 }
 
 
