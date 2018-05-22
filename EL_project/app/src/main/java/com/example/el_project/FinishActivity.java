@@ -49,6 +49,7 @@ public class FinishActivity extends AppCompatActivity {
 	private TextView tvTaskConsumedTime;  // 单个任务的耗时，格式：“本次任务共耗时 __ 分钟”
 	private TextView tvTaskConcentrateTime;  // 单个任务的专注时间，格式：“专注 __ 分钟”
 	private TextView tvTodayConcentrateTime;  // 今日的专注时间，格式：“今日已专注 __ 分钟”
+	private TextView tvSuggestion;
 	private Button btReturnMain;  // 返回主界面按钮
 	private Button btNextTask;  // 开始下一项任务的按钮
 	private Button btShare;     //分享按钮
@@ -56,6 +57,7 @@ public class FinishActivity extends AppCompatActivity {
 	private RecyclerView recyclerView;
 	private RecyclerViewAdapter adapter;
 	private List<Task> recommendedTaskList=new ArrayList<Task>();
+
 
 	private int taskTotalTimeUsed;         //任务总计完成时间
 	private int taskTimeUsed;              //任务有效完成时间
@@ -79,6 +81,7 @@ public class FinishActivity extends AppCompatActivity {
 		tvTaskConsumedTime = findViewById(R.id.tv_task_consumed_time);
 		tvTaskConcentrateTime = findViewById(R.id.tv_task_concentrate_time);
 		tvTodayConcentrateTime = findViewById(R.id.tv_today_concentrate_time);
+		tvSuggestion=findViewById(R.id.tv_suggestion);
 		btReturnMain = findViewById(R.id.button_return_main);
 		btNextTask = findViewById(R.id.button_next_task);
 		btShare = findViewById(R.id.button_share_to_qzone);
@@ -98,6 +101,7 @@ public class FinishActivity extends AppCompatActivity {
 
 		//得到任务完成信息和本周每日工作学习时长（有效，总未记录）
 		getTaskFinishInfo();
+		tvSuggestion.setText(MySuggestions.getSuggestion(taskTotalTimeUsed,(double)taskTimeUsed/taskTotalTimeUsed,(double)breakCount/(double)((taskTotalTimeUsed+30)/60)));
 		//处理数据
 		scores =MyAlgorithm.calcScores(taskTotalTimeUsed,taskTimeUsed,breakCount);
 		taskTotalTimeUsed+=30;taskTotalTimeUsed/=60;
@@ -142,7 +146,6 @@ public class FinishActivity extends AppCompatActivity {
 		int colorLabel = Color.WHITE;
 		myBarChartManager.showBarChartWithBackGroundRes(xValues,yValue,"每日专注时间",R.drawable.chart_background_shape,colorAxisY,colorAxisX,colorBody,colorLabel);
 
-
 		TempPicStorageManager storageManager = new TempPicStorageManager(this, "tempPicToShare");
 		storageManager.clean();
 
@@ -160,7 +163,6 @@ public class FinishActivity extends AppCompatActivity {
 				shareToQQ(FinishActivity.this);
 			}
 		});
-
 
 		//设置分享用的QQ实例初始化
 		mTencent = Tencent.createInstance("1106810223", getApplicationContext());
@@ -181,11 +183,8 @@ public class FinishActivity extends AppCompatActivity {
 			}
 
 			@Override
-			public void onItemLongClick(View view, int position) {
-
-			}
+			public void onItemLongClick(View view, int position) {}
 		});
-
 	}
 
 	private void setFormattedString(int data, String srcString, float size, boolean hasStyle, TextView tv){
@@ -196,13 +195,6 @@ public class FinishActivity extends AppCompatActivity {
 		ssb.setSpan(new RelativeSizeSpan(size),startIndex,endIndex,Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
 		if(hasStyle) ssb.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
 		tv.setText(ssb);
-	}
-
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
-//		Intent intent = new Intent(this, MainActivity.class);
-//		startActivity(intent);
 	}
 
 	//获得任务完成信息

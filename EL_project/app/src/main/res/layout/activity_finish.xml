@@ -46,14 +46,14 @@
 				android:textColor="@color/background"/>
 
 			<TextView
-				android:id="@+id/suggest"
+				android:id="@+id/tv_suggestion"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:gravity="center"
 				android:layout_marginTop="8dp"
-				android:textSize="14sp"
+				android:gravity="center"
+				android:text="@string/my_suggestion"
 				android:textColor="@color/white"
-				android:text="@string/my_suggestion"/>
+				android:textSize="14sp" />
 
 			<TextView
 				android:id="@+id/tv_today_concentrate_time"
