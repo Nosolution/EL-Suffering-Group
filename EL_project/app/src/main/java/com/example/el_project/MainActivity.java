@@ -3,8 +3,11 @@ package com.example.el_project;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,9 +33,12 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
+    private RelativeLayout relativeLayout;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
     private MyDatabaseHelper dbHelper;
@@ -48,11 +55,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private TextView textBreakClockTime;
     private LinearLayout breakClockTimeLayout;
     private int selectedPosition;//被选中的Item位置
+    private boolean isExit=false;
+
 
     private DrawerLayout drawerLayoutMain;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         //修改界面主题
         BackgroundCollection backgroundCollection = new BackgroundCollection();
         setTheme(backgroundCollection.getTodayTheme());
@@ -68,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	    mDrawerLayout=findViewById(R.id.activity_main_drawer_layout);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);  //如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
-
 
 	    //设置背景
         mDrawerLayout.setBackgroundResource(backgroundCollection.getTodayBackground());
@@ -268,7 +276,10 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
+
+
     }
+
 
     @Override
     protected void onResume() {
@@ -356,11 +367,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         startActivity(intent);
     }
 
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
 
     private void showDetails(final int position){
         final AlertDialog.Builder detailsDialog =
@@ -463,7 +469,57 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         textBreakClockTime.setText(GeneralSetting.getTomatoBreakTime(this) + "分钟");
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+    Handler mHandler = new Handler() {
 
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            isExit = false;
+        }
+
+    };
+
+    public void exit(){
+        if (!isExit) {
+            isExit = true;
+            Toast toast=Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT);
+            showMyToast(toast,1000);
+            mHandler.sendEmptyMessageDelayed(0, 1000);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+            System.exit(0);
+        }
+    }
+
+    //自定义Toast显示时间，cnt为所需显示时间
+    public void showMyToast(final Toast toast, final int cnt){
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.show();
+            }
+        },0,3000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.cancel();
+                timer.cancel();
+            }
+        },cnt);
+    }
 }
 
 

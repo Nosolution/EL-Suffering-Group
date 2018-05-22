@@ -15,12 +15,15 @@ public class MyAlgorithm {
         int[] highestScores={96,97,98,99,100};
         int breakWeight=0;
         double timeRate=(double)usedTime/totalTime;
+        double breakRate=(double)breakCount/((usedTime+30)/60);
+        if(breakRate>=1) breakRate=1.0;
         int scores=timeRate>=0.75? highestScores[(int)(Math.random()*5)]:(int)(timeRate*100+20);
         while(breakCount>0){
             scores-=(int)(Math.random()*(2+0.3*breakWeight));
             breakWeight++;
             breakCount--;
         }
+        //scores-=(int)(18+4*Math.random())*breakRate;
         return scores;
     }
 
