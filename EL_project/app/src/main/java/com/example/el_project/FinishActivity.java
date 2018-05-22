@@ -121,14 +121,10 @@ public class FinishActivity extends AppCompatActivity {
 		}
 
 		//设置y轴的数据
-		List<List<Float>> yValues = new ArrayList<>();
-		for (int i = 0; i < 2; i++) {
-			List<Float> yValue = new ArrayList<>();
-			for (int j = 0; j <= 6; j++) {
-				yValue.add((float) taskTimeUsedWeek[j]);
-			}
-			yValues.add(yValue);
-			break;
+		List<Float> yValue = new ArrayList<>();
+		yValue.add((float) taskTimeUsedWeek[6]);
+		for (int j = 0; j <= 5; j++) {
+			yValue.add((float) taskTimeUsedWeek[j]);
 		}
 
 		//颜色集合
@@ -144,7 +140,7 @@ public class FinishActivity extends AppCompatActivity {
 		int colorAxisX = Color.WHITE;
 		int colorBody = Color.WHITE;
 		int colorLabel = Color.WHITE;
-		myBarChartManager.showBarChartWithBackGroundRes(xValues,yValues.get(0),"每日专注时间",R.drawable.chart_background_shape,colorAxisY,colorAxisX,colorBody,colorLabel);
+		myBarChartManager.showBarChartWithBackGroundRes(xValues,yValue,"每日专注时间",R.drawable.chart_background_shape,colorAxisY,colorAxisX,colorBody,colorLabel);
 
 
 		TempPicStorageManager storageManager = new TempPicStorageManager(this, "tempPicToShare");
@@ -174,13 +170,6 @@ public class FinishActivity extends AppCompatActivity {
 			@Override
 			public void onItemClick(View view, int position) {
 				Intent intent=new Intent(FinishActivity.this,TaskTimingActivity.class);
-//				intent.putExtra("intent_task_id",Integer.parseInt(recommendedTasks.get(position)[0]));
-//				intent.putExtra("intent_task_name",recommendedTasks.get(position)[1]);
-//				String[] temp=recommendedTasks.get(position)[3].split(":");
-//				intent.putExtra("intent_task_hours_required", Integer.parseInt(temp[0]));
-//				intent.putExtra("intent_task_minutes_required", Integer.parseInt(temp[1]));
-//				intent.putExtra("intent_is_daily_task",recommendedTasks.get(position)[4]);
-//				intent.putExtra("intent_task_comments",recommendedTasks.get(position)[5]);
 				intent.putExtra("intent_task_id",recommendedTaskList.get(position).getId());
 				intent.putExtra("intent_task_name",recommendedTaskList.get(position).getName());
 				intent.putExtra("intent_task_hours_required",recommendedTaskList.get(position).getHourRequired());
@@ -207,16 +196,6 @@ public class FinishActivity extends AppCompatActivity {
 		ssb.setSpan(new RelativeSizeSpan(size),startIndex,endIndex,Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
 		if(hasStyle) ssb.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
 		tv.setText(ssb);
-	}
-
-	private void loadRecommendedTasks(){
-//		int[] tasks=MyDatabaseOperation.getRecommendedTaskList(FinishActivity.this);
-//		for(int i=0;i<tasks.length;i++){
-//			String[] taskInfo=MyDatabaseOperation.getCertainTaskInfo(FinishActivity.this,tasks[i]);
-//			recommendedTasks.add(taskInfo);
-//			recommendedTaskList.add(new Task(taskInfo[1],taskInfo[2],R.drawable.task_bar,R.drawable.taskbar_chosen));
-//		}
-//		recommendedTaskList=MyDatabaseOperation.getRecommendedTaskList(FinishActivity.this);
 	}
 
 	@Override

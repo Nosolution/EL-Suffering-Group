@@ -29,7 +29,7 @@ public class MyBarChartManager {
     private YAxis rightAxis;
     private XAxis xAxis;
     private Legend legend;
-    private String[] values={"周一","周二","周三","周四","周五","周六","周日"};
+    private String[] values={"周日","周一","周二","周三","周四","周五","周六"};
     public static final int COLOR = 707;
     public static final int DRAWABLE = 701;
 

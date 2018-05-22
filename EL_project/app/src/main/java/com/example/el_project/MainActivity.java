@@ -197,31 +197,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 }
             }
 
-            //长按与短按功能相同
+            //无长按功能
             @Override
-            public void onItemLongClick(View view, int position) {
-//                Task task = mTaskList.get(position);
-////                Toast.makeText(view.getContext(), "you longclicked view " + task.getName(), Toast.LENGTH_SHORT).show();
-//                if (!isFabOpened&&selectedPosition==-1) {
-//                    openMenu(baseFab);
-//                    selectedPosition=position;
-//                    task.switchBackground();
-//                    adapter.changeItemBackGround(position);
-//                }
-//                else if(isFabOpened&&selectedPosition!=position){
-//                    Task previousTask=mTaskList.get(selectedPosition);
-//                    previousTask.switchBackground();
-//                    adapter.changeItemBackGround(selectedPosition);
-//                    closeMenu(baseFab);
-//                    selectedPosition=-1;
-//                }
-//                else{
-//                    closeMenu(baseFab);
-//                    selectedPosition=-1;
-//                    task.switchBackground();
-//                    adapter.changeItemBackGround(position);
-//                }
-            }
+            public void onItemLongClick(View view, int position) { }
         });
 
 
@@ -280,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     }
 
-
     @Override
     protected void onResume() {
         MyDatabaseOperation.refreshAllDailyTask(MainActivity.this);
@@ -325,40 +302,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         if (temp != null) {
             mTaskList.addAll(temp);
         }
-//        taskList.clear();
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//        Cursor cursor = db.query("Tasklist", null, null, null, null, null, null);
-//        if (cursor.moveToFirst()) {
-//            int id;
-//            do {
-//                if(cursor.getInt(cursor.getColumnIndex("isdailytask"))==2)
-//                    continue;
-//                id = cursor.getInt(cursor.getColumnIndex("id"));
-//                Task task = new Task(cursor.getString(cursor.getColumnIndex("task")),
-//                        MyDatabaseOperation.getTaskRestDays(MainActivity.this,id),R.drawable.task_bar,R.drawable.taskbar_chosen);
-//                mTaskList.add(task);
-//                String[] tempstring = {cursor.getString(cursor.getColumnIndex("id")),
-//                        cursor.getString(cursor.getColumnIndex("task")),
-//                        cursor.getString(cursor.getColumnIndex("assumedtime")),
-//                        cursor.getString(cursor.getColumnIndex("deadline")),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("emergencydegree"))),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("isdailytask"))),
-//                        cursor.getString(cursor.getColumnIndex("comments")),
-//                        String.valueOf(cursor.getInt(cursor.getColumnIndex("last_finished_date")))};
-//                taskList.add(tempstring);
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
     }
 
     private void startTask(){
         Intent intent=new Intent(MainActivity.this,TaskTimingActivity.class);
-//        intent.putExtra("intent_task_id",Integer.parseInt(taskList.get(selectedPosition)[0]));
         intent.putExtra("intent_task_id",mTaskList.get(selectedPosition).getId());
         intent.putExtra("intent_task_name",mTaskList.get(selectedPosition).getName());
-//        String[] tempString=taskList.get(selectedPosition)[2].split(":");
-//        intent.putExtra("intent_task_hours_required", Integer.parseInt(tempString[0]));
-//        intent.putExtra("intent_task_minutes_required", Integer.parseInt(tempString[1]));
         intent.putExtra("intent_task_hours_required", mTaskList.get(selectedPosition).getHourRequired());
         intent.putExtra("intent_task_minutes_required", mTaskList.get(selectedPosition).getMinuteRequired());
         intent.putExtra("intent_is_daily_task",mTaskList.get(selectedPosition).getIsDailyTask());
