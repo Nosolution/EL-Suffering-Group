@@ -93,7 +93,9 @@ public class FinishActivity extends AppCompatActivity {
 		recyclerView.setLayoutManager(layoutManager);
 //		loadRecommendedTasks();
 		recommendedTaskList=MyDatabaseOperation.getRecommendedTaskList(FinishActivity.this);
-		adapter=new RecyclerViewAdapter(recommendedTaskList);
+		if(recommendedTaskList==null || recommendedTaskList.size() == 0)
+			btNextTask.setVisibility(View.GONE);
+		adapter = new RecyclerViewAdapter(recommendedTaskList);
 		recyclerView.setAdapter(adapter);
 
 		BackgroundCollection backgroundCollection = new BackgroundCollection();
