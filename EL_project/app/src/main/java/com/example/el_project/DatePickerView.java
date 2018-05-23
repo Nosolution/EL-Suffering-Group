@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;

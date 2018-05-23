@@ -1,7 +1,7 @@
 package com.example.el_project;
 
 /**
- * Created by lenovo on 2018/5/23.
+ * Created by ns on 2018/5/23.
  */
 
 public class MySuggestions {

@@ -1,5 +1,7 @@
 package com.example.el_project;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 /*
 *
 *
@@ -9,9 +11,6 @@ package com.example.el_project;
 * 做点修改然后push上去
 *
 * */
-
-import android.content.Context;
-import android.content.SharedPreferences;
 
 public class GeneralSetting {
     private static boolean settingInitialized = false;    //设置是否初始化过了，即是否从SharedPreferences中取出过所有设置了

@@ -1,6 +1,5 @@
 package com.example.el_project;
 
-
 /*
 * 这个类是用于管理音乐播放的，
 * 尽管目前很简单，但未来可能会大量拓展。
@@ -17,12 +16,9 @@ package com.example.el_project;
 *               by NA 2018/4/18
 *
 * */
-
-
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.util.Log;
-import android.widget.Toast;
 
 public class MusicController {
     private MediaPlayer mediaPlayer = new MediaPlayer();

@@ -3,7 +3,6 @@ package com.example.el_project;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 /**
  * Created by ns on 2018/4/9.
@@ -48,7 +47,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_FINISHTASKTABLE);
         sqLiteDatabase.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
         sqLiteDatabase.execSQL(ADD_COLUMN_TIME_USED);
-        Toast.makeText(mContext,"Create succeeded",Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -56,14 +54,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         switch(oldVersion) {
             case 1:
                 db.execSQL(CREATE_FINISHTASKTABLE);
-                Toast.makeText(mContext, "Create succeeded", Toast.LENGTH_SHORT).show();
 
             case 2:
                 db.execSQL(ADD_COLUMN_LAST_FINISHED_TIME);
-                Toast.makeText(mContext, "succeeded upgrade to version 3", Toast.LENGTH_SHORT).show();
             case 3:
                 db.execSQL(ADD_COLUMN_TIME_USED);
-                Toast.makeText(mContext, "succeeded upgrade to version 4", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

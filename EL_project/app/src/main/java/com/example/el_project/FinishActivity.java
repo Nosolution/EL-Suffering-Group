@@ -17,12 +17,10 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -31,18 +29,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.tencent.connect.common.Constants;
 import com.tencent.connect.share.QQShare;
 import com.tencent.tauth.Tencent;
-
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * 我不确定完成界面的专注度的得分下面要显示什么，就把它们都放上去了
- */
 
 public class FinishActivity extends AppCompatActivity {
 	private TextView tvScores;  // 用于显示专注度的分数，格式：“__分”
@@ -50,9 +42,9 @@ public class FinishActivity extends AppCompatActivity {
 	private TextView tvTaskConcentrateTime;  // 单个任务的专注时间，格式：“专注 __ 分钟”
 	private TextView tvTodayConcentrateTime;  // 今日的专注时间，格式：“今日已专注 __ 分钟”
 	private TextView tvSuggestion;
-	private Button btReturnMain;  // 返回主界面按钮
-	private Button btNextTask;  // 开始下一项任务的按钮
-	private Button btShare;     //分享按钮
+	private Button btnReturnMain;  // 返回主界面按钮
+	private Button btnNextTask;  // 开始下一项任务的按钮
+	private Button btnShare;     //分享按钮
 	private int scores = 98;  // 传入数据
 	private RecyclerView recyclerView;
 	private RecyclerViewAdapter adapter;
@@ -82,19 +74,18 @@ public class FinishActivity extends AppCompatActivity {
 		tvTaskConcentrateTime = findViewById(R.id.tv_task_concentrate_time);
 		tvTodayConcentrateTime = findViewById(R.id.tv_today_concentrate_time);
 		tvSuggestion=findViewById(R.id.tv_suggestion);
-		btReturnMain = findViewById(R.id.button_return_main);
-		btNextTask = findViewById(R.id.button_next_task);
-		btShare = findViewById(R.id.button_share_to_qzone);
+		btnReturnMain = findViewById(R.id.button_return_main);
+		btnNextTask = findViewById(R.id.button_next_task);
+		btnShare = findViewById(R.id.button_share_to_qzone);
 		LinearLayout layoutMain = findViewById(R.id.activity_finish_layout);
 
 		recyclerView=findViewById(R.id.recycler_view);
 		recyclerView.setHasFixedSize(true);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 		recyclerView.setLayoutManager(layoutManager);
-//		loadRecommendedTasks();
 		recommendedTaskList=MyDatabaseOperation.getRecommendedTaskList(FinishActivity.this);
 		if(recommendedTaskList==null || recommendedTaskList.size() == 0)
-			btNextTask.setVisibility(View.GONE);
+			btnNextTask.setVisibility(View.GONE);
 		adapter = new RecyclerViewAdapter(recommendedTaskList);
 		recyclerView.setAdapter(adapter);
 
@@ -117,8 +108,6 @@ public class FinishActivity extends AppCompatActivity {
 		setFormattedString(taskTotalTimeUsed,"本次任务共耗时 " + taskTotalTimeUsed + " 分钟",1.4f,true,tvTaskConsumedTime);
 		setFormattedString(taskTimeUsed,"专注"+taskTimeUsed+"分钟",1.4f,true,tvTaskConcentrateTime);
 		setFormattedString(timeUsedToday,"今日共专注"+timeUsedToday+"分钟",1.4f,true,tvTodayConcentrateTime);
-
-		Log.d("TEST", "onCreate: FinishActivity");
 
 		//设置x轴的数据
 		ArrayList<Float> xValues = new ArrayList<>();
@@ -151,15 +140,13 @@ public class FinishActivity extends AppCompatActivity {
 		TempPicStorageManager storageManager = new TempPicStorageManager(this, "tempPicToShare");
 		storageManager.clean();
 
-		btReturnMain.setOnClickListener(new View.OnClickListener() {
+		btnReturnMain.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				Intent intent = new Intent(FinishActivity.this, MainActivity.class);
-//				startActivity(intent);
 				finish();
 			}
 		});
-		btShare.setOnClickListener(new View.OnClickListener() {
+		btnShare.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				shareToQQ(FinishActivity.this);

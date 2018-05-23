@@ -71,8 +71,6 @@ public class CircleProgress extends View{
         canvas.drawCircle(mXCenter,mYCenter,mRadius+mStrokeWidth,mBigCirclePaint);
         canvas.drawCircle(mXCenter,mYCenter,mRadius,mCirclePaint);
 
-
-
         if(mProgress>0){
             //圆弧所在区域
             RectF oval=new RectF();

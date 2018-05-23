@@ -1,7 +1,5 @@
 package com.example.el_project;
 
-import android.content.Context;
-
 public class Task implements Comparable<Task>{
 	private int id;
 	private String name;
@@ -90,14 +88,9 @@ public class Task implements Comparable<Task>{
 
 	public void setName(String name){this.name=name;}
 
-
 	public Integer getWeight(){
 		return this.weight;
 	}
-
-//	public int getImageId(){
-//		return imageId;
-//	}
 
 	public int getBackgroundId(){
 		return backgroundId;

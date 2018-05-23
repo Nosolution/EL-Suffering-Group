@@ -4,22 +4,17 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.CancellationSignal;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Created by CZ on 2018/4/13.
@@ -48,17 +43,14 @@ public class CustomDatePicker {
     private ResultHandler handler;
     private Context context;
     private boolean canAccess = false;
-
     private Dialog datePickerDialog;
     private DatePickerView year_pv, month_pv, day_pv, hour_pv, minute_pv;
-
     private static final int MAX_MINUTE = 59;
     private static final int MAX_HOUR = 23;
     private static final int MIN_MINUTE = 0;
     private static final int MIN_HOUR = 0;
     private static final int MAX_MONTH = 12;
     private static final int[] dayOfMonth={31,28,31,30,31,30,31,31,30,31,30,31};
-
     private ArrayList<String> year, month, day, hour, minute;
     private int startYear, startMonth, startDay, startHour, startMinute, endYear, endMonth, endDay, endHour, endMinute;
     private boolean spanYear, spanMon, spanDay, spanHour, spanMin;

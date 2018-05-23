@@ -3,9 +3,6 @@ package com.example.el_project;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
@@ -23,14 +20,12 @@ import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -51,14 +46,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	private DrawerLayout mDrawerLayout;
 	private Switch switchClockStatus;
 	private Switch switchMusicStatus;
-	private TextView textClockTime;
+	private TextView tvClockTime;
     private LinearLayout clockTimeLayout;
-    private TextView textBreakClockTime;
+    private TextView tvBreakClockTime;
     private LinearLayout breakClockTimeLayout;
     private int selectedPosition;//被选中的Item位置
     private boolean isExit=false;
-
-
     private DrawerLayout drawerLayoutMain;
 
     @Override
@@ -87,12 +80,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 
         //设置部分
-        textClockTime = findViewById(R.id.text_choose_time);
+        tvClockTime = findViewById(R.id.text_choose_time);
         clockTimeLayout = (LinearLayout)findViewById(R.id.main_clock_set_layout);
-        textBreakClockTime = findViewById(R.id.text_choose_break_time);
+        tvBreakClockTime = findViewById(R.id.text_choose_break_time);
         breakClockTimeLayout = (LinearLayout)findViewById(R.id.main_break_clock_set_layout);
-	    switchClockStatus=findViewById(R.id.switch_if_tomato_clock_on);
-	    switchMusicStatus=findViewById(R.id.switch_if_music_on);
+	    switchClockStatus =findViewById(R.id.switch_if_tomato_clock_on);
+	    switchMusicStatus =findViewById(R.id.switch_if_music_on);
 	    switchClockStatus.setOnCheckedChangeListener(this);
 	    switchMusicStatus.setOnCheckedChangeListener(this);
 	    clockTimeLayout.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         });
 
-
         //创建默认的线性LayoutManager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -193,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                     }.start();
                 }
             }
-
             //无长按功能
             @Override
             public void onItemLongClick(View view, int position) { }
@@ -266,9 +257,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 selectedPosition=-1;
             }
         });
-
-
-
     }
 
     @Override
@@ -279,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         refreshSetting();
         super.onResume();
     }
-
 
     // 点击task后，悬浮按钮产生的动画
     public void openMenu(View view) {
@@ -427,8 +414,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             clockTimeLayout.setVisibility(View.GONE);
             breakClockTimeLayout.setVisibility(View.GONE);
         }
-        textClockTime.setText(GeneralSetting.getTomatoClockTime(this) + "分钟");
-        textBreakClockTime.setText(GeneralSetting.getTomatoBreakTime(this) + "分钟");
+        tvClockTime.setText(GeneralSetting.getTomatoClockTime(this) + "分钟");
+        tvBreakClockTime.setText(GeneralSetting.getTomatoBreakTime(this) + "分钟");
     }
 
     @Override

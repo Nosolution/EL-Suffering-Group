@@ -26,6 +26,7 @@ public abstract class CountTimer {
 
     /*开始时系统时间*/
     private long mStartTime;
+
     /*相对开始时系统时间，并非真实开始时间*/
     private long mRelativeStartTime;
 

@@ -15,7 +15,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.utils.ViewPortHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +43,6 @@ public class MyBarChartManager {
      * 初始化LineChart
      */
     private void initLineChart() {
-//        mBarChart.setBackgroundColor(0x00ffffff);
-
         //网格
         mBarChart.setDrawGridBackground(false);//设置网格不可见
         mBarChart.getAxisLeft().setDrawGridLines(false);

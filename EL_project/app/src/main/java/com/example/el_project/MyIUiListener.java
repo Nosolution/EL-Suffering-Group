@@ -8,8 +8,6 @@ package com.example.el_project;
 * */
 
 import android.util.Log;
-import android.widget.Toast;
-
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
 

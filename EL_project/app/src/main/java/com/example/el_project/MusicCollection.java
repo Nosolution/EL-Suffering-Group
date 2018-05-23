@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 public class MusicCollection {
-
     private List<Integer> musicCollection;
     private Random random;
     private int count;

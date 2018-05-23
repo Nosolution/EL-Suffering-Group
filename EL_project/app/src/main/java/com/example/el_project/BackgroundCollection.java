@@ -1,7 +1,6 @@
 package com.example.el_project;
 
 import android.graphics.Color;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

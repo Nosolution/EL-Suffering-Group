@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,9 +18,6 @@ import java.util.Locale;
  */
 
 public class MyDatabaseOperation {
-
-//    private MyDatabaseHelper dbHelper= new MyDatabaseHelper("TaskStore.db", null, 2);
-
     /*
     传入上下文context与任务id
      */
@@ -136,14 +132,11 @@ public class MyDatabaseOperation {
         if(cursor.moveToFirst()){
            do{
                 if(cursor.getInt(cursor.getColumnIndex("last_finished_date"))!=Integer.parseInt(formatDate.format(calendar.getTime()))){
-//                    idList.add(String.valueOf(cursor.getInt(cursor.getColumnIndex("id"))));
                     db.update("Tasklist",values,"id=?",new String[]{cursor.getString(cursor.getColumnIndex("id"))});
                 }
            }while(cursor.moveToNext());
         }
         cursor.close();
-//        if(!idList.isEmpty())
-//            db.update("Tasklist",values,"id=?",(String[])idList.toArray(new String[idList.size()]));
     }
 
     public static List<Task> getTaskList(Context context){
