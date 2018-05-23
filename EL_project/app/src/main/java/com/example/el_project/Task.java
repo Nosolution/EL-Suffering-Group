@@ -49,25 +49,6 @@ public class Task implements Comparable<Task>{
 
 	}
 
-	public Task(String name,String remark,int backgroundId,int checkedbackgroundId){
-		this.name=name;
-		this.remark=remark;
-		this.backgroundId=backgroundId;
-		this.selectedBackgroundId =checkedbackgroundId;
-		this.defaultBackground=backgroundId;
-	}
-
-	public Task(int id,Integer eDgree,int dateDiffWeight){
-		this.id=id;
-		this.eDgree=eDgree;
-		this.dateDiffWeight=dateDiffWeight;
-		this.weight=3*this.eDgree+4*this.dateDiffWeight;//权重模型
-	}
-
-	public Task(int id){
-		this.id=id;
-		this.weight=18;
-	}
 
 	public int compareTo(Task arg0){
 		return arg0.getWeight().compareTo(this.getWeight());
@@ -75,9 +56,7 @@ public class Task implements Comparable<Task>{
 
 	public int getId(){return id;}
 	public String getName(){return name;}
-
 	public String getRemark(){return remark;}
-
 	public int getHourRequired() {return hourRequired;}
 	public int getMinuteRequired() {return minuteRequired;}
 	public String getDeadline(){return deadline;}
@@ -85,16 +64,14 @@ public class Task implements Comparable<Task>{
 	public int getIsDailyTask(){return isDailyTask;}
 	public String getComments(){return comments;}
 	public int getTimeUsed(){return timeUsed;}
-
-	public void setName(String name){this.name=name;}
-
 	public Integer getWeight(){
 		return this.weight;
 	}
-
 	public int getBackgroundId(){
 		return backgroundId;
 	}
+
+	public void setName(String name){this.name=name;}
 
 	public int getSelectedBackgroundId(){return selectedBackgroundId;}
 

@@ -1,9 +1,7 @@
 package com.example.el_project;
-
 /**
- * Created by ns on 2018/5/23.
+ * 提供建议
  */
-
 public class MySuggestions {
     public static String getSuggestion(int time,double focusRate,double breakRate){
         if(time<=3)

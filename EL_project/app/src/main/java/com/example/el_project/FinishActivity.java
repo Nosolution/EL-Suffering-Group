@@ -35,7 +35,10 @@ import com.tencent.connect.share.QQShare;
 import com.tencent.tauth.Tencent;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+* 完成任务界面，显示本次完成任务的信息、分数、建议及本周每天总用时
+* 可以分享任务完成情况，返回主界面，直接开始下一项任务
+ */
 public class FinishActivity extends AppCompatActivity {
 	private TextView tvScores;  // 用于显示专注度的分数，格式：“__分”
 	private TextView tvTaskConsumedTime;  // 单个任务的耗时，格式：“本次任务共耗时 __ 分钟”
@@ -45,11 +48,10 @@ public class FinishActivity extends AppCompatActivity {
 	private Button btnReturnMain;  // 返回主界面按钮
 	private Button btnNextTask;  // 开始下一项任务的按钮
 	private Button btnShare;     //分享按钮
-	private int scores = 98;  // 传入数据
+	private int scores;  // 传入数据
 	private RecyclerView recyclerView;
 	private RecyclerViewAdapter adapter;
 	private List<Task> recommendedTaskList=new ArrayList<Task>();
-
 
 	private int taskTotalTimeUsed;         //任务总计完成时间
 	private int taskTimeUsed;              //任务有效完成时间
@@ -122,12 +124,6 @@ public class FinishActivity extends AppCompatActivity {
 			yValue.add((float) taskTimeUsedWeek[j]);
 		}
 
-		//颜色集合
-		List<Integer> colors = new ArrayList<>();
-		colors.add(Color.GREEN);
-		colors.add(Color.BLUE);
-		colors.add(Color.RED);
-		colors.add(Color.CYAN);
 		//颜色顺序为：背景颜色、Y轴颜色、X轴颜色、柱体颜色、图表标签颜色
 		int colorBackground = 0x80000000;
 		int resBackground;
@@ -176,6 +172,7 @@ public class FinishActivity extends AppCompatActivity {
 		});
 	}
 
+	//设置显示格式
 	private void setFormattedString(int data, String srcString, float size, boolean hasStyle, TextView tv){
 		String dataString=String.valueOf(data);
 		int startIndex=srcString.indexOf(dataString);

@@ -1,12 +1,5 @@
 package com.example.el_project;
 
-
-/*
- * @author NA
-* 任务计时界面，即任务进行中的界面，右侧划出可进行设置
-* 我把layout几项有改过名，Activity名字我也改了
-* */
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -41,7 +34,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-
+/*
+ * @author NA
+* 任务计时界面，即任务进行中的界面，右侧划出可进行设置
+* */
 public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 	private DrawerLayout mDrawerLayout;
 	private Switch switchClockStatus;
@@ -54,7 +50,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	private CountTimer timer;
 	private CountTimer totalTimer;                    //总计耗时
-	private Activity thisActivity = this;
 	private boolean havingTaskOngoing = false;     //是否有任务正在进行中
 	private boolean taskStatuePaused = false;        //任务暂停或进行中Flag
 	private boolean locked = false;
@@ -100,7 +95,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		QUIT,
 		FINISH
 	}
-	//TODO:计时装置设置示例 1 cz
+
 	private CircleProgress tomatoClockProgress, tomatoBreakProgress,circleProgress2;
 
 	@Override
@@ -115,7 +110,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		circleProgress2=(CircleProgress)findViewById(R.id.cp2);
 		circleProgress2.setmTotalProgress(100);
 		circleProgress2.setProgress(100);
-		//TODO:示例 2 cz
+
 		tomatoClockProgress =(CircleProgress)findViewById(R.id.cp1);
 		tomatoClockProgress.setmTotalProgress(GeneralSetting.getTomatoClockTime(this) * 60);
 		tomatoBreakProgress = (CircleProgress)findViewById(R.id.cp_break);
@@ -262,14 +257,11 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		screenOffReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				Log.d("TEST", "onReceive: withinOneSecondAfterPause " + withinOneSecondAfterPause);
 				if (withinOneSecondAfterPause && isOutOfApp) {
 					breakCount--;
-					Log.d("TEST", "onReceive: " + isOutOfApp);
 					isOutOfApp = false;
 				}
 				locked = true;
-				Log.d("TEST", "onReceive: " + isOutOfApp);
 			}
 		};
 		registerReceiver(screenOffReceiver, filter);
@@ -532,10 +524,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 						.setPositiveButton("放弃任务", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				//TODO:放弃完成任务
-				//changeTask();
 				musicController.stop();
-//				showDropActivity();
 				havingTaskOngoing = false;
 				saveFinishStatue = SaveStatue.QUIT;
 				breakCount--;
@@ -579,12 +568,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	//修改任务，主要是修改预计完成时间
 	private void changeTask(long dueTimeToFinish){
 		//TODO:修改任务描述，自动修改预计完成时间
-	}
-
-	//显示放弃完成后的活动，应为主活动
-	private void showDropActivity(){
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
 	}
 
 	private void pause(){
@@ -633,12 +616,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	//显示完成界面
 	private void showFinishingActivity(){
 		Intent intent = new Intent(this, FinishActivity.class);
-
 		intent.putExtra("task_total_time_used", taskTotalSecUsed);
 		intent.putExtra("task_time_used", taskSecGone);
 		intent.putExtra("break_count", breakCount);
-
-		Log.d("TEST", "showFinishingActivity: ");
 		startActivity(intent);
 	}
 

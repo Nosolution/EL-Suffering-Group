@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ns on 2018/5/14.
+ * 柱状图助手
  */
 
 public class MyBarChartManager {
@@ -39,20 +39,20 @@ public class MyBarChartManager {
         xAxis = mBarChart.getXAxis();
     }
 
-    /**
+    /*
      * 初始化LineChart
      */
     private void initLineChart() {
         //网格
         mBarChart.setDrawGridBackground(false);//设置网格不可见
-        mBarChart.getAxisLeft().setDrawGridLines(false);
+        mBarChart.getAxisLeft().setDrawGridLines(false);//左Y轴网格不可见
         mBarChart.getAxisRight().setEnabled(false);//设置右坐标轴不可见
-        mBarChart.getXAxis().setDrawGridLines(false);
+        mBarChart.getXAxis().setDrawGridLines(false);//X轴网格不可见
         //背景阴影
         mBarChart.setDrawBarShadow(false);
         mBarChart.setHighlightFullBarEnabled(false);
         mBarChart.setPinchZoom(false);//禁用双击放大
-        mBarChart.setTouchEnabled(false);
+        mBarChart.setTouchEnabled(false);//禁止触摸交互
 
         //显示边界
         mBarChart.setDrawBorders(false);
@@ -70,8 +70,6 @@ public class MyBarChartManager {
         legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         legend.setDrawInside(false);
 
-//        legend.setTextColor(Color.WHITE);
-
         setDescription("",0x00000000);
         MyXFormatter myXFormatter=new MyXFormatter(values);//为X轴装载字符串
         //XY轴的设置
@@ -80,13 +78,12 @@ public class MyBarChartManager {
         xAxis.setGranularity(1f);
         xAxis.setValueFormatter(myXFormatter);
 
-//        xAxis.setTextColor(Color.WHITE);
         xAxis.setTextSize(12f);
-        //保证Y轴从0开始，不然会上移一点
+        //保证Y轴从0开始
         leftAxis.setAxisMinimum(0f);
         rightAxis.setAxisMinimum(0f);
         leftAxis.setSpaceTop(13f);
-//        leftAxis.setAxisMaximum(240f);//注意，设定最大值
+//        leftAxis.setAxisMaximum(240f);//设定最大值
         leftAxis.setTextSize(11f);
 
 //        leftAxis.setTextColor(Color.WHITE);

@@ -26,7 +26,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
+/**
+* 编辑任务界面，可新添任务或者修改已存在的任务
+ */
 public class EditTaskActivity extends AppCompatActivity implements View.OnClickListener{
 
     private RelativeLayout selectTime;

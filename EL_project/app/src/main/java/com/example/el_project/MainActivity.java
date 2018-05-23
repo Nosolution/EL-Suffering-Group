@@ -31,12 +31,15 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+* 主界面，显示待办的任务列表
+ */
+
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
     private List<com.example.el_project.Task> mTaskList = new ArrayList<>();
     private RelativeLayout relativeLayout;
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
-    private MyDatabaseHelper dbHelper;
     private FloatingActionButton baseFab;
     private android.support.design.widget.FloatingActionButton fabDelete, fabDetail, fabStart;
     private View mask;
@@ -52,20 +55,16 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private LinearLayout breakClockTimeLayout;
     private int selectedPosition;//被选中的Item位置
     private boolean isExit=false;
-    private DrawerLayout drawerLayoutMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         //修改界面主题
         BackgroundCollection backgroundCollection = new BackgroundCollection();
         setTheme(backgroundCollection.getTodayTheme());
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbHelper = new MyDatabaseHelper(this, "TaskStore.db", null, 4);
         selectedPosition=-1;
-
         Toolbar toolbar = findViewById(R.id.title_toolbar);
         setSupportActionBar(toolbar);
 	    mDrawerLayout=findViewById(R.id.activity_main_drawer_layout);
@@ -215,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         fabDetail.setVisibility(View.INVISIBLE);
         fabStart.setVisibility(View.INVISIBLE);
 
+        //基础悬浮按钮点击逻辑
         baseFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -259,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         });
     }
 
+    //每次恢复主界面就刷新任务列表
     @Override
     protected void onResume() {
         MyDatabaseOperation.refreshAllDailyTask(MainActivity.this);
@@ -304,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
+    //开始任务，启动计时界面
     private void startTask(){
         Intent intent=new Intent(MainActivity.this,TaskTimingActivity.class);
         intent.putExtra("intent_task_id",mTaskList.get(selectedPosition).getId());
@@ -316,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         startActivity(intent);
     }
 
-
+    //显示详情对话框
     private void showDetails(final int position){
         final AlertDialog.Builder detailsDialog =
                 new AlertDialog.Builder(MainActivity.this);
@@ -343,11 +345,11 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         detailsDialog.show();
     }
 
+    //构造详情对话框显示的任务信息
     private String constructDetails(int position){
         String finalString= "";
         String temp="";
         finalString+="任务："+mTaskList.get(selectedPosition).getName()+"\n";
-//        String[] tempString=taskList.get(position)[2].split(":");
         finalString+="预计时间:"+mTaskList.get(position).getHourRequired()+"时"+mTaskList.get(position).getMinuteRequired()+"分\n";
         temp=mTaskList.get(selectedPosition).getDeadline();
         finalString+="最后日期："+(temp==null ? "无":temp)+"\n";

@@ -12,15 +12,11 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-
 /**
- * Created by ns on 2018/5/1.
+ * 数据库操作集合
  */
-
 public class MyDatabaseOperation {
-    /*
-    传入上下文context与任务id
-     */
+
     public static void deleteTask(Context context,int id){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
@@ -138,7 +134,7 @@ public class MyDatabaseOperation {
         }
         cursor.close();
     }
-
+    //得到装有全部任务的List
     public static List<Task> getTaskList(Context context){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -169,6 +165,7 @@ public class MyDatabaseOperation {
         return null;
     }
 
+    //完成界面的推荐任务
     public static List<Task> getRecommendedTaskList(Context context){
         List<Task> finalList=getTaskList(context);
         if(finalList != null && finalList.size()>3)
