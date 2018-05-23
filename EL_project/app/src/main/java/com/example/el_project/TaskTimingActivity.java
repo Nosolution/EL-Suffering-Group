@@ -47,9 +47,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private Switch switchClockStatus;
 	private Switch switchMusicStatus;
 	private Button btnChangeMusic;                     //切换歌曲按钮
-	private TextView textClockTime;
+	private TextView tvClockTime;
 	private LinearLayout clockTimeLayout;
-	private TextView textBreakClockTime;
+	private TextView tvBreakClockTime;
 	private LinearLayout breakClockTimeLayout;
 
 	private CountTimer timer;
@@ -63,14 +63,14 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 	private ImageButton btnThrowTask;                   //放弃任务，按钮
 	private ImageButton btnPause;                       //暂停
 
-	private TextView taskTimeCount;                //显示任务已经过时间
+	private TextView tvTaskTimeCount;                //显示任务已经过时间
 	private int taskSecGone = 0;                       //任务已过时间
 	private int taskTotalSecUsed = 0;                    //任务共用时间
 	private Handler taskTimeRefreshHandler;
 	private Handler taskTotalTimeRefreshHandler;
-	private TextView timeLeft;
-	private TextView textBelowTimeLeft;
-	private TextView textLeftToTimeLeft;
+	private TextView tvTimeLeft;
+	private TextView tvBelowTimeLeft;
+	private TextView tvLeftToTimeLeft;
 	private boolean isQuickTask = false;             //是否为快速任务，即无预计时间的任务
 	private MusicController musicController;
 	private CountDownTimer tomatoClockCountDown;   //番茄钟倒计时
@@ -85,7 +85,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	private LinearLayout remarkLayout;             //备注所在的布局
 	private LinearLayout.LayoutParams remarkLayoutLayoutParams; //布局大小
-	private TextView remarkText;                   //备注
+	private TextView tvRemark;                   //备注
     private ImageView imgDial;
 	private Toolbar toolbar;
 
@@ -137,18 +137,17 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		switchClockStatus = findViewById(R.id.switch_if_tomato_clock_on);
 		switchMusicStatus = findViewById(R.id.switch_if_music_on);
 		btnChangeMusic = findViewById(R.id.bt_change_music);
-		textClockTime = findViewById(R.id.text_choose_time);
+		tvClockTime = findViewById(R.id.text_choose_time);
 		clockTimeLayout = findViewById(R.id.task_timing_clock_set_time);
-		textBreakClockTime = findViewById(R.id.text_choose_break_time);
+		tvBreakClockTime = findViewById(R.id.text_choose_break_time);
 		breakClockTimeLayout = findViewById(R.id.task_timing_break_clock_set_time);
 
-
 		//初始化计时主要界面的内容
-		taskTimeCount = findViewById(R.id.time_action);
-		timeLeft = findViewById(R.id.time_left_to_finish);
-		textBelowTimeLeft = findViewById(R.id.text_below_time_left);
-		textLeftToTimeLeft = findViewById(R.id.text_left_to_time_left);
-		remarkText = findViewById(R.id.edit_remark);
+		tvTaskTimeCount = findViewById(R.id.time_action);
+		tvTimeLeft = findViewById(R.id.time_left_to_finish);
+		tvBelowTimeLeft = findViewById(R.id.text_below_time_left);
+		tvLeftToTimeLeft = findViewById(R.id.text_left_to_time_left);
+		tvRemark = findViewById(R.id.edit_remark);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_task_timing_drawer_layout);
 //		tomatoClockCountDownTime = findViewById(R.id.tomato_text);
 		btnTaskFinished = findViewById(R.id.finish_button);
@@ -159,7 +158,6 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		RelativeLayout layoutSetting = findViewById(R.id.activity_task_timing_setting_upper);
 		layoutMain.setBackgroundResource(backgroundCollection.getTodayBackground());
 		layoutSetting.setBackgroundColor(backgroundCollection.getTodayColor());
-
 
 		//设置设置界面相关监听器
 		switchClockStatus.setChecked(GeneralSetting.getTomatoClockEnable(this));
@@ -246,12 +244,12 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 		//初始化显示的Task各项信息
 		toolbar.setTitle(taskName);                                        //设置toolbar标题显示任务名
-		remarkText.setText(taskComments);                                  //设置备注显示
+		tvRemark.setText(taskComments);                                  //设置备注显示
         RelativeLayout leftTimeLayout = findViewById(R.id.layout_left_time_to_finish);
         if (taskMillisRequired <= 0){
             isQuickTask = true;
-            textLeftToTimeLeft.setText("总计");
-            textBelowTimeLeft.setText("花费时间");
+            tvLeftToTimeLeft.setText("总计");
+            tvBelowTimeLeft.setText("花费时间");
 			tomatoClockProgress.setProgress(GeneralSetting.getTomatoClockTime(this) * 60);
         }
 
@@ -312,7 +310,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			public void onTick(long millisGoneThrough) {
 				taskTotalTimeRefreshHandler.sendEmptyMessage((int)(millisGoneThrough/1000));
 				if(isQuickTask){
-					timeLeft.setText(millis2HourMinSecString(millisGoneThrough, 2));
+					tvTimeLeft.setText(millis2HourMinSecString(millisGoneThrough, 2));
 				}
 			}
 		};
@@ -328,15 +326,9 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 		//旋转刻度图形
         imgDial.setImageResource(R.drawable.circle_gapped_doing);
-//        Animation animationDialRotate = AnimationUtils.loadAnimation(this, R.anim.rotate_dial);
-//        animationDialRotate.setDuration(60000);
-//        animationDialRotate.setRepeatCount(Animation.INFINITE);
-//        animationDialRotate.setRepeatMode(Animation.RESTART);
-//        imgDial.setAnimation(animationDialRotate);
 
 		//更新是否启用番茄钟动画
 		refreshTomatoClockVisible();
-
 
 		//初始化并启动番茄钟
 		if(GeneralSetting.getTomatoClockEnable(this)){
@@ -345,12 +337,10 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 
 	}
 
-
 	public boolean onCreateOptionsMenu(Menu menu){
 		getMenuInflater().inflate(R.menu.toolbar,menu);
 		return true;
 	}
-
 
 	//对HomeAsUp按钮点击事件进行处理
 	@Override
@@ -614,7 +604,7 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			initStartTomatoClockBreak();
 		}
 
-		taskTimeCount.setText("休息中");
+		tvTaskTimeCount.setText("休息中");
 		tomatoClockProgress.setProgress(0);
 	}
 
@@ -652,20 +642,15 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 		startActivity(intent);
 	}
 
-	//显示暂停时活动
-	private void showPauseActivity(){
-		//TODO:显示暂停时活动，应有一个恢复按键
-	}
-
 	//初始化计时器，内部修改每秒行为，计时器开始计时前必须初始化
 	private void initCountTimer(){
 		timer = new CountTimer(1000) {
 			@Override
 			public void onTick(long millisGoneThrough) {
-				taskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
+				tvTaskTimeCount.setText(millis2HourMinSecString(millisGoneThrough));
 				taskTimeRefreshHandler.sendEmptyMessage((int)(millisGoneThrough/1000));
 				if(!isQuickTask) {
-					timeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - taskTimeUsed * 1000 - millisGoneThrough + 60000), 0), 2));
+					tvTimeLeft.setText(millis2HourMinSecString(Math.max((taskMillisRequired - taskTimeUsed * 1000 - millisGoneThrough + 60000), 0), 2));
 				}
 				imgDial.setPivotX(imgDial.getWidth() / 2);
 				imgDial.setPivotY(imgDial.getHeight() / 2);
@@ -800,8 +785,8 @@ public class TaskTimingActivity extends AppCompatActivity implements CompoundBut
 			clockTimeLayout.setVisibility(View.GONE);
 			breakClockTimeLayout.setVisibility(View.GONE);
 		}
-		textClockTime.setText(GeneralSetting.getTomatoClockTime(this) + "分钟");
-		textBreakClockTime.setText(GeneralSetting.getTomatoBreakTime(this) + "分钟");
+		tvClockTime.setText(GeneralSetting.getTomatoClockTime(this) + "分钟");
+		tvBreakClockTime.setText(GeneralSetting.getTomatoBreakTime(this) + "分钟");
 	}
 
 	private void saveTaskFinishToDB(final int statue){

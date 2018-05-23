@@ -3,12 +3,9 @@ package com.example.el_project;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.io.File;
 
 public class TempPicStorageManager {
-
     private String dirPath;
     private Context context;
 
