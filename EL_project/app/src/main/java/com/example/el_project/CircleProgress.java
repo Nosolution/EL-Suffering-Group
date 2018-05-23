@@ -10,7 +10,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * Created by CZ on 2018/5/12.
+ * 计时圆形进度条
+ * @author CZ
  */
 
 public class CircleProgress extends View{

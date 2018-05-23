@@ -10,14 +10,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * recyclerView适配器
+ * @author Neo
+ */
 //Adapter作用是将数据与每一个item的界面进行绑定
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 	private List<Task> mTaskList;
-//	private SparseBooleanArray mSelectedPositions = new SparseBooleanArray();//储存被选中的Item的位置
-	private boolean mIsSelectable = false; //是否可被编辑
 
-	//提供一个合适的construction（由dataset类型决定）//构造方法上移，看起来更美观
+	//提供一个合适的construction（由dataset类型决定）
 	public RecyclerViewAdapter(List<Task> taskList){
 		mTaskList=taskList;  //要展示的数据源
 	}
@@ -27,16 +29,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 		TextView taskName;
 		TextView taskRemark;
 		RelativeLayout layoutBackground;
-//		View taskView;
 
 		//构造函数
 		public ViewHolder(View view){
 			super(view);
 			taskName=view.findViewById(R.id.task_name);
 			taskRemark=view.findViewById(R.id.task_remark);
-//			taskImage=view.findViewById(R.id.task_image);
 			layoutBackground=view.findViewById(R.id.layout_item);
-//			taskView = view;
 		}
 	}
 
@@ -55,7 +54,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	@Override
 	public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 		Task task=mTaskList.get(position);  //得到当前项的实例
-//		holder.taskImage.setImageResource(task.getImageId());
 		holder.taskName.setText(task.getName());
 		holder.taskRemark.setText(task.getRemark());
 		holder.layoutBackground.setBackgroundResource(task.getBackgroundId());
@@ -109,7 +107,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 	//更新adpter的数据和选择状态
 	public void updateDataSet(ArrayList<Task> list) {
 		this.mTaskList = list;
-//		mSelectedPositions = new SparseBooleanArray();
 	}
 
 	public void initSelectPositions(){

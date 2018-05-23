@@ -28,6 +28,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 /**
 * 编辑任务界面，可新添任务或者修改已存在的任务
+ * 编辑完成后可选择加入待办或者立即开始
+ * @author ns
  */
 public class EditTaskActivity extends AppCompatActivity implements View.OnClickListener{
 

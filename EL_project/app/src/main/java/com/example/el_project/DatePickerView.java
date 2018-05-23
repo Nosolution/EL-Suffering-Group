@@ -15,7 +15,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Created by CZ on 2018/4/13.
+ * 滚轮日期选择器显示页面
+ * @author CZ
  */
 
 public class DatePickerView extends View{

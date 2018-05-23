@@ -36,8 +36,11 @@ import com.tencent.tauth.Tencent;
 import java.util.ArrayList;
 import java.util.List;
 /**
-* 完成任务界面，显示本次完成任务的信息、分数、建议及本周每天总用时
-* 可以分享任务完成情况，返回主界面，直接开始下一项任务
+ * The type Finish activity.
+ * 完成任务界面，完成任务界面显示本次任务完成报告
+ * 提示用户分享或继续下一个任务
+ *
+ * @author NAiveD
  */
 public class FinishActivity extends AppCompatActivity {
 	private TextView tvScores;  // 用于显示专注度的分数，格式：“__分”
@@ -193,6 +196,7 @@ public class FinishActivity extends AppCompatActivity {
 		taskTimeUsedWeek = MyDatabaseOperation.getThisWeekPerDayTimeUsedWithCorrection(this, taskTimeUsed);
 	}
 
+	//将本次任务分享到QQ
 	private void shareToQQ(Context context){
 		Calendar calendar = new GregorianCalendar();
 		SimpleDateFormat format = new SimpleDateFormat("yyMMddHHmmss", Locale.getDefault());
@@ -265,6 +269,7 @@ public class FinishActivity extends AppCompatActivity {
 	}
 
 
+	//QQ分享回调
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);

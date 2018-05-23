@@ -1,5 +1,11 @@
 package com.example.el_project;
 
+/**
+* Task类，存有Task的各项数据
+ * 实现可比较接口，可进行排序
+ * @author ns
+ */
+
 public class Task implements Comparable<Task>{
 	private int id;
 	private String name;

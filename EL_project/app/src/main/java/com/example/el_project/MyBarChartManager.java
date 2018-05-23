@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 柱状图助手
+ * 柱状图助手,用来设置柱状图的各种属性并构造柱状图
+ * @author ns
  */
 
 public class MyBarChartManager {

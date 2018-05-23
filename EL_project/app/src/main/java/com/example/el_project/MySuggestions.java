@@ -1,6 +1,7 @@
 package com.example.el_project;
 /**
- * 提供建议
+ * 在任务完成界面提供建议
+ * @author ns
  */
 public class MySuggestions {
     public static String getSuggestion(int time,double focusRate,double breakRate){

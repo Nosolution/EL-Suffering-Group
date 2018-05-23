@@ -4,7 +4,8 @@ import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 /**
- * Created by ns on 2018/5/14.
+ * 为X轴装载字符
+ * @author ns
  */
 
 public class MyXFormatter implements IAxisValueFormatter {

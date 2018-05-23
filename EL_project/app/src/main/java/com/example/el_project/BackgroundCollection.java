@@ -8,11 +8,23 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * The type Background collection.
+ * 背景相关信息集合
+ * 针对一周的不同天数返回不同的背景图片资源和主题色
+ * 实例化相应对象直接调用方法即可
+ * @author NAiveD
+ * @version 1.1
+ */
+
 public class BackgroundCollection {
     private List<Integer> backgroundCollection;
     private List<Integer> colorCollection;
     private List<Integer> themeCollection;
 
+    /**
+     * Instantiates a new Background collection.
+     */
     BackgroundCollection(){
         backgroundCollection = new ArrayList<Integer>();
         colorCollection = new ArrayList<Integer>();
@@ -70,14 +82,29 @@ public class BackgroundCollection {
         return weekNum;
     }
 
+    /**
+     * Get today background res as int.
+     *
+     * @return int
+     */
     public int getTodayBackground(){
         return backgroundCollection.get(getWeekNum() - 1);
     }
 
+    /**
+     * Get today color as int.
+     *
+     * @return int
+     */
     public int getTodayColor(){
         return colorCollection.get(getWeekNum() - 1);
     }
 
+    /**
+     * Get today theme res as int.
+     *
+     * @return int
+     */
     public int getTodayTheme(){
         return themeCollection.get(getWeekNum() - 1);
     }

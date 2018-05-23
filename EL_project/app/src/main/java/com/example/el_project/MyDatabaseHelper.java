@@ -5,7 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by ns on 2018/4/9.
+ * 数据库助手，用于数据库的创建与升级
+ * @author ns
  */
 //执行数据库有关的工作
 public class MyDatabaseHelper extends SQLiteOpenHelper {

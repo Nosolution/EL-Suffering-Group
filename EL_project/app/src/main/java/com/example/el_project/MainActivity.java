@@ -33,6 +33,8 @@ import java.util.TimerTask;
 
 /**
 * 主界面，显示待办的任务列表
+ * 可进行新增任务、开始任务、显示详情、删除任务等操作
+ * @author ns
  */
 
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
