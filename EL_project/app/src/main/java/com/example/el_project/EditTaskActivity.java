@@ -342,6 +342,9 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
         textTimeToFinish.setText("00:00");
         hour = "0";
         minute = "0";
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+        String now=sdf.format(new Date());
+        ddlTime.setText(now);
         ImageView iv;
         AnimationDrawable ad;
         for(int i=selectedImageViewPosition;i>0;i--){

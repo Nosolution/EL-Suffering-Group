@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private MyDatabaseHelper dbHelper;
     private FloatingActionButton baseFab;
     private android.support.design.widget.FloatingActionButton fabDelete, fabDetail, fabStart;
+    private View mask;
     private boolean isFabOpened = false;
     private Animation in_from_fab;
     private Animation out_to_fab;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 	    mDrawerLayout=findViewById(R.id.activity_main_drawer_layout);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);  //如果确定每个item的内容不会改变RecyclerView的大小，设置这个选项可以提高性能
+        mask = findViewById(R.id.mask);
 
 	    //设置背景
         mDrawerLayout.setBackgroundResource(backgroundCollection.getTodayBackground());
@@ -161,14 +163,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
                 if (!isFabOpened&&selectedPosition==-1) {
                     selectedPosition=position;
                     task.switchBackground();
-                    new Thread(){     //几个线程
-                        @Override
-                        public void run() {
-                            super.run();
-                            adapter.changeItemBackGround(position);
-                        }
-                    }.start();
+                    adapter.changeItemBackGround(position);
                     openMenu(baseFab);
+                    mask.setVisibility(View.VISIBLE);
                 }
                 else if(isFabOpened&&selectedPosition!=position){
                     Task previousTask=mTaskList.get(selectedPosition);
@@ -200,6 +197,22 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             //无长按功能
             @Override
             public void onItemLongClick(View view, int position) { }
+        });
+
+        mask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedPosition == -1) {
+                    mask.setVisibility(View.GONE);
+                    return;
+                }
+                Task previousTask=mTaskList.get(selectedPosition);
+                previousTask.switchBackground();
+                adapter.changeItemBackGround(selectedPosition);
+                closeMenu(baseFab);
+                selectedPosition=-1;
+                mask.setVisibility(View.GONE);
+            }
         });
 
 
