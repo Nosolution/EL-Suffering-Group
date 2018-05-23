@@ -15,11 +15,17 @@ import java.util.Locale;
 
 /**
  * Created by ns on 2018/5/1.
+ * 数据库操作类，封装了一层常用操作，均为静态方法，直接调用即可
+ *
+ * @author NAiveD, ns
+ * @version 1.5
  */
-
 public class MyDatabaseOperation {
-    /*
-    传入上下文context与任务id
+    /**
+     * Delete task.
+     *
+     * @param context the context
+     * @param id      the id 任务id
      */
     public static void deleteTask(Context context,int id){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
@@ -27,6 +33,13 @@ public class MyDatabaseOperation {
         db.delete("Tasklist","id=?",new String[]{String.valueOf(id)});
     }
 
+    /**
+     * Query latest task id int.
+     * 查询最后添加的任务的id
+     *
+     * @param context the context
+     * @return the int
+     */
     public static int queryLatestTaskId(Context context){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
@@ -39,6 +52,14 @@ public class MyDatabaseOperation {
         else return 0;
     }
 
+    /**
+     * Give up finishing task.
+     * 放弃完成一个任务，这会保存他的本次用时，下次继续任务时会累计
+     *
+     * @param context the context
+     * @param id      the id 任务id
+     * @param time    the time 存入的时间，以秒计
+     */
     /*
     **放弃任务时更新已进行的时间
      */
@@ -54,7 +75,15 @@ public class MyDatabaseOperation {
         }
     }
 
-    //提供两种查询方法，可分别根据id和任务名查询是否是每日任务
+    /**
+     * Is daily task boolean.
+     * 通过任务id判断某任务是否是每日任务
+     *
+     * @param context the context
+     * @param id      the id 任务id
+     * @return the boolean
+     */
+//提供两种查询方法，可分别根据id和任务名查询是否是每日任务
     public static boolean isDailyTask(Context context,int id){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
@@ -70,6 +99,15 @@ public class MyDatabaseOperation {
         return false;
 
     }
+
+    /**
+     * Is daily task boolean.
+     * 通过任务名判断某任务是否是每日任务
+     *
+     * @param context  the context
+     * @param taskName the task name 任务名
+     * @return the boolean
+     */
     public static boolean isDailyTask(Context context,String taskName){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
@@ -85,6 +123,14 @@ public class MyDatabaseOperation {
         return false;
     }
 
+    /**
+     * Last finished date int.
+     * 得到一条每日任务最后完成的日期
+     *
+     * @param context the context
+     * @param id      the id 任务id
+     * @return the int
+     */
     public static int lastFinishedDate(Context context,int id){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
@@ -96,7 +142,14 @@ public class MyDatabaseOperation {
         return 0;
     }
 
-    //方法重载，完成每日任务，更新状态
+    /**
+     * Set daily task finished.
+     * 通过任务id设置每日任务完成
+     *
+     * @param context the context
+     * @param id      the id 任务id
+     */
+//方法重载，完成每日任务，更新状态
     public static void setDailyTaskFinished(Context context,int id){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
@@ -107,6 +160,14 @@ public class MyDatabaseOperation {
         values.put("last_finished_date",Integer.parseInt(formatDate.format(calendar.getTime())));
         db.update("Tasklist",values,"id=?",new String[]{String.valueOf(id)});
     }
+
+    /**
+     * Set daily task finished.
+     * 通过任务名设置每日任务完成
+     *
+     * @param context  the context
+     * @param taskName the task name 任务名
+     */
     public static void setDailyTaskFinished(Context context,String taskName){
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
         SQLiteDatabase db=dbHelper.getWritableDatabase();
@@ -118,7 +179,13 @@ public class MyDatabaseOperation {
         db.update("Tasklist",values,"task=?",new String[]{taskName});
     }
 
-    //刷新所有已完成的每日任务
+    /**
+     * Refresh all daily task.
+     * 刷新所有的每日任务
+     *
+     * @param context the context
+     */
+//刷新所有已完成的每日任务
     public static void refreshAllDailyTask(Context context){
         ArrayList<String> idList=new ArrayList<>();
         MyDatabaseHelper dbHelper=new MyDatabaseHelper(context,"TaskStore.db",null,4);
@@ -139,6 +206,13 @@ public class MyDatabaseOperation {
         cursor.close();
     }
 
+    /**
+     * Get task list list.
+     * 获得任务列表
+     *
+     * @param context the context
+     * @return the list
+     */
     public static List<Task> getTaskList(Context context){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -169,6 +243,13 @@ public class MyDatabaseOperation {
         return null;
     }
 
+    /**
+     * Get recommended task list list.
+     * 获得推荐任务任务列表，最多3条
+     *
+     * @param context the context
+     * @return the list
+     */
     public static List<Task> getRecommendedTaskList(Context context){
         List<Task> finalList=getTaskList(context);
         if(finalList != null && finalList.size()>3)
@@ -177,7 +258,15 @@ public class MyDatabaseOperation {
             return finalList;
     }
 
-    //任务开始时向数据库插入一条完成信息，此信息只保存具体开始时间，任务名，其他置为默认
+    /**
+     * Add finish task with start time string.
+     * 在开始计时时向数据库添加一条任务完成信息，以开始具体时间唯一标识
+     *
+     * @param context  the context
+     * @param taskName the task name 任务名
+     * @return the string 任务开始时间，也是任务完成信息唯一标识的id
+     */
+//任务开始时向数据库插入一条完成信息，此信息只保存具体开始时间，任务名，其他置为默认
     public static String addFinishTaskWithStartTime(Context context, String taskName){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -198,7 +287,16 @@ public class MyDatabaseOperation {
         return startTime;
     }
 
-    //当任务完成或放弃后修改对应的完成信息，保存完成时日期，总任务耗时，完成状态，切换次数等
+    /**
+     * Edit finish task when finishing.
+     * 当任务完成或放弃后修改对应的完成信息，保存完成时日期，总任务耗时，完成状态，切换次数等
+     *
+     * @param context      the context
+     * @param startTime    the start time 任务开始时间，也是唯一标识任务完成信息的id
+     * @param taskTimeUsed the task time used 任务专注时间
+     * @param statue       the statue 任务完成状态，0放弃， 1完成
+     * @param breakCount   the break count 切出应用的计数
+     */
     public static void editFinishTaskWhenFinishing(Context context, String startTime, int taskTimeUsed, int statue, int breakCount){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -218,14 +316,28 @@ public class MyDatabaseOperation {
         db.update("FinishTaskTable", values, "detail_time_start = ?", new String[]{startTime});
     }
 
-    //更新任务计时记录表，删除无效记录
+    /**
+     * Refresh finish task table.
+     * 更新任务计时记录表，删除无效记录
+     * 无效记录为任务开始时添加的但因各种原因未在结束时更改的任务信息
+     *
+     * @param context the context
+     */
     public static void refreshFinishTaskTable(Context context){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete("FinishTaskTable", "week = ?", new String[]{"0"});
     }
 
-    //得到某日总计学习工作时间
+    /**
+     * Get total some day time used int.
+     * 得到某日的总计专注时间
+     *
+     * @param context the context
+     * @param date    the date 日期format:yyMMdd
+     * @return the int
+     */
+//得到某日总计学习工作时间
     public static int getTotalSomeDayTimeUsed(Context context, int date){
         MyDatabaseHelper dbHelper = new MyDatabaseHelper(context, "TaskStore.db", null, 4);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -244,14 +356,28 @@ public class MyDatabaseOperation {
         return totalTime;
     }
 
-    //得到今日总计学习工作时间
+    /**
+     * Get total time used today int.
+     * 得到今天的总计专注时长
+     *
+     * @param context the context
+     * @return the int
+     */
+//得到今日总计学习工作时间
     public static int getTotalTimeUsedToday(Context context){
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat format = new SimpleDateFormat("yyMMdd", Locale.getDefault());
         return getTotalSomeDayTimeUsed(context, Integer.parseInt(format.format(calendar.getTime())));
     }
 
-    //得到一周内每日学习工作时间，从周一开始
+    /**
+     * Get week per day time used int [ ].
+     * 得到某一周的每日专注时长，从周日开始
+     *
+     * @param context   the context
+     * @param weekCount the week count 某年的第几周format:yyw
+     * @return the int [ ]
+     */
     public static int[] getWeekPerDayTimeUsed(Context context, int weekCount){
         int[] timesWeek = new int[7];
 
@@ -269,12 +395,27 @@ public class MyDatabaseOperation {
         return timesWeek;
     }
 
+    /**
+     * Get this week per day time used int [ ].
+     * 得到本周每日专注时长，从周日开始，注意：未修正，当前完成的任务因为数据库存的慢所以未计算
+     *
+     * @param context the context
+     * @return the int [ ]
+     */
     public static int[] getThisWeekPerDayTimeUsed(Context context){
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat format = new SimpleDateFormat("yyw", Locale.getDefault());
         return getWeekPerDayTimeUsed(context, Integer.parseInt(format.format(calendar.getTime())));
     }
 
+    /**
+     * Get this week per day time used with correction int [ ].
+     * 得到修正了的本周每日专注时长，从周日开始
+     *
+     * @param context    the context
+     * @param correction the correction
+     * @return the int [ ]
+     */
     public static int[] getThisWeekPerDayTimeUsedWithCorrection(Context context, int correction){
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat format = new SimpleDateFormat("yyw", Locale.getDefault());
@@ -283,6 +424,12 @@ public class MyDatabaseOperation {
         return result;
     }
 
+    /**
+     * Get week num int.
+     * 得到今天以数字表示的周几序号，从1到7表示从周一到周日
+     *
+     * @return the int
+     */
     public static int getWeekNum(){
         Calendar calendar = new GregorianCalendar();
         SimpleDateFormat format = new SimpleDateFormat("EEE", Locale.getDefault());

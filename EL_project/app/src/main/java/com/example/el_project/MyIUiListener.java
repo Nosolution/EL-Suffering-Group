@@ -1,15 +1,17 @@
 package com.example.el_project;
 
-/*
-*
-* 重写应用腾讯的一个接口
-* 为分享这是必须的
-*
-* */
-
 import android.util.Log;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
+
+/**
+ *
+ * 重写应用腾讯的一个接口
+ * 为分享这是必须的
+ *
+ * @author NAiveD
+ * @version 1.0
+ * */
 
 public class MyIUiListener implements IUiListener {
     @Override

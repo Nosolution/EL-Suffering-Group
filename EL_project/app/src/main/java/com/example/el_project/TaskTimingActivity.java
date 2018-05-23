@@ -1,12 +1,5 @@
 package com.example.el_project;
 
-
-/*
- * @author NA
-* 任务计时界面，即任务进行中的界面，右侧划出可进行设置
-* 我把layout几项有改过名，Activity名字我也改了
-* */
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -41,6 +34,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+
+/**
+ * 任务计时界面，即任务进行中的界面，右侧划出可进行设置
+ * 我把layout几项有改过名，Activity名字我也改了
+ * @author NA
+ * @version 2.6
+ * 
+ * */
 
 public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 	private DrawerLayout mDrawerLayout;

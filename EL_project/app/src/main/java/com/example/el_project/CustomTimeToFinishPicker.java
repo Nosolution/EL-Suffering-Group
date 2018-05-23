@@ -10,22 +10,51 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import java.util.ArrayList;
 
+/**
+ * The type Custom time to finish picker.
+ * 自定义的选择预计完成时间的时间选择器
+ * 使用：实例化一个新对象并在构造函数参数中重写回调接口，
+ *      通过show()方法显示选择器的控件
+ *      setIsLoop()方法设置选择器所拨数字是否可循环
+ * @author NAiveD
+ * @version 1.0
+ *
+ */
 public class CustomTimeToFinishPicker {
     /**
      * 定义结果回调接口
      */
     public interface ResultHandler {
+        /**
+         * Handle.
+         * 通过用户重写的此方法得到所选时间
+         *
+         * @param hour the hour
+         * @param min  the min
+         */
         void handle(String hour, String min);
     }
 
+    /**
+     * The enum Scroll type.
+     */
     public enum SCROLL_TYPE {
+        /**
+         * Hour scroll type.
+         */
         HOUR(1),
+        /**
+         * Minute scroll type.
+         */
         MINUTE(2);
 
         SCROLL_TYPE(int value) {
             this.value = value;
         }
 
+        /**
+         * The Value.
+         */
         public int value;
     }
 
@@ -46,6 +75,12 @@ public class CustomTimeToFinishPicker {
 
     private ArrayList<String> hourList, minuteList;
 
+    /**
+     * Instantiates a new Custom time to finish picker.
+     *
+     * @param context the context 上下文
+     * @param handler the handler 回调接口，通过重写方法可得到选择结果
+     */
     public CustomTimeToFinishPicker(Context context, ResultHandler handler){
         canAccess = true;
         this.context = context;
@@ -148,6 +183,12 @@ public class CustomTimeToFinishPicker {
         selectedMinute = times[1];
     }
 
+    /**
+     * Set is loop.
+     * 设置拨数字是否可循环
+     *
+     * @param isLoop the is loop
+     */
     public void setIsLoop(boolean isLoop){
         if (canAccess){
             hourPicker.setIsLoop(isLoop);
@@ -155,6 +196,12 @@ public class CustomTimeToFinishPicker {
         }
     }
 
+    /**
+     * Show.
+     * 显示选择器的View
+     *
+     * @param time the time
+     */
     public void show(String time){
         if (canAccess) {
             initPicker();
