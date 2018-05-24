@@ -45,4 +45,6 @@
 	<string name="text_clean_share_store">清理图片\n分享缓存</string>
 	<string name="btn_text_clean_share_storage">清理</string>
 	<string name="choose_break_time">休息时长</string>
+
+	<string name="words">及年岁之未晏兮，时亦犹其未央。\n——屈原《离骚》</string>
 </resources>

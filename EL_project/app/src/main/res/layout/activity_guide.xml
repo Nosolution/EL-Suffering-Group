@@ -17,7 +17,7 @@
 		android:layout_height="40dp"
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"
-		android:layout_marginBottom="60dp"
+		android:layout_marginBottom="90dp"
 		android:text="进入时晏"
 		android:background="@drawable/button_background_selector"
 		android:textColor="#80000000"

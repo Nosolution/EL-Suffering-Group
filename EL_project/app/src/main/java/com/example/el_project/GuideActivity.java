@@ -43,7 +43,7 @@ public class GuideActivity extends AppCompatActivity {
 		LayoutInflater layoutInflater = getLayoutInflater();
 		viewList.add(layoutInflater.inflate(R.layout.view_pager_one, null, false));
 		viewList.add(layoutInflater.inflate(R.layout.view_pager_two, null, false));
-//		viewList.add(layoutInflater.inflate(R.layout.view_pager_three, null, false));
+		viewList.add(layoutInflater.inflate(R.layout.view_pager_three, null, false));
 	}
 
 	private void initDot() {
