@@ -37,10 +37,10 @@ import android.widget.TextView;
 
 /**
  * 任务计时界面，即任务进行中的界面，右侧划出可进行设置
- * 我把layout几项有改过名，Activity名字我也改了
+ * 任务进行中的计时界面，管理任务进行中时，背景乐，番茄钟，用户暂停放弃完成操作
  * @author NA
  * @version 2.6
- * 
+ *
  * */
 
 public class TaskTimingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
