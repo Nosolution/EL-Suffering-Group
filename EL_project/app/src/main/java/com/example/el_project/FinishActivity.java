@@ -99,7 +99,7 @@ public class FinishActivity extends AppCompatActivity {
 
 		//得到任务完成信息和本周每日工作学习时长（有效，总未记录）
 		getTaskFinishInfo();
-		tvSuggestion.setText(MySuggestions.getSuggestion(taskTotalTimeUsed,(double)taskTimeUsed/taskTotalTimeUsed,(double)breakCount/(double)((taskTotalTimeUsed+30)/60)));
+		tvSuggestion.setText(MySuggestions.getSuggestion(taskTotalTimeUsed,(double)taskTimeUsed/taskTotalTimeUsed,(double)breakCount/(double)(taskTotalTimeUsed+30)/60));
 		//处理数据
 		scores =MyAlgorithm.calcScores(taskTotalTimeUsed,taskTimeUsed,breakCount);
 		taskTotalTimeUsed+=30;taskTotalTimeUsed/=60;
