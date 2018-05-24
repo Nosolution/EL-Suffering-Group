@@ -60,6 +60,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
+        //判断是否是第一次打开应用
+        if (GeneralSetting.getFirstOpen(this)){
+            Intent intent = new Intent(this, GuideActivity.class);
+            startActivity(intent);
+        }
+
         //修改界面主题
         BackgroundCollection backgroundCollection = new BackgroundCollection();
         setTheme(backgroundCollection.getTodayTheme());
