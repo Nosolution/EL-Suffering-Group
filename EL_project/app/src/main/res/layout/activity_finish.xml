@@ -81,7 +81,7 @@
 				android:drawablePadding="10dp"
 				android:text="分享到QQ空间"
 				android:textSize="18sp"
-				android:background="@drawable/finish_activity_button_shape"
+				android:background="@drawable/finish_activity_button_normal_shape"
 				android:textColor="@color/background"
 				android:drawableStart="@mipmap/share"/>
 
@@ -95,7 +95,7 @@
 				android:drawablePadding="10dp"
 				android:text="返回主界面"
 				android:textSize="18sp"
-				android:background="@drawable/finish_activity_button_shape"
+				android:background="@drawable/finish_activity_button_normal_shape"
 				android:textColor="@color/background"
 				android:drawableStart="@mipmap/arrow_left_white"/>
 
@@ -109,7 +109,7 @@
 				android:drawablePadding="10dp"
 				android:text="开始下一项"
 				android:textSize="18sp"
-				android:background="@drawable/finish_activity_button_shape"
+				android:background="@drawable/finish_activity_button_normal_shape"
 				android:textColor="@color/background"
 				android:drawableStart="@mipmap/arrow_down_white"/>
 

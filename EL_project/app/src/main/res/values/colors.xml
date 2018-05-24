@@ -30,4 +30,8 @@
     <color name="day5">#496658</color>
     <color name="day6">#62a899</color>
     <color name="day7">#92a8a5</color>
+    
+    <drawable name="btn_focused">#60FFFFFF</drawable>
+    <drawable name="btn_normal">#20FFFFFF</drawable>
+
 </resources>
