@@ -5,7 +5,7 @@ package com.example.el_project;
  */
 public class MySuggestions {
     public static String getSuggestion(int time,double focusRate,double breakRate){
-        if(time<=3)
+        if(time<=300)
             return "时间有点短，下次试试能专注得久一点的任务吧XD";
         else{
             if(breakRate>=(1.0/3)){

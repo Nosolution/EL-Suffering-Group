@@ -127,6 +127,7 @@
 				android:padding="10dp"
 				android:background="@drawable/setting_background">
 
+
 				<de.hdodenhof.circleimageview.CircleImageView
 					android:id="@+id/icon_image"
 					android:layout_width="70dp"

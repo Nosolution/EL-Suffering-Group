@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,12 +55,13 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
     private ArrayList<Integer>ivId=new ArrayList<>();//储存紧急程度ImageViewId的ArrayList
     private InputMethodManager mInputMethodManager;//软键盘
     private Toolbar toolbar;
+    private int textColor;
 //    private Drawable draw1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //修改界面主题
-        BackgroundCollection backgroundCollection = new BackgroundCollection();
+        final BackgroundCollection backgroundCollection = new BackgroundCollection();
         setTheme(backgroundCollection.getTodayTheme());
 
         super.onCreate(savedInstanceState);
@@ -116,8 +118,11 @@ public class EditTaskActivity extends AppCompatActivity implements View.OnClickL
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     //TODO:打开每日工作 待补充
+                    tvDDLTime.setTextColor(Color.GRAY);
+                    selectTime.setClickable(false);
                 }else{
-
+                    tvDDLTime.setTextColor(getResources().getColor(R.color.lightblue,null));
+                    selectTime.setClickable(true);
                 }
             }
         });

@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         finalString+="任务："+mTaskList.get(selectedPosition).getName()+"\n";
         finalString+="预计时间:"+mTaskList.get(position).getHourRequired()+"时"+mTaskList.get(position).getMinuteRequired()+"分\n";
         temp=mTaskList.get(selectedPosition).getDeadline();
-        finalString+="最后日期："+(temp==null ? "无":temp)+"\n";
+        finalString+="最后日期："+(mTaskList.get(selectedPosition).getIsDailyTask()==1? "无":temp)+"\n";
         finalString+="紧急程度："+mTaskList.get(selectedPosition).getEmergencyDegree()+"\n";
         finalString+="是否是每日任务："+(mTaskList.get(selectedPosition).getIsDailyTask()==1? "是":"不是")+"\n";
         finalString+="备注:"+mTaskList.get(selectedPosition).getComments()+"\n";
