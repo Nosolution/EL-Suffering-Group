@@ -1,0 +1,89 @@
+——————Commit version1.06——————
+整合了代码，对接上了Spinner和展开动画
+添加删除任务的静态方法，在MyDatabaseOperation这个类中
+写好了对任务进行界面的接口，包装好了数据，点击相应按钮即可进入任务进行界面，只要任务进行界面接收好就行了
+
+——————Commit version1.05——————
+添加了修改功能。
+将AddTaskActivity更名为EditTaskActivity,其他的一些组件或者变量的名称也做了相应的调整。
+
+写着写着感觉写的代码就是一坨*，后面找时间优化一下。许多细节也有待完善。
+					——Edited by ns
+
+——————Commit version1.04——————
+实现了点击事件显示详情功能,修改功能待完善
+修复了添加任务界面的紧急程度的动画的bug
+实现了长按改变背景:
+	长时间点击Item改变背景为深色，进入编辑模式，此时直接点击Item就可设置Item状态为被选中/不被选中，背景有相应改变，
+	点击返回键退出编辑模式
+待改进之处：
+	用滚轮式对话框设置预计时间
+	DDL时间代码完善
+					——Edited by ns
+
+——————Commit version 1.03——————
+1.简单整合了一下代码，对好了一些接口，实现了动态添加任务
+2.点击与长按接口已做好，之后考虑好事件就可以实现了
+3.将ic_launcher_foreground.xml文件从drawable-24移到了drawable文件夹中
+4.重设MainActivity为主活动
+5.更新了数据库中的Tasklist表，运行代码前需打开虚拟机，输入：
+adb shell
+cd data/data/com.example.el_project/databases
+sqlite3 TaskStore.db
+drop table Tasklist;
+
+CREATE TABLE Tasklist(
+	id integer primary key autoincrement,
+	task text,
+	assumedtime text,
+	deadline text,
+	emergencydegree integer,
+	isdailytask integer,
+	comments text);
+
+(中途使用回车没有关系，最后以分号结束)
+之后就能正常测试了
+
+  待改进之处：
+1.主界面要设计好，做得更美观一些，以及增加按键做好布局以完善功能
+2.关于添加任务界面，考虑预计时间的选择也用滚轮式的对话框实现，DDL时间选择的代码有些问题，要修改，选择紧急程度的动画之下的逻辑也有问题，
+也要修改(另外为了覆盖onClick方法时更高效地使用switch，考虑加入字典数据结构)，备注处的TextView与EditText的相对位置需要调整好，
+
+其他细节会进行讨论，慢慢修补
+
+
+新增MusicController类，将通过这个类的简单调用控制音乐播放暂停停止重置。音乐的选择将直接让这个类操作。
+
+
+——————Commit version 1.01——————
+
+修改MainActivity.java的代码，点击悬浮按钮后可打开添加任务界面
+修改AndroidManifest.xml中的代码，注册AddTaskActivity
+修改string.xml中的代码，让添加页面的Edittext与Button显示一些字
+
+(为了能打开主活动我把对ic_forelauncher.xml的引用替换成了一张黑色png图片，名称为test_image.png，并将图片加入了drwable文件夹中)
+
+添加AddTaskActivity.java与activity_add_task。xml文件，为添加任务页面的主要功能实现文件
+添加ItemDialopFragment.java、MydatabaseHelper.java,具体功能注释里会讲
+
+实现了添加任务功能，任务名使用键盘输入，预计时间、最后期限、优先级可通过对话框进行选择
+前两项未输入则不能点击完成按钮
+已经连上数据库，点击完成按钮后数据将会被存入SQLite数据库
+查看方法：
+在虚拟机打开的情况下，打开命令控制台
+按顺序输入：（以下步骤参考了《第一行代码》第二版6.4节 215页）
+adb shell
+cd data/data/com.example.el_project/databases
+(之后输入ls应该可看见TaskStore.db)
+sqlite3 TaskStore.db
+(之后输入.table可应该可看见Tasklist)
+select * from Tasklist
+便可看见用|分隔开的数据，其中优先级的字符由于是中文，编码方式不同，会变成乱码
+
+待实现功能：
+查询数据库使所有代办任务显示在主页面上（没接上界面组的借口）、
+优化添加任务页面的布局
+滚动式选择最后期限
+预计时间与优先级的对话框添加取消按钮
+增加预计时间自定义编辑功能
+    					——Edited by NS
